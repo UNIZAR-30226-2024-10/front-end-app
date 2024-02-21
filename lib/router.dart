@@ -15,6 +15,7 @@ import 'settings/settings_screen.dart';
 import 'style/my_transition.dart';
 import 'style/palette.dart';
 import 'win_game/win_game_screen.dart';
+import 'play_session/chess_play_session_screen.dart';
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -24,6 +25,17 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => const MainMenuScreen(key: Key('main menu')),
       routes: [
+        GoRoute(path: 'chess',
+                pageBuilder: (context, state) {
+              return buildMyTransition<void>(
+                key: ValueKey('chess'),
+                color: context.watch<Palette>().backgroundPlaySession,
+                child: const ChessPlaySessionScreen(
+                  key: Key('chess play session'),
+                ),
+            );
+          },
+        ),
         GoRoute(
             path: 'play',
             pageBuilder: (context, state) => buildMyTransition<void>(

@@ -14,7 +14,8 @@ import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
-  const MainMenuScreen({super.key});
+  //Esto significa que Flutter generará automáticamente una clave única para cada instancia de MainMenuScreen.
+  const MainMenuScreen({super.key}); 
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class MainMenuScreen extends StatelessWidget {
           child: Transform.rotate(
             angle: -0.1,
             child: const Text(
-              'Flutter Game Template!',
+              'Chess Hub',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Permanent Marker',
@@ -42,6 +43,14 @@ class MainMenuScreen extends StatelessWidget {
         rectangularMenuArea: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
+            MyButton(
+              onPressed: () {
+                audioController.playSfx(SfxType.buttonTap);
+                GoRouter.of(context).go('/chess');
+              },
+              child: const Text('Ajedrez Demo'),
+            ),
+            _gap,
             MyButton(
               onPressed: () {
                 audioController.playSfx(SfxType.buttonTap);

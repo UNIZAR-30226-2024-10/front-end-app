@@ -28,7 +28,7 @@ void main() async {
       name: record.loggerName,
     );
   });
-
+  
   WidgetsFlutterBinding.ensureInitialized();
   // Put game into full screen mode on mobile devices.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -73,9 +73,9 @@ class MyApp extends StatelessWidget {
         ],
         child: Builder(builder: (context) {
           final palette = context.watch<Palette>();
-
           return MaterialApp.router(
-            title: 'My Flutter Game',
+            debugShowCheckedModeBanner: false,
+            title: 'ChessHub',
             theme: ThemeData.from(
               colorScheme: ColorScheme.fromSeed(
                 seedColor: palette.darkPen,
