@@ -29,6 +29,8 @@ class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen>{
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Text('En construcción'),
+            _gap,
             ChessGameWidget(),
             _gap,
             MyButton(
