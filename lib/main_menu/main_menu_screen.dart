@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,7 @@ import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   //Esto significa que Flutter generará automáticamente una clave única para cada instancia de MainMenuScreen.
-  const MainMenuScreen({super.key}); 
+  const MainMenuScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +26,34 @@ class MainMenuScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: palette.backgroundMain,
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          color: Color.fromRGBO(255, 255, 255, 1),
+          tooltip: 'Menu',
+          onPressed: () {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text('Prueba Menu')));
+          },
+        ),
+        title: const Text(
+          'ChessHub',
+          style: TextStyle(
+              fontFamily: 'Oswald', color: Color.fromRGBO(255, 255, 255, 1)),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.account_circle_sharp),
+            color: Color.fromRGBO(255, 255, 255, 1),
+            tooltip: 'Log In',
+            onPressed: () {
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Prueba Log In')));
+            },
+          )
+        ],
+      ),
       body: ResponsiveScreen(
         squarishMainArea: Center(
           child: Transform.rotate(
@@ -85,5 +114,5 @@ class MainMenuScreen extends StatelessWidget {
     );
   }
 
-  static const _gap = SizedBox(height: 10);
+  static const _gap = SizedBox(height: 20);
 }

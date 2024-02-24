@@ -1,10 +1,9 @@
 //Nombre: tablero_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
-
 import 'package:flutter/material.dart';
 import 'package:basic/play_session/casilla_ajedrez_widget.dart';
-import 'package:basic/play_session/pieza_ajedrez_widget.dart';
+//import 'package:basic/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
 class TableroWidget extends StatefulWidget {
@@ -15,7 +14,6 @@ class TableroWidget extends StatefulWidget {
 }
 
 class _TableroWidgetState extends State<TableroWidget> {
-
   /*
   Widget iniciarPartida(int index, Color color) {
     if(index >= 0 && index <16){
@@ -29,7 +27,7 @@ class _TableroWidgetState extends State<TableroWidget> {
     }
   }
   */
-  
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,12 +40,14 @@ class _TableroWidgetState extends State<TableroWidget> {
           crossAxisSpacing: 0,
         ),
         itemBuilder: (context, index) {
-          final color = (index ~/ 8 + index % 8) % 2 == 0
-              ? Colors.black
-              : Colors.white;
-              return CasillaAjedrez(color: color, ocupada: false, pieza: null);//iniciarPartida(index,color);
+          final color =
+              (index ~/ 8 + index % 8) % 2 == 0 ? Colors.black : Colors.white;
+          return CasillaAjedrez(
+              color: color,
+              ocupada: false,
+              pieza: null); //iniciarPartida(index,color);
         },
-      ),  
+      ),
     );
   }
 }
