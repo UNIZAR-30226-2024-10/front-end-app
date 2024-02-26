@@ -3,31 +3,63 @@
 
 import 'package:flutter/material.dart';
 import 'package:basic/play_session/casilla_ajedrez_widget.dart';
+import 'package:basic/assets/constantes/constantes.dart';
+import 'package:flutter/services.dart';
 //import 'package:basic/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
-class TableroWidget extends StatefulWidget {
-  const TableroWidget({Key? key}) : super(key: key);
+class TableroWidget extends StatelessWidget {
+  const TableroWidget({Key? key}) : super(key: key); 
 
-  @override
-  _TableroWidgetState createState() => _TableroWidgetState();
-}
-
-class _TableroWidgetState extends State<TableroWidget> {
-  /*
-  Widget iniciarPartida(int index, Color color) {
-    if(index >= 0 && index <16){
-      
+  //Función que devuelve un objeto CasillaAjedrez en el que correspone a la posición de la pieza
+  CasillaAjedrez? getCasilla(int index) {
+    Color colorAsociado = (index ~/ 8 + index % 8) % 2 == 0 ? const Color.fromARGB(255, 60, 114, 62) : Colors.white;
+    if (index >= 0 && index <= 7) {
+      //Primera fila de piezas negras
+      return CasillaAjedrez(
+        colorCasilla: colorAsociado,
+        ocupada: true,
+        index: index,
+        pieza: posicionPiezaMap[index],
+      );
     }
-    else if(index >=48){
-      
+    else if(index >= 8 && index <=15){
+      //Primera fila de piezas negras peones
+      return CasillaAjedrez(
+        colorCasilla: colorAsociado,
+        ocupada: true,
+        index: index,
+        pieza:TipoPieza.peon,
+      );
+    }
+    else if(index >= 56 && index <=63){
+      //Primera fila de piezas blancas
+      return CasillaAjedrez(
+        colorCasilla: colorAsociado,
+        ocupada: true,
+        index: index,
+        pieza: posicionPiezaMap[index - 56],
+      );
+    } 
+    else if(index >= 48 && index <=55){
+      //Primera fila de piezas blancas peones
+      return CasillaAjedrez(
+        colorCasilla: colorAsociado,
+        ocupada: true,
+        index: index,
+        pieza:TipoPieza.peon,
+      );
     }
     else{
-      return CasillaAjedrez(color: color, ocupada: false, pieza: null);
+      //Casillas vacías
+      return CasillaAjedrez(
+        colorCasilla: colorAsociado,
+        ocupada: false,
+        index: index,
+      );
     }
   }
-  */
-
+  
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -42,12 +74,10 @@ class _TableroWidgetState extends State<TableroWidget> {
         itemBuilder: (context, index) {
           final color =
               (index ~/ 8 + index % 8) % 2 == 0 ? Colors.black : Colors.white;
-          return CasillaAjedrez(
-              color: color,
-              ocupada: false,
-              pieza: null); //iniciarPartida(index,color);
+          return getCasilla(index);
         },
       ),
     );
   }
 }
+

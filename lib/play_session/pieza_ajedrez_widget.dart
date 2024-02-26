@@ -2,8 +2,7 @@
 //Descripción: Contiene el widget de la pieza de ajedrez.
 
 import 'package:flutter/material.dart';
-
-enum TipoPieza { peon, torre, alfil, caballo, dama, rey }
+import 'package:basic/assets/constantes/constantes.dart';
 
 class PiezaAjedrez extends StatelessWidget {
   final TipoPieza tipo;
@@ -40,7 +39,9 @@ class PiezaAjedrez extends StatelessWidget {
       case TipoPieza.dama:
         return "D";
       case TipoPieza.rey:
-        return "R";
+        return "REY";
+      case TipoPieza.reina:
+        return "REINA";
       default:
         return "";
     }
