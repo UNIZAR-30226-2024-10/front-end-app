@@ -2,6 +2,9 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'dart:js';
+
+import 'package:basic/settings/persistence/ranking_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -94,6 +97,10 @@ final router = GoRouter(
           builder: (context, state) =>
               const SettingsScreen(key: Key('settings')),
         ),
+        GoRoute(
+          path: 'ranking',
+          builder: (context, state) => RankingScreen(),
+          ),
       ],
     ),
   ],
