@@ -4,7 +4,7 @@
 
 import 'dart:js';
 
-import 'package:basic/settings/persistence/ranking_screen.dart';
+import 'ranking/ranking_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
