@@ -3,7 +3,6 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
@@ -11,41 +10,27 @@ import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
 import '../style/my_button.dart';
-//import '../style/palette.dart';
+import '../style/palette.dart';
 import '../style/responsive_screen.dart';
 
-class MainMenuScreen extends StatelessWidget {
-  //Esto significa que Flutter generará automáticamente una clave única para cada instancia de MainMenuScreen.
-  const MainMenuScreen({super.key});
+class LogInScreen extends StatelessWidget {
+  //Esto significa que Flutter generará automáticamente una clave única para cada instancia de LogInScreen.
+  const LogInScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //final palette = context.watch<Palette>();
+    final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
     return Scaffold(
+      backgroundColor: palette.backgroundMain,
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          color: Color.fromRGBO(255, 255, 255, 1),
-          tooltip: 'Menu',
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Prueba Menu')));
-          },
-        ),
-        title: const Text(
-          'ChessHub',
-          style: TextStyle(
-              fontFamily: 'Oswald', color: Color.fromRGBO(255, 255, 255, 1)),
-        ),
+        backgroundColor: palette.backgroundMain,
+        title: const Text('ChessHub'),
         actions: <Widget>[
           IconButton(
-            //icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off) MIRAR SI HACE FALTA HACER UN STATEFULWIDGET PARA ESTO
-            icon: const Icon(Icons.account_circle_sharp),
-            color: Color.fromRGBO(255, 255, 255, 1),
+            icon: const Icon(Icons.login),
             tooltip: 'Log In',
             onPressed: () {
               ScaffoldMessenger.of(context)
@@ -86,11 +71,6 @@ class MainMenuScreen extends StatelessWidget {
                 GoRouter.of(context).go('/play');
               },
               child: const Text('Play'),
-            ),
-            _gap,
-            MyButton(
-              onPressed: () => GoRouter.of(context).go('/ranking'),
-              child: const Text('Ranking'),
             ),
             _gap,
             MyButton(

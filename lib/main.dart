@@ -28,7 +28,7 @@ void main() async {
       name: record.loggerName,
     );
   });
-  
+
   WidgetsFlutterBinding.ensureInitialized();
   // Put game into full screen mode on mobile devices.
   await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
@@ -77,10 +77,7 @@ class MyApp extends StatelessWidget {
             debugShowCheckedModeBanner: false,
             title: 'ChessHub',
             theme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(
-                seedColor: palette.darkPen,
-                background: palette.backgroundMain,
-              ),
+              colorScheme: ColorScheme.fromSeed(seedColor: palette.darkPen),
               textTheme: TextTheme(
                 bodyMedium: TextStyle(color: palette.ink),
               ),
