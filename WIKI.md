@@ -9,6 +9,9 @@
 
 
 # Como lanzar el servidor back end, y como configurar PostMan para poder visualizar peticiones #
+    * Para probar la aplicacion y que no de problemas(almenos en google chrome), lanzar la aplicacion asi:
+        flutter run -d chrome --web-browser-flag "--disable-web-security"
+
     * Para lanzar el servidor backend:
         npm run devStart
         Lo lanzará en localhost en el puerto especificado en la configuración
