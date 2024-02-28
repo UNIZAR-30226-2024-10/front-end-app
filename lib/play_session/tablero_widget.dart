@@ -63,9 +63,8 @@ class TableroWidget extends StatelessWidget {
 
   inicializarTablero() async {
     print('Comenzando partida...\n');
-    final uri = Uri.parse('http://localhost:3002/play/start_game');
     print('Conectando a servidor...\n');
-    final response = await http.get(uri);
+    final response = await http.get(Uri.parse("http://localhost:3002/play/start_game"));
     print('Conexión establecida...\n');
     if (response.statusCode == 200) {
       print(response.body);
