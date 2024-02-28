@@ -29,7 +29,7 @@ class MainMenuScreen extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("../assets/images/home_background.jpeg"),
+              image: AssetImage("../assets/images/board.jpg"),
               fit: BoxFit.fill,
             ),
           ),
@@ -45,23 +45,32 @@ class MainMenuScreen extends StatelessWidget {
                       tooltip: 'Menu',
                       onPressed: () => Scaffold.of(context).openDrawer(),
                     )),
-            title: const Text(
-              'ChessHub',
-              style: TextStyle(
-                  fontFamily: 'Oswald',
-                  color: Color.fromRGBO(255, 255, 255, 1)),
+            title: GestureDetector(
+              onTap: () {},
+              child: Text(
+                'ChessHub',
+                style: TextStyle(
+                    fontFamily: 'Oswald',
+                    color: Color.fromRGBO(255, 255, 255, 1)),
+              ),
             ),
             actions: <Widget>[
-              IconButton(
-                //icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off) MIRAR SI HACE FALTA HACER UN STATEFULWIDGET PARA ESTO
-                icon: const Icon(Icons.account_circle_sharp),
-                color: Color.fromRGBO(255, 255, 255, 1),
-                tooltip: 'Log In',
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Prueba Log In')));
+              ValueListenableBuilder<bool>(
+                valueListenable: settingsController.loggedIn,
+                builder: (context, loggedIn, child) {
+                  return IconButton(
+                    tooltip: loggedIn ? 'Account' : 'Log In',
+                    onPressed: () => loggedIn
+                        ? ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Prueba Log In')))
+                        : GoRouter.of(context).push(
+                            '/login'), //settingsController.toggleLoggedIn(),
+                    icon: Icon(
+                        loggedIn ? Icons.account_circle_sharp : Icons.login),
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                  );
                 },
-              )
+              ),
             ],
           ),
           drawer: Drawer(
@@ -71,6 +80,7 @@ class MainMenuScreen extends StatelessWidget {
               children: <Widget>[
                 DrawerHeader(
                   decoration: BoxDecoration(
+                    shape: BoxShape.circle, //MIRAR QUE FORMA LE DOY
                     image: DecorationImage(
                       image: AssetImage("../assets/images/Logo.png"),
                       fit: BoxFit.cover,
@@ -90,8 +100,7 @@ class MainMenuScreen extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text('Play',
-                      style:
-                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                      style: TextStyle(color: Color.fromRGBO(255, 136, 0, 1))),
                   onTap: () {
                     audioController.playSfx(SfxType.buttonTap);
                     GoRouter.of(context).go('/play');
@@ -119,35 +128,41 @@ class MainMenuScreen extends StatelessWidget {
             ),
           ),
           body: Center(
-            heightFactor: 1.5,
-            child: Column(
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 32),
-                  child: ValueListenableBuilder<bool>(
-                    valueListenable: settingsController.audioOn,
-                    builder: (context, audioOn, child) {
-                      return IconButton(
-                        onPressed: () => settingsController.toggleAudioOn(),
-                        icon:
-                            Icon(audioOn ? Icons.volume_up : Icons.volume_off),
-                        color: Color.fromRGBO(255, 136, 0, 1),
-                      );
-                    },
-                  ),
-                ),
-                const Text(
-                  'Music by Mr Smith',
-                  style: TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
-                ),
-                _gap,
-              ],
-            ),
-          ),
-        ),
+              child: Container(
+                  color: Color.fromRGBO(49, 45, 45, 1),
+                  width: 300,
+                  height: 375,
+                  child: Center(
+                      child: RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                      text: 'Modos de juego: \n\n',
+                      style: TextStyle(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          fontSize: 33),
+                      children: const <TextSpan>[
+                        TextSpan(
+                            text: 'Bullet: 1 minuto de juego \n\n',
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                fontSize: 20)),
+                        TextSpan(
+                            text: 'Blitz: 3 minutos de juego \n\n',
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                fontSize: 20)),
+                        TextSpan(
+                            text: 'Rapid: 10 minutos de juego \n\n',
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 255, 255, 1),
+                                fontSize: 20)),
+                      ],
+                    ),
+                  )))),
+        )
       ],
     );
   }
 
-  static const _gap = SizedBox(height: 66);
+  //static const _gap = SizedBox(height: 66);
 }

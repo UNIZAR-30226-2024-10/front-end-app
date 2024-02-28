@@ -3,101 +3,173 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:flutter/material.dart';
+//import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
-import '../style/my_button.dart';
-import '../style/palette.dart';
-import '../style/responsive_screen.dart';
+//import '../style/my_button.dart';
+//import '../style/palette.dart';
+//import '../style/responsive_screen.dart';
 
-class LogInScreen extends StatelessWidget {
-  //Esto significa que Flutter generará automáticamente una clave única para cada instancia de LogInScreen.
-  const LogInScreen({super.key});
+class LoginScreen extends StatelessWidget {
+  //Esto significa que Flutter generará automáticamente una clave única para cada instancia de MainMenuScreen.
+  const LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final palette = context.watch<Palette>();
+    //final palette = context.watch<Palette>();
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
-    return Scaffold(
-      backgroundColor: palette.backgroundMain,
-      appBar: AppBar(
-        backgroundColor: palette.backgroundMain,
-        title: const Text('ChessHub'),
-        actions: <Widget>[
-          IconButton(
-            icon: const Icon(Icons.login),
-            tooltip: 'Log In',
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Prueba Log In')));
-            },
-          )
-        ],
-      ),
-      body: ResponsiveScreen(
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Chess Hub',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
-              ),
-            ),
-          ),
-        ),
-        rectangularMenuArea: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            MyButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/chess');
-              },
-              child: const Text('Ajedrez Demo'),
-            ),
-            _gap,
-            MyButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
-              },
-              child: const Text('Play'),
-            ),
-            _gap,
-            MyButton(
-              onPressed: () => GoRouter.of(context).push('/settings'),
-              child: const Text('Settings'),
-            ),
-            _gap,
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: settingsController.audioOn,
-                builder: (context, audioOn, child) {
-                  return IconButton(
-                    onPressed: () => settingsController.toggleAudioOn(),
-                    icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off),
-                  );
+    return Stack(
+      children: [
+        Scaffold(
+            backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+            appBar: AppBar(
+              backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+              leading: Builder(
+                  builder: (context) => IconButton(
+                        icon: const Icon(Icons.menu),
+                        color: Color.fromRGBO(255, 255, 255, 1),
+                        tooltip: 'Menu',
+                        onPressed: () => Scaffold.of(context).openDrawer(),
+                      )),
+              title: GestureDetector(
+                onTap: () {
+                  GoRouter.of(context).push('/');
                 },
+                child: Text(
+                  'ChessHub',
+                  style: TextStyle(
+                      fontFamily: 'Oswald',
+                      color: Color.fromRGBO(255, 255, 255, 1)),
+                ),
               ),
             ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
-          ],
-        ),
-      ),
+            drawer: Drawer(
+              backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: <Widget>[
+                  DrawerHeader(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle, //MIRAR QUE FORMA LE DOY
+                      image: DecorationImage(
+                        image: AssetImage("../assets/images/Logo.png"),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    child: null,
+                  ),
+                  ListTile(
+                    title: Text(
+                      'Ajedrez Demo',
+                      style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                    ),
+                    onTap: () {
+                      audioController.playSfx(SfxType.buttonTap);
+                      GoRouter.of(context).go('/chess');
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Play',
+                        style:
+                            TextStyle(color: Color.fromRGBO(255, 136, 0, 1))),
+                    onTap: () {
+                      audioController.playSfx(SfxType.buttonTap);
+                      GoRouter.of(context).go('/play');
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Ranking',
+                        style:
+                            TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                    onTap: () {
+                      audioController.playSfx(SfxType.buttonTap);
+                      GoRouter.of(context).go('/ranking');
+                    },
+                  ),
+                  ListTile(
+                    title: Text('Settings',
+                        style:
+                            TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                    onTap: () {
+                      audioController.playSfx(SfxType.buttonTap);
+                      GoRouter.of(context).push('/settings');
+                    },
+                  ),
+                ],
+              ),
+            ),
+            body: Center(
+                child: Column(
+              children: <Widget>[
+                _gap,
+                _gap,
+                Container(
+                    color: Color.fromRGBO(255, 136, 0, 1),
+                    width: 300,
+                    height: 375,
+                    child: Form(
+                      child: Column(
+                        children: [
+                          _gap,
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              hintText: 'Nombre de usuario',
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campos necesarios sin rellenar';
+                              }
+                              return null;
+                            },
+                          ),
+                          _gap,
+                          _gap,
+                          TextFormField(
+                            decoration: const InputDecoration(
+                              hintText: 'Contraseña',
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Campos necesarios sin rellenar';
+                              }
+                              return null;
+                            },
+                          ),
+                          _gap,
+                          _gap,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: ElevatedButton(
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStatePropertyAll<Color>(
+                                          Color.fromRGBO(49, 45, 45, 1))),
+                              onPressed: () {
+                                // Validate will return true if the form is valid, or false if
+                                // the form is invalid.
+                                if (GlobalKey<FormState>()
+                                    .currentState!
+                                    .validate()) {
+                                  settingsController.toggleLoggedIn();
+                                }
+                              },
+                              child: const Text('Iniciar Sesión'),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )),
+              ],
+            ))),
+      ],
     );
   }
 
-  static const _gap = SizedBox(height: 20);
+  static const _gap = SizedBox(height: 33);
 }

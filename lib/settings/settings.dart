@@ -35,6 +35,8 @@ class SettingsController {
   /// Whether or not the music is on.
   ValueNotifier<bool> musicOn = ValueNotifier(true);
 
+  ValueNotifier<bool> loggedIn = ValueNotifier(true);
+
   /// Creates a new instance of [SettingsController] backed by [store].
   ///
   /// By default, settings are persisted using [LocalStorageSettingsPersistence]
@@ -65,6 +67,11 @@ class SettingsController {
     _store.saveSoundsOn(soundsOn.value);
   }
 
+  void toggleLoggedIn() {
+    loggedIn.value = !loggedIn.value;
+    _store.saveLoggedIn(loggedIn.value);
+  }
+
   /// Asynchronously loads values from the injected persistence store.
   Future<void> _loadStateFromPersistence() async {
     final loadedValues = await Future.wait([
@@ -77,6 +84,9 @@ class SettingsController {
         // On other platforms, we can use the persisted value.
         return audioOn.value = value;
       }),
+      _store
+          .getLoggedIn(defaultValue: false)
+          .then((value) => loggedIn.value = value),
       _store
           .getSoundsOn(defaultValue: true)
           .then((value) => soundsOn.value = value),

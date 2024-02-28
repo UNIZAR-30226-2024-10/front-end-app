@@ -2,7 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'dart:js';
+//import 'dart:js';
 
 import 'ranking/ranking_screen.dart';
 import 'package:flutter/foundation.dart';
@@ -19,6 +19,7 @@ import 'style/my_transition.dart';
 import 'style/palette.dart';
 import 'win_game/win_game_screen.dart';
 import 'play_session/chess_play_session_screen.dart';
+import 'log_in/log_in_screen.dart';
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -28,14 +29,15 @@ final router = GoRouter(
       path: '/',
       builder: (context, state) => const MainMenuScreen(key: Key('main menu')),
       routes: [
-        GoRoute(path: 'chess',
-                pageBuilder: (context, state) {
-              return buildMyTransition<void>(
-                key: ValueKey('chess'),
-                color: context.watch<Palette>().backgroundPlaySession,
-                child: const ChessPlaySessionScreen(
-                  key: Key('chess play session'),
-                ),
+        GoRoute(
+          path: 'chess',
+          pageBuilder: (context, state) {
+            return buildMyTransition<void>(
+              key: ValueKey('chess'),
+              color: context.watch<Palette>().backgroundPlaySession,
+              child: const ChessPlaySessionScreen(
+                key: Key('chess play session'),
+              ),
             );
           },
         ),
@@ -100,7 +102,11 @@ final router = GoRouter(
         GoRoute(
           path: 'ranking',
           builder: (context, state) => RankingScreen(),
-          ),
+        ),
+        GoRoute(
+          path: 'login',
+          builder: (context, state) => LoginScreen(),
+        )
       ],
     ),
   ],
