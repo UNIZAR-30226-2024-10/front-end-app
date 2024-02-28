@@ -76,8 +76,8 @@ class MyApp extends StatelessWidget {
           return MaterialApp.router(
             debugShowCheckedModeBanner: false,
             title: 'ChessHub',
-            theme: ThemeData.from(
-              colorScheme: ColorScheme.fromSeed(seedColor: palette.darkPen),
+            theme: ThemeData(
+              colorSchemeSeed: Color.fromRGBO(255, 255, 255, 0),
               textTheme: TextTheme(
                 bodyMedium: TextStyle(color: palette.ink),
               ),

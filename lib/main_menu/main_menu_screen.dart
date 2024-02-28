@@ -10,9 +10,9 @@ import 'package:provider/provider.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
-import '../style/my_button.dart';
+//import '../style/my_button.dart';
 //import '../style/palette.dart';
-import '../style/responsive_screen.dart';
+//import '../style/responsive_screen.dart';
 
 class MainMenuScreen extends StatelessWidget {
   //Esto significa que Flutter generará automáticamente una clave única para cada instancia de MainMenuScreen.
@@ -24,100 +24,130 @@ class MainMenuScreen extends StatelessWidget {
     final settingsController = context.watch<SettingsController>();
     final audioController = context.watch<AudioController>();
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          color: Color.fromRGBO(255, 255, 255, 1),
-          tooltip: 'Menu',
-          onPressed: () {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text('Prueba Menu')));
-          },
-        ),
-        title: const Text(
-          'ChessHub',
-          style: TextStyle(
-              fontFamily: 'Oswald', color: Color.fromRGBO(255, 255, 255, 1)),
-        ),
-        actions: <Widget>[
-          IconButton(
-            //icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off) MIRAR SI HACE FALTA HACER UN STATEFULWIDGET PARA ESTO
-            icon: const Icon(Icons.account_circle_sharp),
-            color: Color.fromRGBO(255, 255, 255, 1),
-            tooltip: 'Log In',
-            onPressed: () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Prueba Log In')));
-            },
-          )
-        ],
-      ),
-      body: ResponsiveScreen(
-        squarishMainArea: Center(
-          child: Transform.rotate(
-            angle: -0.1,
-            child: const Text(
-              'Chess Hub',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Permanent Marker',
-                fontSize: 55,
-                height: 1,
-              ),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("../assets/images/home_background.jpeg"),
+              fit: BoxFit.fill,
             ),
           ),
         ),
-        rectangularMenuArea: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            MyButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/chess');
-              },
-              child: const Text('Ajedrez Demo'),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+            leading: Builder(
+                builder: (context) => IconButton(
+                      icon: const Icon(Icons.menu),
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                      tooltip: 'Menu',
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    )),
+            title: const Text(
+              'ChessHub',
+              style: TextStyle(
+                  fontFamily: 'Oswald',
+                  color: Color.fromRGBO(255, 255, 255, 1)),
             ),
-            _gap,
-            MyButton(
-              onPressed: () {
-                audioController.playSfx(SfxType.buttonTap);
-                GoRouter.of(context).go('/play');
-              },
-              child: const Text('Play'),
-            ),
-            _gap,
-            MyButton(
-              onPressed: () => GoRouter.of(context).go('/ranking'),
-              child: const Text('Ranking'),
-            ),
-            _gap,
-            MyButton(
-              onPressed: () => GoRouter.of(context).push('/settings'),
-              child: const Text('Settings'),
-            ),
-            _gap,
-            Padding(
-              padding: const EdgeInsets.only(top: 32),
-              child: ValueListenableBuilder<bool>(
-                valueListenable: settingsController.audioOn,
-                builder: (context, audioOn, child) {
-                  return IconButton(
-                    onPressed: () => settingsController.toggleAudioOn(),
-                    icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off),
-                  );
+            actions: <Widget>[
+              IconButton(
+                //icon: Icon(audioOn ? Icons.volume_up : Icons.volume_off) MIRAR SI HACE FALTA HACER UN STATEFULWIDGET PARA ESTO
+                icon: const Icon(Icons.account_circle_sharp),
+                color: Color.fromRGBO(255, 255, 255, 1),
+                tooltip: 'Log In',
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Prueba Log In')));
                 },
-              ),
+              )
+            ],
+          ),
+          drawer: Drawer(
+            backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: <Widget>[
+                DrawerHeader(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("../assets/images/Logo.png"),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                  child: null,
+                ),
+                ListTile(
+                  title: Text(
+                    'Ajedrez Demo',
+                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
+                  ),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/chess');
+                  },
+                ),
+                ListTile(
+                  title: Text('Play',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/play');
+                  },
+                ),
+                ListTile(
+                  title: Text('Ranking',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/ranking');
+                  },
+                ),
+                ListTile(
+                  title: Text('Settings',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).push('/settings');
+                  },
+                ),
+              ],
             ),
-            _gap,
-            const Text('Music by Mr Smith'),
-            _gap,
-          ],
+          ),
+          body: Center(
+            heightFactor: 1.5,
+            child: Column(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 32),
+                  child: ValueListenableBuilder<bool>(
+                    valueListenable: settingsController.audioOn,
+                    builder: (context, audioOn, child) {
+                      return IconButton(
+                        onPressed: () => settingsController.toggleAudioOn(),
+                        icon:
+                            Icon(audioOn ? Icons.volume_up : Icons.volume_off),
+                        color: Color.fromRGBO(255, 136, 0, 1),
+                      );
+                    },
+                  ),
+                ),
+                const Text(
+                  'Music by Mr Smith',
+                  style: TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
+                ),
+                _gap,
+              ],
+            ),
+          ),
         ),
-      ),
+      ],
     );
   }
 
-  static const _gap = SizedBox(height: 20);
+  static const _gap = SizedBox(height: 66);
 }

@@ -6,17 +6,14 @@ import 'package:basic/style/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-
-
 class ChessPlaySessionScreen extends StatefulWidget {
-
   const ChessPlaySessionScreen({super.key});
 
   @override
   State<ChessPlaySessionScreen> createState() => _ChessPlaySessionScreenState();
 }
 
-class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen>{
+class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen> {
   //static final _log = Logger('ChessPlaySessionScreen');
   static const _gap = SizedBox(height: 10);
 
@@ -40,7 +37,6 @@ class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen>{
           ],
         ),
       ),
-
     );
   }
 }
