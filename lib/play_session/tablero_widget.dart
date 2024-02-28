@@ -4,6 +4,7 @@
 import 'package:flutter/material.dart';
 import 'package:basic/play_session/casilla_ajedrez_widget.dart';
 import 'package:basic/assets/constantes/constantes.dart';
+import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 //import 'package:basic/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -29,7 +30,7 @@ class TableroWidget extends StatelessWidget {
         colorCasilla: colorAsociado,
         ocupada: true,
         index: index,
-        pieza:TipoPieza.peon,
+        pieza:TipoPieza.PEON,
       );
     }
     else if(index >= 56 && index <=63){
@@ -47,7 +48,7 @@ class TableroWidget extends StatelessWidget {
         colorCasilla: colorAsociado,
         ocupada: true,
         index: index,
-        pieza:TipoPieza.peon,
+        pieza:TipoPieza.PEON,
       );
     }
     else{
@@ -59,9 +60,29 @@ class TableroWidget extends StatelessWidget {
       );
     }
   }
-  
+
+  inicializarTablero() async {
+    print('Comenzando partida...\n');
+    final uri = Uri.parse('http://localhost:3002/play/start_game');
+    print('Conectando a servidor...\n');
+    final response = await http.get(uri);
+    print('Conexión establecida...\n');
+    if (response.statusCode == 200) {
+      print(response.body);
+      //var tablero = response.body;
+      /*for (int i = 0; i < 64; i++) {
+        posicionPiezaMap[i] = tipoPiezaMap[tablero[i]];
+      }
+      */
+    }
+    else {
+      throw Exception('Failed to load tablero');
+    } 
+  }
+
   @override
   Widget build(BuildContext context) {
+    inicializarTablero();
     return Container(
       width: 320,
       height: 320,

@@ -28,19 +28,19 @@ class PiezaAjedrez extends StatelessWidget {
 
   String getPiezanombre(TipoPieza tipo) {
     switch (tipo) {
-      case TipoPieza.peon:
+      case TipoPieza.PEON:
         return "P";
-      case TipoPieza.torre:
+      case TipoPieza.TORRE:
         return "T";
-      case TipoPieza.alfil:
+      case TipoPieza.ALFIL:
         return "A";
-      case TipoPieza.caballo:
+      case TipoPieza.CABALLO:
         return "C";
-      case TipoPieza.dama:
+      case TipoPieza.DAMA:
         return "D";
-      case TipoPieza.rey:
+      case TipoPieza.REY:
         return "REY";
-      case TipoPieza.reina:
+      case TipoPieza.REINA:
         return "REINA";
       default:
         return "";

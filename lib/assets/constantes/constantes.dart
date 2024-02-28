@@ -1,15 +1,15 @@
 // TODO Implement this library.
 
-enum TipoPieza { peon, torre, alfil, caballo, dama, rey, reina}
+enum TipoPieza { PEON, TORRE, ALFIL, CABALLO, DAMA, REY, REINA}
 
 // Define un mapa que asocie cada posición de fila con un tipo de pieza de ajedrez
 final Map<int, TipoPieza> posicionPiezaMap = {
-  0: TipoPieza.torre,
-  1: TipoPieza.caballo,
-  2: TipoPieza.alfil,
-  3: TipoPieza.reina,
-  4: TipoPieza.rey,
-  5: TipoPieza.alfil,
-  6: TipoPieza.caballo,
-  7: TipoPieza.torre,
+  0: TipoPieza.TORRE,
+  1: TipoPieza.CABALLO,
+  2: TipoPieza.ALFIL,
+  3: TipoPieza.REINA,
+  4: TipoPieza.REY,
+  5: TipoPieza.ALFIL,
+  6: TipoPieza.CABALLO,
+  7: TipoPieza.TORRE,
 };
