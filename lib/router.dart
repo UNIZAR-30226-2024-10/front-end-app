@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
+import 'level_selection/personalizacion.dart';
 import 'game_internals/score.dart';
 import 'level_selection/level_selection_screen.dart';
 import 'level_selection/levels.dart';
@@ -106,6 +107,10 @@ final router = GoRouter(
         GoRoute(
           path: 'login',
           builder: (context, state) => LoginScreen(),
+        ),
+        GoRoute(
+          path: 'personalizacion',
+          builder: (context, state) => Personalizacion(),
         )
       ],
     ),
