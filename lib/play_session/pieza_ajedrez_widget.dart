@@ -3,6 +3,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:basic/assets/constantes/constantes.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+
 
 class PiezaAjedrez extends StatelessWidget {
   final TipoPieza tipo;
@@ -16,35 +19,49 @@ class PiezaAjedrez extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String assetPath = getAssetPath(tipo, color); // Función para obtener la ruta del archivo SVG
     return Container(
       child: Center(
-        child: Text(
-          getPiezanombre(tipo), // Función para convertir tipo a nombre
-          style: TextStyle(fontSize: 8, color: color),
+        child: SvgPicture.asset(
+          assetPath,
+          width: 40, // Ajusta el tamaño según sea necesario
+          height: 40,
         ),
       ),
     );
   }
 
-  String getPiezanombre(TipoPieza tipo) {
+  String getAssetPath(TipoPieza tipo, Color color) {
     switch (tipo) {
       case TipoPieza.PEON:
-        return "P";
+        return color == Colors.black
+            ? 'lib/assets/images/pawn-b.svg' // Ruta del archivo SVG del peón
+            : 'lib/assets/images/pawn-w.svg'; // Ruta del archivo SVG del peón
       case TipoPieza.TORRE:
-        return "T";
+        return color == Colors.black
+            ? 'lib/assets/images/rook-b.svg' // Ruta del archivo SVG de la torre
+            : 'lib/assets/images/rook-w.svg'; // Ruta del archivo SVG de la torre
       case TipoPieza.ALFIL:
-        return "A";
+        return color == Colors.black
+            ? 'lib/assets/images/bishop-b.svg' // Ruta del archivo SVG del alfil
+            : 'lib/assets/images/bishop-w.svg'; // Ruta del archivo SVG del alfil
       case TipoPieza.CABALLO:
-        return "C";
-      case TipoPieza.DAMA:
-        return "D";
+        return color == Colors.black
+            ? 'lib/assets/images/knight-b.svg' // Ruta del archivo SVG del caballo
+            : 'lib/assets/images/knight-w.svg'; // Ruta del archivo SVG del caballo
       case TipoPieza.REY:
-        return "REY";
+        return color == Colors.black
+            ? 'lib/assets/images/king-b.svg' // Ruta del archivo SVG del rey
+            : 'lib/assets/images/king-w.svg'; // Ruta del archivo SVG del rey
       case TipoPieza.REINA:
-        return "REINA";
+        return color == Colors.black
+            ? 'lib/assets/images/queen-b.svg' // Ruta del archivo SVG de la reina
+            : 'lib/assets/images/queen-w.svg'; // Ruta del archivo SVG de la reina
       default:
-        return "";
+        return ''; // Devuelve una cadena vacía si el tipo de pieza es desconocido
     }
   }
 }
+
+
 

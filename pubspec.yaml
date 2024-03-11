@@ -20,6 +20,7 @@ dependencies:
   provider: ^6.0.5
   shared_preferences: ^2.2.2
   http: ^1.2.1
+  flutter_svg: 2.0.10+1
 
 dev_dependencies:
   flutter_lints: ^3.0.0
@@ -32,7 +33,18 @@ flutter:
   uses-material-design: true
 
   assets:
-    - assets/images/
+    - lib/assets/images/bishop-b.svg
+    - lib/assets/images/bishop-w.svg
+    - lib/assets/images/king-b.svg
+    - lib/assets/images/king-w.svg
+    - lib/assets/images/knight-b.svg
+    - lib/assets/images/knight-w.svg
+    - lib/assets/images/pawn-b.svg
+    - lib/assets/images/pawn-w.svg
+    - lib/assets/images/queen-b.svg
+    - lib/assets/images/queen-w.svg
+    - lib/assets/images/rook-b.svg
+    - lib/assets/images/rook-w.svg
     - assets/music/
     - assets/sfx/
 

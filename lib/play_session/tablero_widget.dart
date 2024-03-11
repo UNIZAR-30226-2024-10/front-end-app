@@ -61,27 +61,8 @@ class TableroWidget extends StatelessWidget {
     }
   }
 
-  inicializarTablero() async {
-    print('Comenzando partida...\n');
-    print('Conectando a servidor...\n');
-    final response = await http.get(Uri.parse("http://localhost:3002/play/start_game"));
-    print('Conexión establecida...\n');
-    if (response.statusCode == 200) {
-      print(response.body);
-      //var tablero = response.body;
-      /*for (int i = 0; i < 64; i++) {
-        posicionPiezaMap[i] = tipoPiezaMap[tablero[i]];
-      }
-      */
-    }
-    else {
-      throw Exception('Failed to load tablero');
-    } 
-  }
-
   @override
   Widget build(BuildContext context) {
-    inicializarTablero();
     return Container(
       width: 320,
       height: 320,
