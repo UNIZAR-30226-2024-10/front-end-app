@@ -61,8 +61,8 @@ class MainMenuScreen extends StatelessWidget {
                   return IconButton(
                     tooltip: loggedIn ? 'Account' : 'Log In',
                     onPressed: () => loggedIn
-                        ? ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Prueba Log In')))
+                        ? settingsController
+                            .toggleLoggedIn() //CUANDO HAYA, TE LLEVARA A LA PAGINA DE USUARIO
                         : GoRouter.of(context).push(
                             '/login'), //settingsController.toggleLoggedIn(),
                     icon: Icon(

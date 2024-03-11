@@ -71,8 +71,7 @@
 //   }
 // }
 
-
-// Ahora esta pantalla es la resultante de darle a play, al darle dara dos 
+// Ahora esta pantalla es la resultante de darle a play, al darle dara dos
 // opciones que sera personalizacion y buscar partida
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -103,7 +102,8 @@ class LevelSelectionScreen extends StatelessWidget {
                 final audioController = context.read<AudioController>();
                 audioController.playSfx(SfxType.buttonTap);
 
-                GoRouter.of(context).go('/play/session/1'); // Cambia esto a la ruta correcta
+                GoRouter.of(context)
+                    .go('/play/session/1'); // Cambia esto a la ruta correcta
               },
               child: const Text('Buscar Partida'),
             ),
@@ -113,7 +113,8 @@ class LevelSelectionScreen extends StatelessWidget {
                 final audioController = context.read<AudioController>();
                 audioController.playSfx(SfxType.buttonTap);
 
-                GoRouter.of(context).go('/personalizacion'); // Cambia esto a la ruta correcta
+                GoRouter.of(context)
+                    .go('/personalizacion'); // Cambia esto a la ruta correcta
               },
               child: const Text('Personalización'),
             ),
