@@ -3,14 +3,17 @@
 
 import 'package:flutter/material.dart';
 import 'package:basic/play_session/casilla_ajedrez_widget.dart';
-import 'package:basic/assets/constantes/constantes.dart';
+import 'package:basic/constantes/constantes.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert'; // Para manejar la codificación y decodificación JSON
+import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 //import 'package:basic/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
 class TableroWidget extends StatelessWidget {
-  const TableroWidget({Key? key}) : super(key: key); 
+  String respuestaBackend;
+  TableroWidget({Key? key, this.respuestaBackend='',}) : super(key: key); 
 
   //Función que devuelve un objeto CasillaAjedrez en el que correspone a la posición de la pieza
   CasillaAjedrez? getCasilla(int index) {
@@ -22,6 +25,7 @@ class TableroWidget extends StatelessWidget {
         ocupada: true,
         index: index,
         pieza: posicionPiezaMap[index],
+        movimientosPosibles: respuestaBackend,
       );
     }
     else if(index >= 8 && index <=15){
@@ -31,6 +35,7 @@ class TableroWidget extends StatelessWidget {
         ocupada: true,
         index: index,
         pieza:TipoPieza.PEON,
+        movimientosPosibles: respuestaBackend,
       );
     }
     else if(index >= 56 && index <=63){
@@ -40,6 +45,7 @@ class TableroWidget extends StatelessWidget {
         ocupada: true,
         index: index,
         pieza: posicionPiezaMap[index - 56],
+        movimientosPosibles: respuestaBackend,
       );
     } 
     else if(index >= 48 && index <=55){
@@ -49,6 +55,7 @@ class TableroWidget extends StatelessWidget {
         ocupada: true,
         index: index,
         pieza:TipoPieza.PEON,
+        movimientosPosibles: respuestaBackend,
       );
     }
     else{
@@ -57,12 +64,40 @@ class TableroWidget extends StatelessWidget {
         colorCasilla: colorAsociado,
         ocupada: false,
         index: index,
+        movimientosPosibles: respuestaBackend,
       );
     }
   }
 
+  //Función que envía al backend un tablero nuevo de ajedrez
+  Future<void> postTableroInicial() async {
+    // Lee el contenido del archivo JSON
+    String jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
+
+    // Construye la URL y realiza la solicitud POST
+    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
+    http.Response response = await http.post(
+      uri,
+      body: jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
+
+    // Verifica el estado de la respuesta
+    if (response.statusCode == 200) {
+      print('La solicitud POST fue exitosa');
+      print('Respuesta del servidor: ${response.body}');
+    } else {
+      print('Error en la solicitud POST: ${response.statusCode}');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
+    //Llamada a la función para crear el tablero inicial
+    postTableroInicial();
     return Container(
       width: 320,
       height: 320,
@@ -73,8 +108,6 @@ class TableroWidget extends StatelessWidget {
           crossAxisSpacing: 0,
         ),
         itemBuilder: (context, index) {
-          final color =
-              (index ~/ 8 + index % 8) % 2 == 0 ? Colors.black : Colors.white;
           return getCasilla(index);
         },
       ),

@@ -3,10 +3,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:basic/play_session/pieza_ajedrez_widget.dart';
-import 'package:basic/assets/constantes/constantes.dart';
+import 'package:basic/constantes/constantes.dart';
 
 class CasillaAjedrez extends StatefulWidget {
   final Color colorCasilla;
+  final String movimientosPosibles;
   final bool ocupada;
   final int index;
   final TipoPieza? pieza;
@@ -16,6 +17,7 @@ class CasillaAjedrez extends StatefulWidget {
     required this.colorCasilla,
     required this.ocupada,
     required this.index,
+    required this.movimientosPosibles,
     this.pieza,
   }) : super(key: key);
 

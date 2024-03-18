@@ -1,5 +1,5 @@
-// TODO Implement this library.
-
+//Nombre: constantes.dart
+//Descripción: Contiene todas las constantes utilizadas en el proyecto.
 enum TipoPieza { PEON, TORRE, ALFIL, CABALLO, DAMA, REY, REINA}
 
 // Define un mapa que asocie cada posición de fila con un tipo de pieza de ajedrez

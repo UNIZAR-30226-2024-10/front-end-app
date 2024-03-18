@@ -14,7 +14,6 @@ import 'game_internals/score.dart';
 import 'level_selection/level_selection_screen.dart';
 import 'level_selection/levels.dart';
 import 'main_menu/main_menu_screen.dart';
-import 'play_session/play_session_screen.dart';
 import 'settings/settings_screen.dart';
 import 'style/my_transition.dart';
 import 'style/palette.dart';
@@ -52,22 +51,6 @@ final router = GoRouter(
                   ),
                 ),
             routes: [
-              GoRoute(
-                path: 'session/:level',
-                pageBuilder: (context, state) {
-                  final levelNumber = int.parse(state.pathParameters['level']!);
-                  final level =
-                      gameLevels.singleWhere((e) => e.number == levelNumber);
-                  return buildMyTransition<void>(
-                    key: ValueKey('level'),
-                    color: context.watch<Palette>().backgroundPlaySession,
-                    child: PlaySessionScreen(
-                      level,
-                      key: const Key('play session'),
-                    ),
-                  );
-                },
-              ),
               GoRoute(
                 path: 'won',
                 redirect: (context, state) {
