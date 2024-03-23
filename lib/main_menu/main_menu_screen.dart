@@ -29,7 +29,7 @@ class MainMenuScreen extends StatelessWidget {
         Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("../assets/images/board.jpg"),
+              image: AssetImage("assets/images/board.jpg"),
               fit: BoxFit.fill,
             ),
           ),
@@ -82,7 +82,7 @@ class MainMenuScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle, //MIRAR QUE FORMA LE DOY
                     image: DecorationImage(
-                      image: AssetImage("../assets/images/Logo.png"),
+                      image: AssetImage("assets/images/Logo.png"),
                       fit: BoxFit.cover,
                     ),
                   ),
