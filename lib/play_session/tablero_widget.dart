@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:basic/play_session/pieza_ajedrez.dart';
 import 'package:basic/game_internals/funciones.dart';
 //import 'package:basic/play_session/pieza_ajedrez_widget.dart';
@@ -141,23 +142,36 @@ class _TableroAjedrezState extends State<TableroAjedrez>{
   } 
   
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: GridView.builder(
-        itemCount: 8 * 8,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
-        itemBuilder: (context, index) {
-          int fila = index ~/ 8;
-          int columna = index % 8;
-          return CasillaAjedrez(
-            esBlanca: esBlanca(index),
-            pieza:tablero[fila][columna], 
-          );
-        },
-      ),
-    );
-  }
+Widget build(BuildContext context) {
+  return Scaffold(
+    body: Column(
+      children: [
+        Expanded(
+          child: GridView.builder(
+            itemCount: 8 * 8,
+            physics: const NeverScrollableScrollPhysics(),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
+            itemBuilder: (context, index) {
+              int fila = index ~/ 8;
+              int columna = index % 8;
+              return CasillaAjedrez(
+                esBlanca: esBlanca(index),
+                pieza: tablero[fila][columna], 
+              );
+            },
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ElevatedButton(
+            onPressed: () => GoRouter.of(context).go('/'),
+            child: const Text('Back'),
+          ),
+        ),
+      ],
+    ),
+  );
+}
 }
 
 
