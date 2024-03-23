@@ -18,7 +18,7 @@ class CasillaAjedrez extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color:esBlanca ? Colors.grey[300] : Colors.grey[400],
+      color:esBlanca ? Color(0xFFADF597) : Color(0XFF2E960F),
       child: pieza != null ? 
       //adaptar la imagen de la pieza
       
