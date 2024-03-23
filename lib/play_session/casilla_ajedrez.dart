@@ -21,7 +21,6 @@ class CasillaAjedrez extends StatelessWidget {
       color:esBlanca ? Color(0xFFADF597) : Color(0XFF2E960F),
       child: pieza != null ? 
       //adaptar la imagen de la pieza
-      
       SvgPicture.asset(
               pieza!.nombreImagen,
               width: 24, // Ajusta el tamaño según sea necesario
