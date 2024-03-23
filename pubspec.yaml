@@ -34,8 +34,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/*.svg
     - assets/json/
-    - assets/json/tableroInicial.json
     - assets/music/
     - assets/sfx/
 

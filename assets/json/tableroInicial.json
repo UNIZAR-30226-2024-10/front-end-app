@@ -1,174 +1,178 @@
-{
+{   "turno": "blancas",
     "peones": [
         {
             "x": 0,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 1,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 2,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 3,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 4,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 5,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 6,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 7,
             "y": 1,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 0,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 1,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 2,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 3,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 4,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 5,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 6,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 7,
             "y": 6,
-            "color": "negra"
+            "color": "negras"
         }
     ],
     "alfiles": [
         {
             "x": 2,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 5,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 2,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 5,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         }
     ],
     "caballos": [
         {
             "x": 1,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 6,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 1,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         },
         {
             "x": 6,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         }
     ],
     "torres": [
         {
             "x": 0,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas",
+            "lado": "izquierda"
         },
         {
             "x": 7,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas",
+            "lado": "derecha"
         },
         {
             "x": 0,
             "y": 7,
-            "color": "negra"
+            "color": "negras",
+            "lado": "izquierda"
         },
         {
             "x": 7,
             "y": 7,
-            "color": "negra"
+            "color": "negras",
+            "lado": "derecha"
         }
     ],
     "damas": [
         {
             "x": 3,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 3,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         }
     ],
     "reyes": [
         {
             "x": 4,
             "y": 0,
-            "color": "blanca"
+            "color": "blancas"
         },
         {
             "x": 4,
             "y": 7,
-            "color": "negra"
+            "color": "negras"
         }
     ]
 }

@@ -1,117 +1,164 @@
 //Nombre: tablero_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
+import 'package:basic/play_session/pieza_ajedrez.dart';
 import 'package:flutter/material.dart';
-import 'package:basic/play_session/casilla_ajedrez_widget.dart';
+import 'package:basic/play_session/casilla_ajedrez.dart';
 import 'package:basic/constantes/constantes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
+import 'package:basic/play_session/pieza_ajedrez.dart';
+import 'package:basic/game_internals/funciones.dart';
 //import 'package:basic/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
-class TableroWidget extends StatelessWidget {
-  String respuestaBackend;
-  TableroWidget({Key? key, this.respuestaBackend='',}) : super(key: key); 
-
-  //Función que devuelve un objeto CasillaAjedrez en el que correspone a la posición de la pieza
-  CasillaAjedrez? getCasilla(int index) {
-    Color colorAsociado = (index ~/ 8 + index % 8) % 2 == 0 ? const Color.fromARGB(255, 60, 114, 62) : Colors.white;
-    if (index >= 0 && index <= 7) {
-      //Primera fila de piezas negras
-      return CasillaAjedrez(
-        colorCasilla: colorAsociado,
-        ocupada: true,
-        index: index,
-        pieza: posicionPiezaMap[index],
-        movimientosPosibles: respuestaBackend,
-      );
-    }
-    else if(index >= 8 && index <=15){
-      //Primera fila de piezas negras peones
-      return CasillaAjedrez(
-        colorCasilla: colorAsociado,
-        ocupada: true,
-        index: index,
-        pieza:TipoPieza.PEON,
-        movimientosPosibles: respuestaBackend,
-      );
-    }
-    else if(index >= 56 && index <=63){
-      //Primera fila de piezas blancas
-      return CasillaAjedrez(
-        colorCasilla: colorAsociado,
-        ocupada: true,
-        index: index,
-        pieza: posicionPiezaMap[index - 56],
-        movimientosPosibles: respuestaBackend,
-      );
-    } 
-    else if(index >= 48 && index <=55){
-      //Primera fila de piezas blancas peones
-      return CasillaAjedrez(
-        colorCasilla: colorAsociado,
-        ocupada: true,
-        index: index,
-        pieza:TipoPieza.PEON,
-        movimientosPosibles: respuestaBackend,
-      );
-    }
-    else{
-      //Casillas vacías
-      return CasillaAjedrez(
-        colorCasilla: colorAsociado,
-        ocupada: false,
-        index: index,
-        movimientosPosibles: respuestaBackend,
-      );
-    }
-  }
-
-  //Función que envía al backend un tablero nuevo de ajedrez
-  Future<void> postTableroInicial() async {
-    // Lee el contenido del archivo JSON
-    String jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
-
-    // Construye la URL y realiza la solicitud POST
-    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
-    http.Response response = await http.post(
-      uri,
-      body: jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
-      headers: {
-        HttpHeaders.contentTypeHeader: 'application/json', // Especifica el tipo de contenido como JSON
-      },
-    );
-
-    // Verifica el estado de la respuesta
-    if (response.statusCode == 200) {
-      print('La solicitud POST fue exitosa');
-      print('Respuesta del servidor: ${response.body}');
-    } else {
-      print('Error en la solicitud POST: ${response.statusCode}');
-    }
-  }
-
+class TableroAjedrez extends StatefulWidget {
+  const TableroAjedrez({super.key});
 
   @override
+  State<TableroAjedrez> createState() => _TableroAjedrezState();
+}
+
+class _TableroAjedrezState extends State<TableroAjedrez>{
+  late List<List<PiezaAjedrez?>> tablero;
+
+  @override
+  void initState(){
+    super.initState();
+    _inicializarTablero();
+  }
+
+  void _inicializarTablero(){
+    List<List<PiezaAjedrez?>> nuevoTablero = List.generate(8, (index) => List.generate(8, (index) => null));
+    
+    //Place pawn
+    for(int i = 0; i < 8; i++){
+      nuevoTablero[1][i] = PiezaAjedrez(
+        tipoPieza: TipoPieza.PEONES,
+        esBlanca: false,
+        nombreImagen: 'assets/images/pawn-b.svg'
+      );
+
+      nuevoTablero[6][i] = PiezaAjedrez(
+        tipoPieza: TipoPieza.PEONES,
+        esBlanca: true,
+        nombreImagen: 'assets/images/pawn-w.svg'
+      );
+    }
+
+    //Place rooks
+    nuevoTablero[0][0] = PiezaAjedrez(
+      tipoPieza: TipoPieza.TORRES,
+      esBlanca: false,
+      nombreImagen: 'assets/images/rook-b.svg'
+    );
+    nuevoTablero[0][7] = PiezaAjedrez(
+      tipoPieza: TipoPieza.TORRES,
+      esBlanca: false,
+      nombreImagen: 'assets/images/rook-b.svg'
+    );
+    nuevoTablero[7][0] = PiezaAjedrez(
+      tipoPieza: TipoPieza.TORRES,
+      esBlanca: true,
+      nombreImagen: 'assets/images/rook-w.svg'
+    );
+    nuevoTablero[7][7] = PiezaAjedrez(
+      tipoPieza: TipoPieza.TORRES,
+      esBlanca: true,
+      nombreImagen: 'assets/images/rook-w.svg'
+    );
+
+    //Place knights
+    nuevoTablero[0][1] = PiezaAjedrez(
+      tipoPieza: TipoPieza.CABALLOS,
+      esBlanca: false,
+      nombreImagen: 'assets/images/knight-b.svg'
+    );
+    nuevoTablero[0][6] = PiezaAjedrez(
+      tipoPieza: TipoPieza.CABALLOS,
+      esBlanca: false,
+      nombreImagen: 'assets/images/knight-b.svg'
+    );
+    nuevoTablero[7][1] = PiezaAjedrez(
+      tipoPieza: TipoPieza.CABALLOS,
+      esBlanca: true,
+      nombreImagen: 'assets/images/knight-w.svg'
+    );
+    nuevoTablero[7][6] = PiezaAjedrez(
+      tipoPieza: TipoPieza.CABALLOS,
+      esBlanca: true,
+      nombreImagen: 'assets/images/knight-w.svg'
+    );
+
+    //Place bishops
+    nuevoTablero[0][2] = PiezaAjedrez(
+      tipoPieza: TipoPieza.ALFILES,
+      esBlanca: false,
+      nombreImagen: 'assets/images/bishop-b.svg'
+    );
+    nuevoTablero[0][5] = PiezaAjedrez(
+      tipoPieza: TipoPieza.ALFILES,
+      esBlanca: false,
+      nombreImagen: 'assets/images/bishop-b.svg'
+    );
+    nuevoTablero[7][2] = PiezaAjedrez(
+      tipoPieza: TipoPieza.ALFILES,
+      esBlanca: true,
+      nombreImagen: 'assets/images/bishop-w.svg'
+    );
+    nuevoTablero[7][5] = PiezaAjedrez(
+      tipoPieza: TipoPieza.ALFILES,
+      esBlanca: true,
+      nombreImagen: 'assets/images/bishop-w.svg'
+    );
+
+    //Place queens
+    nuevoTablero[0][3] = PiezaAjedrez(
+      tipoPieza: TipoPieza.REINAS,
+      esBlanca: false,
+      nombreImagen: 'assets/images/queen-b.svg'
+    );
+    nuevoTablero[7][4] = PiezaAjedrez(
+      tipoPieza: TipoPieza.REINAS,
+      esBlanca: true,
+      nombreImagen: 'assets/images/queen-w.svg'
+    );
+    //Place kings
+    nuevoTablero[0][4] = PiezaAjedrez(
+      tipoPieza: TipoPieza.REYES,
+      esBlanca: false,
+      nombreImagen: 'assets/images/king-b.svg'
+    );
+    nuevoTablero[7][3] = PiezaAjedrez(
+      tipoPieza: TipoPieza.REYES,
+      esBlanca: true,
+      nombreImagen: 'assets/images/king-w.svg'
+    );
+
+    tablero = nuevoTablero;
+  } 
+  
+  @override
   Widget build(BuildContext context) {
-    //Llamada a la función para crear el tablero inicial
-    postTableroInicial();
-    return Container(
-      width: 320,
-      height: 320,
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 8,
-          mainAxisSpacing: 0,
-          crossAxisSpacing: 0,
-        ),
+    return Scaffold(
+      body: GridView.builder(
+        itemCount: 8 * 8,
+        physics: const NeverScrollableScrollPhysics(),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 8),
         itemBuilder: (context, index) {
-          return getCasilla(index);
+          int fila = index ~/ 8;
+          int columna = index % 8;
+          return CasillaAjedrez(
+            esBlanca: esBlanca(index),
+            pieza:tablero[fila][columna], 
+          );
         },
       ),
     );
   }
 }
+
+
 

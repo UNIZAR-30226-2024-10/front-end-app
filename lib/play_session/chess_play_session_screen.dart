@@ -20,23 +20,6 @@ class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen> {
   @override
   Widget build(BuildContext context) {
     //final palette = context.watch<Palette>();
-
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('En construcción'),
-            _gap,
-            TableroWidget(),
-            _gap,
-            MyButton(
-              onPressed: () => GoRouter.of(context).go('/'),
-              child: const Text('Back'),
-            ),
-          ],
-        ),
-      ),
-    );
+    return TableroAjedrez();
   }
 }
