@@ -20,6 +20,7 @@ import 'style/palette.dart';
 import 'win_game/win_game_screen.dart';
 import 'play_session/chess_play_session_screen.dart';
 import 'log_in/log_in_screen.dart';
+import 'pase_de_recompensas/pase_de_recompensas.dart';
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -94,7 +95,11 @@ final router = GoRouter(
         GoRoute(
           path: 'personalizacion',
           builder: (context, state) => Personalizacion(),
-        )
+        ),
+        GoRoute(
+          path: 'recompensas',
+          builder: (context, state) => PaseDeRecompensas(),
+        ),
       ],
     ),
   ],

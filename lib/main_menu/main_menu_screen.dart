@@ -116,6 +116,15 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
+                  title: Text('Pase de recompensas',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).push('/recompensas');
+                  },
+                ),
+                ListTile(
                   title: Text('Settings',
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
