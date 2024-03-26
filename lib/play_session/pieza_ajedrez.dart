@@ -1,7 +1,7 @@
 //Nombre: pieza_ajedrez.dart
 //Descripción: Contiene el widget de la pieza de ajedrez.
 
-enum TipoPieza {PEONES, TORRES, ALFILES, CABALLOS, REYES, REINAS}
+enum TipoPieza {peones, torres, alfiles, caballos, reyes, reinas}
 
 class PiezaAjedrez {
   final TipoPieza tipoPieza;

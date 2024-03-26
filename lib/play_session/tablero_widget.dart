@@ -31,12 +31,68 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   int columnaSeleccionada = -1;
 
+  Map<String, dynamic> jsonMapMovimientos = {};
+
   @override
   void initState() {
     super.initState();
     _inicializarTablero();
+    _postTableroInicial();
   }
 
+  //Función que envía al backend un tablero nuevo de ajedrez
+  Future<void> _postTableroInicial() async {
+    // Lee el contenido del archivo JSON
+    String jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
+
+    // Construye la URL y realiza la solicitud POST
+    Uri uri = Uri.parse('http://localhost:3001/play/');
+    http.Response response = await http.post(
+      uri,
+      body: jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
+      headers: {
+        HttpHeaders.contentTypeHeader: 'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
+
+    // Verifica el estado de la respuesta
+    if (response.statusCode == 200) {
+      print('La solicitud POST fue exitosa');
+      //Decodifica la respuesta JSON
+      jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
+    } else {
+      throw Exception('Error en la solicitud POST: ${response.statusCode}');
+    }
+    
+    print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
+    //Recorremos el mapa de movimientos válidos
+    print(jsonMapMovimientos['allMovements']['peones'][0][1]);
+    //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.PEONES, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+  }
+
+  //CALCULAR MOVIMIENTOS POSIBLES
+  List<List<int>> calcularMovimientosValidos(int fila, int columna, PiezaAjedrez? tipoPieza){
+    List<List<int>> movimientosValidos = [];
+
+    String pieza;
+    //Obtenemos el nombre de la pieza
+    pieza = nombrePieza(tipoPieza);
+
+    List<int> movimientosLista = jsonMapMovimientos['allMovements'][tipoPieza] as List<int>;
+    List<List<int>> movimientosListaLista = jsonMapMovimientos['allMovements'][pieza] as List<List<int>>;
+
+    //Recorremos el mapa de movimientos válidos
+    for(int i = 0; i < movimientosLista.length; i++){
+      //Si la posición de la pieza es igual a la posición de la pieza en el mapa
+      if(jsonMapMovimientos['allMovements'][pieza][i][0] == fila && jsonMapMovimientos['allMovements'][pieza][i][1] == columna){
+        //Añadimos los movimientos válidos a la lista
+        movimientosValidos.add(movimientosListaLista[i]);
+      }
+    }
+    return movimientosValidos;
+  }
+
+  //Función que inicializa el tablero de ajedrez
   void _inicializarTablero() {
     List<List<PiezaAjedrez?>> nuevoTablero =
         List.generate(8, (index) => List.generate(8, (index) => null));
@@ -44,86 +100,86 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     //Place pawn
     for (int i = 0; i < 8; i++) {
       nuevoTablero[1][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.PEONES,
+          tipoPieza: TipoPieza.peones,
           esBlanca: false,
           nombreImagen: 'assets/images/pawn-b.svg');
 
       nuevoTablero[6][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.PEONES,
+          tipoPieza: TipoPieza.peones,
           esBlanca: true,
           nombreImagen: 'assets/images/pawn-w.svg');
     }
 
     //Place rooks
     nuevoTablero[0][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.TORRES,
+        tipoPieza: TipoPieza.torres,
         esBlanca: false,
         nombreImagen: 'assets/images/rook-b.svg');
     nuevoTablero[0][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.TORRES,
+        tipoPieza: TipoPieza.torres,
         esBlanca: false,
         nombreImagen: 'assets/images/rook-b.svg');
     nuevoTablero[7][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.TORRES,
+        tipoPieza: TipoPieza.torres,
         esBlanca: true,
         nombreImagen: 'assets/images/rook-w.svg');
     nuevoTablero[7][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.TORRES,
+        tipoPieza: TipoPieza.torres,
         esBlanca: true,
         nombreImagen: 'assets/images/rook-w.svg');
 
     //Place knights
     nuevoTablero[0][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.CABALLOS,
+        tipoPieza: TipoPieza.caballos,
         esBlanca: false,
         nombreImagen: 'assets/images/knight-b.svg');
     nuevoTablero[0][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.CABALLOS,
+        tipoPieza: TipoPieza.caballos,
         esBlanca: false,
         nombreImagen: 'assets/images/knight-b.svg');
     nuevoTablero[7][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.CABALLOS,
+        tipoPieza: TipoPieza.caballos,
         esBlanca: true,
         nombreImagen: 'assets/images/knight-w.svg');
     nuevoTablero[7][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.CABALLOS,
+        tipoPieza: TipoPieza.caballos,
         esBlanca: true,
         nombreImagen: 'assets/images/knight-w.svg');
 
     //Place bishops
     nuevoTablero[0][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.ALFILES,
+        tipoPieza: TipoPieza.alfiles,
         esBlanca: false,
         nombreImagen: 'assets/images/bishop-b.svg');
     nuevoTablero[0][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.ALFILES,
+        tipoPieza: TipoPieza.alfiles,
         esBlanca: false,
         nombreImagen: 'assets/images/bishop-b.svg');
     nuevoTablero[7][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.ALFILES,
+        tipoPieza: TipoPieza.alfiles,
         esBlanca: true,
         nombreImagen: 'assets/images/bishop-w.svg');
     nuevoTablero[7][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.ALFILES,
+        tipoPieza: TipoPieza.alfiles,
         esBlanca: true,
         nombreImagen: 'assets/images/bishop-w.svg');
 
     //Place queens
     nuevoTablero[0][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.REINAS,
+        tipoPieza: TipoPieza.reinas,
         esBlanca: false,
         nombreImagen: 'assets/images/queen-b.svg');
     nuevoTablero[7][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.REINAS,
+        tipoPieza: TipoPieza.reinas,
         esBlanca: true,
         nombreImagen: 'assets/images/queen-w.svg');
     //Place kings
     nuevoTablero[0][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.REYES,
+        tipoPieza: TipoPieza.reyes,
         esBlanca: false,
         nombreImagen: 'assets/images/king-b.svg');
     nuevoTablero[7][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.REYES,
+        tipoPieza: TipoPieza.reyes,
         esBlanca: true,
         nombreImagen: 'assets/images/king-w.svg');
 
