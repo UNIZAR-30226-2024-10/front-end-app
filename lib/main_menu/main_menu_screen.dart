@@ -126,18 +126,11 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
-<<<<<<< Updated upstream
-                  title: Text('Pase de recompensas',
-=======
                   title: Text('Battle Pass',
->>>>>>> Stashed changes
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                   onTap: () {
                     audioController.playSfx(SfxType.buttonTap);
-<<<<<<< Updated upstream
-                    GoRouter.of(context).push('/recompensas');
-=======
                     GoRouter.of(context).push('/pass');
                   },
                 ),
@@ -148,7 +141,6 @@ class MainMenuScreen extends StatelessWidget {
                   onTap: () {
                     audioController.playSfx(SfxType.buttonTap);
                     GoRouter.of(context).push('/history');
->>>>>>> Stashed changes
                   },
                 ),
                 ListTile(

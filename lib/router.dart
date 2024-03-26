@@ -20,13 +20,10 @@ import 'style/palette.dart';
 import 'win_game/win_game_screen.dart';
 import 'play_session/chess_play_session_screen.dart';
 import 'log_in/log_in_screen.dart';
-<<<<<<< Updated upstream
-import 'pase_de_recompensas/pase_de_recompensas.dart';
-=======
 import 'battle_pass/battle_pass.dart';
+//import 'battle_pass/pase_de_recompensas.dart';
 import 'log_in/user_screen.dart';
 import 'history/match_history_screen.dart';
->>>>>>> Stashed changes
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -103,11 +100,6 @@ final router = GoRouter(
           builder: (context, state) => Personalizacion(),
         ),
         GoRoute(
-<<<<<<< Updated upstream
-          path: 'recompensas',
-          builder: (context, state) => PaseDeRecompensas(),
-        ),
-=======
           path: 'pass',
           builder: (context, state) => BattlePass(),
         ),
@@ -119,7 +111,6 @@ final router = GoRouter(
           path: 'history',
           builder: (context, state) => MatchHistory(),
         )
->>>>>>> Stashed changes
       ],
     ),
   ],
