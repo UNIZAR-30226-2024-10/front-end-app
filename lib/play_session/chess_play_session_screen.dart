@@ -1,8 +1,8 @@
 //Nombre: chess_play_session_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
-import 'package:basic/play_session/tablero_widget.dart';
-import 'package:basic/style/my_button.dart';
+import 'package:ChessHub/play_session/tablero_widget.dart';
+import 'package:ChessHub/style/my_button.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 

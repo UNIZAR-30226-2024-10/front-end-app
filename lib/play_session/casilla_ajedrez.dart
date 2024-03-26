@@ -2,7 +2,7 @@
 //Descripción: Contiene el widget de la casilla de ajedrez.
 
 import 'package:flutter/material.dart';
-import 'package:basic/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CasillaAjedrez extends StatelessWidget {

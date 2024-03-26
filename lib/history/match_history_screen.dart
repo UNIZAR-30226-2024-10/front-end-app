@@ -5,12 +5,12 @@ import 'package:go_router/go_router.dart';
 //import '../audio/audio_controller.dart';
 //import '../audio/sounds.dart';
 
-class RankingScreen extends StatefulWidget {
+class MatchHistory extends StatefulWidget {
   @override
-  _RankingScreenState createState() => _RankingScreenState();
+  _MatchHistoryState createState() => _MatchHistoryState();
 }
 
-class _RankingScreenState extends State<RankingScreen> {
+class _MatchHistoryState extends State<MatchHistory> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -45,16 +45,13 @@ class _RankingScreenState extends State<RankingScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Text(
-                  'Ranking Coming Soon',
+                  'History',
                   style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 20.0),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    _buildTable(),
-                    _buildTable(),
-                  ],
+                  children: <Widget>[_buildTable()],
                 ),
                 SizedBox(height: 20.0),
               ],
@@ -91,9 +88,9 @@ class _RankingScreenState extends State<RankingScreen> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: <Widget>[
-        Text('Column 1'),
-        Text('Column 2'),
-        Text('Column 3'),
+        Text('Match 1'),
+        Text('Match 2'),
+        Text('Match 3'),
       ],
     );
   }

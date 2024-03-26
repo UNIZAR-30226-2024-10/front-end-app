@@ -58,17 +58,37 @@ class MainMenuScreen extends StatelessWidget {
               ValueListenableBuilder<bool>(
                 valueListenable: settingsController.loggedIn,
                 builder: (context, loggedIn, child) {
-                  return IconButton(
-                    tooltip: loggedIn ? 'Account' : 'Log In',
-                    onPressed: () => loggedIn
-                        ? settingsController
-                            .toggleLoggedIn() //CUANDO HAYA, TE LLEVARA A LA PAGINA DE USUARIO
-                        : GoRouter.of(context).push(
-                            '/login'), //settingsController.toggleLoggedIn(),
-                    icon: Icon(
-                        loggedIn ? Icons.account_circle_sharp : Icons.login),
-                    color: Color.fromRGBO(255, 255, 255, 1),
-                  );
+                  if (!loggedIn) {
+                    return IconButton(
+                      tooltip: 'Log In',
+                      onPressed: () => GoRouter.of(context).push('/login'),
+                      icon: Icon(Icons.login),
+                      color: Color.fromRGBO(255, 255, 255, 1),
+                    );
+                  } else {
+                    return PopupMenuButton(
+                      icon: Icon(Icons.account_circle_sharp),
+                      iconColor: Color.fromRGBO(255, 255, 255, 1),
+                      tooltip: "User",
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 'profile',
+                          child: Text('Profile'),
+                        ),
+                        PopupMenuItem(
+                          value: 'logout',
+                          child: Text('Log out'),
+                        ),
+                      ],
+                      onSelected: (value) {
+                        if (value == 'profile') {
+                          GoRouter.of(context).push('/profile');
+                        } else if (value == 'logout') {
+                          settingsController.toggleLoggedIn();
+                        }
+                      },
+                    );
+                  }
                 },
               ),
             ],
@@ -89,16 +109,6 @@ class MainMenuScreen extends StatelessWidget {
                   child: null,
                 ),
                 ListTile(
-                  title: Text(
-                    'Ajedrez Demo',
-                    style: TextStyle(color: Color.fromRGBO(255, 255, 255, 1)),
-                  ),
-                  onTap: () {
-                    audioController.playSfx(SfxType.buttonTap);
-                    GoRouter.of(context).go('/chess');
-                  },
-                ),
-                ListTile(
                   title: Text('Play',
                       style: TextStyle(color: Color.fromRGBO(255, 136, 0, 1))),
                   onTap: () {
@@ -116,12 +126,29 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
+<<<<<<< Updated upstream
                   title: Text('Pase de recompensas',
+=======
+                  title: Text('Battle Pass',
+>>>>>>> Stashed changes
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                   onTap: () {
                     audioController.playSfx(SfxType.buttonTap);
+<<<<<<< Updated upstream
                     GoRouter.of(context).push('/recompensas');
+=======
+                    GoRouter.of(context).push('/pass');
+                  },
+                ),
+                ListTile(
+                  title: Text('Match History',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).push('/history');
+>>>>>>> Stashed changes
                   },
                 ),
                 ListTile(

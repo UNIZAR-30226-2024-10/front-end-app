@@ -1,18 +1,18 @@
 //Nombre: tablero_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
-import 'package:basic/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter/material.dart';
-import 'package:basic/play_session/casilla_ajedrez.dart';
-import 'package:basic/constantes/constantes.dart';
+import 'package:ChessHub/play_session/casilla_ajedrez.dart';
+import 'package:ChessHub/constantes/constantes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:basic/play_session/pieza_ajedrez.dart';
-import 'package:basic/game_internals/funciones.dart';
-//import 'package:basic/play_session/pieza_ajedrez_widget.dart';
+import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/game_internals/funciones.dart';
+//import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
 class TableroAjedrez extends StatefulWidget {
