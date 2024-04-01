@@ -1,5 +1,6 @@
-{   "turno": "blancas",
-    "peones": [
+{
+    "turno": "blancas",
+    "peon": [
         {
             "x": 0,
             "y": 1,
@@ -61,11 +62,6 @@
             "color": "negras"
         },
         {
-            "x": 4,
-            "y": 6,
-            "color": "negras"
-        },
-        {
             "x": 5,
             "y": 6,
             "color": "negras"
@@ -80,11 +76,12 @@
             "y": 6,
             "color": "negras"
         }
+       
     ],
-    "alfiles": [
+    "alfil": [
         {
-            "x": 2,
-            "y": 0,
+            "x": 5,
+            "y": 3,
             "color": "blancas"
         },
         {
@@ -92,57 +89,41 @@
             "y": 0,
             "color": "blancas"
         },
-        {
-            "x": 2,
-            "y": 7,
-            "color": "negras"
-        },
-        {
-            "x": 5,
-            "y": 7,
-            "color": "negras"
-        }
-    ],
-    "caballos": [
-        {
-            "x": 1,
-            "y": 0,
-            "color": "blancas"
-        },
-        {
-            "x": 6,
-            "y": 0,
-            "color": "blancas"
-        },
-        {
-            "x": 1,
-            "y": 7,
-            "color": "negras"
-        },
-        {
-            "x": 6,
-            "y": 7,
-            "color": "negras"
-        }
-    ],
-    "torres": [
         {
             "x": 0,
+            "y": 5,
+            "color": "negras"
+        }
+    ],
+    "caballo": [
+        {
+            "x": 1,
             "y": 0,
+            "color": "blancas"
+        },
+        {
+            "x": 6,
+            "y": 0,
+            "color": "blancas"
+        },
+        {
+            "x": 6,
+            "y": 5,
+            "color": "negras"
+        }
+    ],
+    "torre": [
+        {
+            "x": 1,
+            "y": 3,
             "color": "blancas",
             "lado": "izquierda"
         },
         {
             "x": 7,
-            "y": 0,
+            "y": 4,
             "color": "blancas",
             "lado": "derecha"
-        },
-        {
-            "x": 0,
-            "y": 7,
-            "color": "negras",
-            "lado": "izquierda"
         },
         {
             "x": 7,
@@ -151,22 +132,22 @@
             "lado": "derecha"
         }
     ],
-    "damas": [
+    "dama": [
         {
             "x": 3,
             "y": 0,
             "color": "blancas"
         },
         {
-            "x": 3,
-            "y": 7,
+            "x": 4,
+            "y": 6,
             "color": "negras"
         }
     ],
-    "reyes": [
+    "rey": [
         {
-            "x": 4,
-            "y": 0,
+            "x": 3,
+            "y": 3,
             "color": "blancas"
         },
         {

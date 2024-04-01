@@ -1,6 +1,8 @@
 //Nombre: tablero_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
+import 'dart:ffi';
+
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/play_session/casilla_ajedrez.dart';
@@ -46,7 +48,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     String jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
 
     // Construye la URL y realiza la solicitud POST
-    Uri uri = Uri.parse('http://localhost:3001/play/');
+    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
     http.Response response = await http.post(
       uri,
       body: jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
@@ -66,30 +68,47 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     
     print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
     //Recorremos el mapa de movimientos válidos
-    print(jsonMapMovimientos['allMovements']['peones'][0][1]);
-    //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.PEONES, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+    List<String> movimientosValidos = obtenerMovimientosValidos(1, 0, PiezaAjedrez(tipoPieza: TipoPieza.peones, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+    //Printeamos los movimientos válidos
+    /*
+    for(int i = 0; i < movimientosValidos.length; i++){
+      print(movimientosValidos[i]);
+    }
+    */
+    
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES
-  List<List<int>> calcularMovimientosValidos(int fila, int columna, PiezaAjedrez? tipoPieza){
-    List<List<int>> movimientosValidos = [];
+  
+  List<String> obtenerMovimientosValidos(int fila, int columna, PiezaAjedrez pieza) {
+    List<String> movimientosValidosString = [];
+    // Transformar la fila y la columna en el formato de la API para que pueda ser leído
+    List<int> coordenadasApi = ajustarCoordenadas(fila, columna);
+    bool blanca = pieza.esBlanca;
+    String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';  
+    String coordenadasApiString = '{"fromX":' + coordenadasApi[0].toString() + ',"fromY":' + coordenadasApi[1].toString() + ',' + color + '}';
 
-    String pieza;
-    //Obtenemos el nombre de la pieza
-    pieza = nombrePieza(tipoPieza);
+    print('Coordenadas a buscar: ');
+    print(coordenadasApiString);
 
-    List<int> movimientosLista = jsonMapMovimientos['allMovements'][tipoPieza] as List<int>;
-    List<List<int>> movimientosListaLista = jsonMapMovimientos['allMovements'][pieza] as List<List<int>>;
-
+    String nPieza = nombrePieza(pieza);
+    
     //Recorremos el mapa de movimientos válidos
-    for(int i = 0; i < movimientosLista.length; i++){
-      //Si la posición de la pieza es igual a la posición de la pieza en el mapa
-      if(jsonMapMovimientos['allMovements'][pieza][i][0] == fila && jsonMapMovimientos['allMovements'][pieza][i][1] == columna){
-        //Añadimos los movimientos válidos a la lista
-        movimientosValidos.add(movimientosListaLista[i]);
+    int len = jsonMapMovimientos['allMovements'][nPieza].length as int;
+    for (int i = 0; i < len; i++) {
+      String coor = jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][0]);
+      if (coor == coordenadasApiString) {
+        int lenMov = jsonMapMovimientos['allMovements'][nPieza][i].length as int;
+        for (int j = 1; j < lenMov; j++) {
+          String mov = jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][j]);
+          print('Anyadiendo el siguiente movimiento: ');
+          print(mov);
+          movimientosValidosString.add(mov);
+        }
+        break;
       }
     }
-    return movimientosValidos;
+    return movimientosValidosString;
   }
 
   //Función que inicializa el tablero de ajedrez

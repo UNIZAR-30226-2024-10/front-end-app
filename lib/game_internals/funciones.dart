@@ -1,6 +1,7 @@
 //Nombre: funciones.dart
 //Descripción: Contiene las funciones necesarias para el juego de ajedrez.
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/constantes/constantes.dart';
 
 bool esBlanca(int index) {
   int x = index ~/ 8;
@@ -29,3 +30,9 @@ String nombrePieza(PiezaAjedrez? tipoPieza) {
 
   return pieza;
 }
+
+// Función para convertir las coordenadas de la aplicación a las coordenadas de la API
+List<int> ajustarCoordenadas(int fila, int columna) {
+  return [columna, fila];
+}
+
