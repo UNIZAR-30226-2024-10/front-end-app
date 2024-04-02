@@ -31,8 +31,19 @@ String nombrePieza(PiezaAjedrez? tipoPieza) {
   return pieza;
 }
 
-// Función para convertir las coordenadas de la aplicación a las coordenadas de la API
-List<int> ajustarCoordenadas(int fila, int columna) {
-  return [columna, fila];
+
+// Función para convertir coordenadas de la aplicación a las de la API
+List<int> convertirAppToApi(int fila, int columna) {
+  int xApi = columna;
+  int yApi = TAMANYO_TABLERO - fila - 1;
+  return [xApi, yApi];
 }
+
+// Función para convertir coordenadas de la API a las de la aplicación
+List<int> convertirApiToApp(int xApi, int yApi) {
+  int filaApp = TAMANYO_TABLERO - yApi - 1;
+  int columnaApp = xApi;
+  return [filaApp, columnaApp];
+}
+
 

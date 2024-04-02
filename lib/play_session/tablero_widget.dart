@@ -33,6 +33,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   int columnaSeleccionada = -1;
 
+  List<List<int>> movimientosValidos = [];
+
   Map<String, dynamic> jsonMapMovimientos = {};
 
   @override
@@ -66,24 +68,30 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       throw Exception('Error en la solicitud POST: ${response.statusCode}');
     }
     
+    //prueba
+    /*
     print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
     //Recorremos el mapa de movimientos válidos
     List<String> movimientosValidos = obtenerMovimientosValidos(1, 0, PiezaAjedrez(tipoPieza: TipoPieza.peones, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
-    //Printeamos los movimientos válidos
-    /*
-    for(int i = 0; i < movimientosValidos.length; i++){
-      print(movimientosValidos[i]);
+    List<List<int>> movimientosValidosInt = calcularMovimientos(movimientosValidos);
+
+    //Mostramos el resultado
+    for (int i = 0; i < movimientosValidosInt.length; i++) {
+      List<int> sublista = movimientosValidosInt[i];
+    // Recorrer la sublista
+      for (int j = 0; j < sublista.length; j++) {
+        print(sublista[j]);
+      }
     }
     */
     
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES
-  
   List<String> obtenerMovimientosValidos(int fila, int columna, PiezaAjedrez pieza) {
     List<String> movimientosValidosString = [];
     // Transformar la fila y la columna en el formato de la API para que pueda ser leído
-    List<int> coordenadasApi = ajustarCoordenadas(fila, columna);
+    List<int> coordenadasApi = convertirAppToApi(fila, columna);
     bool blanca = pieza.esBlanca;
     String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';  
     String coordenadasApiString = '{"fromX":' + coordenadasApi[0].toString() + ',"fromY":' + coordenadasApi[1].toString() + ',' + color + '}';
@@ -109,6 +117,32 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
     }
     return movimientosValidosString;
+  }
+
+  List<int> obtenerXYFromString(String coordenadaString) {
+    // Parsear el string a un mapa
+    Map<String, dynamic> coordenadaMap = jsonDecode(coordenadaString) as Map<String, dynamic>;
+    
+    // Obtener los valores de x e y
+    int x = coordenadaMap['x'] as int;
+    int y = coordenadaMap['y'] as int;
+    
+    // Devolver una lista con los valores de x e y
+    return [x, y];
+  }
+
+  List<List<int>> calcularMovimientos(List<String> movimientosValidos) {
+    List<List<int>> movimientosValidosInt = [];
+
+    //Recorrer la lista de movimientos válidos
+    for (int i = 0; i < movimientosValidos.length; i++) {
+      // Obtener las coordenadas de la lista de movimientos válidos
+      List<int> coordenadas = obtenerXYFromString(movimientosValidos[i]);
+      coordenadas = convertirApiToApp(coordenadas[0], coordenadas[1]);
+      // Añadir las coordenadas a la lista de movimientos válidos
+      movimientosValidosInt.add([coordenadas[0], coordenadas[1]]);
+    }
+    return movimientosValidosInt;
   }
 
   //Función que inicializa el tablero de ajedrez
@@ -212,6 +246,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         filaSeleccionada = fila;
         columnaSeleccionada = columna;
       }
+      print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
+      movimientosValidos = calcularMovimientos(obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
     });
   }
 
@@ -233,10 +269,19 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                 bool seleccionada =
                     filaSeleccionada == fila && columnaSeleccionada == columna;
 
+                bool esValido = false;
+                for(var position in movimientosValidos){
+                  if(position[0] == fila && position[1] == columna){
+                    esValido = true;
+                    break;
+                  }
+                }
+
                 return CasillaAjedrez(
                   seleccionada: seleccionada,
                   esBlanca: esBlanca(index),
                   pieza: tablero[fila][columna],
+                  esValido: esValido,
                   onTap: () => seleccionadaPieza(fila, columna),
                 );
               },

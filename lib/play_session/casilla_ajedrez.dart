@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 class CasillaAjedrez extends StatelessWidget {
   final PiezaAjedrez? pieza;
   final bool esBlanca;
+  final bool esValido;
   final bool seleccionada;
   final void Function()? onTap;
 
@@ -16,6 +17,7 @@ class CasillaAjedrez extends StatelessWidget {
     this.pieza,
     required this.esBlanca,
     required this.seleccionada,
+    required this.esValido,
     required this.onTap,
   }) : super(key: key);
 
@@ -25,7 +27,11 @@ class CasillaAjedrez extends StatelessWidget {
 
     if (seleccionada) {
       colorCasilla = const Color.fromARGB(255, 223, 85, 75);
-    } else {
+    } 
+    else if(esValido){
+      colorCasilla =  Color.fromARGB(255, 215, 233, 217);
+    } 
+    else {
       colorCasilla =
           colorCasilla = esBlanca ? Color(0xFFADF597) : Color(0XFF2E960F);
     }
