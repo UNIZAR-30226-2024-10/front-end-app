@@ -1,7 +1,7 @@
 //Nombre: tablero_screen.dart
 //Descripción: Contiene la pantalla de juego de ajedrez.
 
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter/material.dart';
@@ -47,15 +47,18 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   //Función que envía al backend un tablero nuevo de ajedrez
   Future<void> _postTableroInicial() async {
     // Lee el contenido del archivo JSON
-    String jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
+    String jsonString =
+        await rootBundle.loadString('assets/json/tableroInicial.json');
 
     // Construye la URL y realiza la solicitud POST
     Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
     http.Response response = await http.post(
       uri,
-      body: jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
+      body:
+          jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
       headers: {
-        HttpHeaders.contentTypeHeader: 'application/json', // Especifica el tipo de contenido como JSON
+        HttpHeaders.contentTypeHeader:
+            'application/json', // Especifica el tipo de contenido como JSON
       },
     );
 
@@ -67,7 +70,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     } else {
       throw Exception('Error en la solicitud POST: ${response.statusCode}');
     }
-    
+
     //prueba
     /*
     print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
@@ -84,31 +87,40 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
     }
     */
-    
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES
-  List<String> obtenerMovimientosValidos(int fila, int columna, PiezaAjedrez pieza) {
+  List<String> obtenerMovimientosValidos(
+      int fila, int columna, PiezaAjedrez pieza) {
     List<String> movimientosValidosString = [];
     // Transformar la fila y la columna en el formato de la API para que pueda ser leído
     List<int> coordenadasApi = convertirAppToApi(fila, columna);
     bool blanca = pieza.esBlanca;
-    String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';  
-    String coordenadasApiString = '{"fromX":' + coordenadasApi[0].toString() + ',"fromY":' + coordenadasApi[1].toString() + ',' + color + '}';
+    String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';
+    String coordenadasApiString = '{"fromX":' +
+        coordenadasApi[0].toString() +
+        ',"fromY":' +
+        coordenadasApi[1].toString() +
+        ',' +
+        color +
+        '}';
 
     print('Coordenadas a buscar: ');
     print(coordenadasApiString);
 
     String nPieza = nombrePieza(pieza);
-    
+
     //Recorremos el mapa de movimientos válidos
     int len = jsonMapMovimientos['allMovements'][nPieza].length as int;
     for (int i = 0; i < len; i++) {
-      String coor = jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][0]);
+      String coor =
+          jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][0]);
       if (coor == coordenadasApiString) {
-        int lenMov = jsonMapMovimientos['allMovements'][nPieza][i].length as int;
+        int lenMov =
+            jsonMapMovimientos['allMovements'][nPieza][i].length as int;
         for (int j = 1; j < lenMov; j++) {
-          String mov = jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][j]);
+          String mov =
+              jsonEncode(jsonMapMovimientos['allMovements'][nPieza][i][j]);
           print('Anyadiendo el siguiente movimiento: ');
           print(mov);
           movimientosValidosString.add(mov);
@@ -121,12 +133,13 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   List<int> obtenerXYFromString(String coordenadaString) {
     // Parsear el string a un mapa
-    Map<String, dynamic> coordenadaMap = jsonDecode(coordenadaString) as Map<String, dynamic>;
-    
+    Map<String, dynamic> coordenadaMap =
+        jsonDecode(coordenadaString) as Map<String, dynamic>;
+
     // Obtener los valores de x e y
     int x = coordenadaMap['x'] as int;
     int y = coordenadaMap['y'] as int;
-    
+
     // Devolver una lista con los valores de x e y
     return [x, y];
   }
@@ -247,7 +260,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         columnaSeleccionada = columna;
       }
       print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
-      movimientosValidos = calcularMovimientos(obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
+      movimientosValidos = calcularMovimientos(
+          obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
     });
   }
 
@@ -270,8 +284,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                     filaSeleccionada == fila && columnaSeleccionada == columna;
 
                 bool esValido = false;
-                for(var position in movimientosValidos){
-                  if(position[0] == fila && position[1] == columna){
+                for (var position in movimientosValidos) {
+                  if (position[0] == fila && position[1] == columna) {
                     esValido = true;
                     break;
                   }

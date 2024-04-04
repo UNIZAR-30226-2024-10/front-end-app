@@ -109,11 +109,20 @@ class MainMenuScreen extends StatelessWidget {
                   child: null,
                 ),
                 ListTile(
-                  title: Text('Play',
+                  title: Text('Jugar',
                       style: TextStyle(color: Color.fromRGBO(255, 136, 0, 1))),
                   onTap: () {
                     audioController.playSfx(SfxType.buttonTap);
-                    GoRouter.of(context).go('/play');
+                    GoRouter.of(context).go('/chess');
+                  },
+                ),
+                ListTile(
+                  title: Text('Personalización',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).push('/personalizacion');
                   },
                 ),
                 ListTile(
@@ -126,7 +135,16 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  title: Text('Battle Pass',
+                  title: Text('Arenas',
+                      style:
+                          TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
+                  onTap: () {
+                    audioController.playSfx(SfxType.buttonTap);
+                    GoRouter.of(context).go('/arenas');
+                  },
+                ),
+                ListTile(
+                  title: Text('Pase de Batalla',
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                   onTap: () {
@@ -135,7 +153,7 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  title: Text('Match History',
+                  title: Text('Historial',
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                   onTap: () {
@@ -144,7 +162,7 @@ class MainMenuScreen extends StatelessWidget {
                   },
                 ),
                 ListTile(
-                  title: Text('Settings',
+                  title: Text('Ajustes',
                       style:
                           TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                   onTap: () {

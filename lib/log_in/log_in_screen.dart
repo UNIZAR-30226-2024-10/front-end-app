@@ -135,6 +135,11 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
             style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(
                   Color.fromRGBO(255, 136, 0, 1)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
             ),
             child: Text('Login',
                 style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
