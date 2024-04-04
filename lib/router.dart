@@ -33,7 +33,7 @@ final router = GoRouter(
     GoRoute(
       path: '/',
       builder: (context, state) => const MainMenuScreen(key: Key('main menu')),
-      routes: [
+      routes: <RouteBase>[
         GoRoute(
           path: 'chess',
           pageBuilder: (context, state) {
@@ -46,6 +46,7 @@ final router = GoRouter(
             );
           },
         ),
+        /*
         GoRoute(
             path: 'play',
             pageBuilder: (context, state) => buildMyTransition<void>(
@@ -82,7 +83,8 @@ final router = GoRouter(
                   );
                 },
               )
-            ]),
+            ])
+        */
         GoRoute(
           path: 'settings',
           builder: (context, state) =>

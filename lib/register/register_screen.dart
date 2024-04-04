@@ -77,7 +77,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         Container(
             color: Color.fromRGBO(49, 45, 45, 1),
             width: 350,
-            height: 275,
+            height: 200,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -123,28 +123,44 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      settingsController
-                          .toggleLoggedIn(); //AQUI HABRIA QUE PASARLE AL BACKEND LOS DATOS Y CONSULTAR EL USUARIO Y CONTRASEÑA
-                      GoRouter.of(context).go('/');
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromRGBO(255, 136, 0, 1)),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  child: TextField(
+                    expands: false,
+                    cursorColor: Color.fromRGBO(255, 136, 0, 1),
+                    controller: _usernameController,
+                    decoration: InputDecoration(
+                      labelText: 'Repeat Password',
+                      floatingLabelStyle:
+                          TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Color.fromRGBO(255, 136, 0,
+                                1)), // Color de resaltado al hacer clic
                       ),
                     ),
-                    child: Text('Login',
-                        style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                   ),
                 ),
               ],
             )),
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 25.0),
+          child: ElevatedButton(
+            onPressed: () {
+              GoRouter.of(context).go('/login');
+            },
+            style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(
+                  Color.fromRGBO(255, 136, 0, 1)),
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4),
+                ),
+              ),
+            ),
+            child: Text('Register',
+                style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+          ),
+        ),
       ],
     );
   }
