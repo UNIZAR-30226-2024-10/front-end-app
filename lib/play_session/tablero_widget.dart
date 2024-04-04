@@ -33,22 +33,31 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   int columnaSeleccionada = -1;
 
+  String jsonString = '';
+
   List<List<int>> movimientosValidos = [];
+
+  Map<String, dynamic> jsonMapTablero = {};
 
   Map<String, dynamic> jsonMapMovimientos = {};
 
   @override
   void initState() {
     super.initState();
+    _cargarTableroInicial();
     _inicializarTablero();
-    _postTableroInicial();
+  }
+
+  void _cargarTableroInicial() async {
+    // Cargar el tablero inicial
+    jsonString =
+        await rootBundle.loadString('assets/json/tableroInicial.json');
+    jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
+    _postTablero();
   }
 
   //Función que envía al backend un tablero nuevo de ajedrez
-  Future<void> _postTableroInicial() async {
-    // Lee el contenido del archivo JSON
-    String jsonString =
-        await rootBundle.loadString('assets/json/tableroInicial.json');
+  Future<bool> _postTablero() async {
 
     // Construye la URL y realiza la solicitud POST
     Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
@@ -67,11 +76,15 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       print('La solicitud POST fue exitosa');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
+      if(jsonMapMovimientos['jugadaLegal'] == false){
+        return false;
+      }
+      return true;
+
     } else {
       throw Exception('Error en la solicitud POST: ${response.statusCode}');
     }
-
-    //prueba
+    //prueba, borrar en la entrega final
     /*
     print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
     //Recorremos el mapa de movimientos válidos
@@ -232,11 +245,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
     //Place queens
     nuevoTablero[0][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.reinas,
+        tipoPieza: TipoPieza.damas,
         esBlanca: false,
         nombreImagen: 'assets/images/queen-b.svg');
     nuevoTablero[7][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.reinas,
+        tipoPieza: TipoPieza.damas,
         esBlanca: true,
         nombreImagen: 'assets/images/queen-w.svg');
     //Place kings
@@ -259,9 +272,75 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         filaSeleccionada = fila;
         columnaSeleccionada = columna;
       }
+      else if(piezaSeleccionada != null && 
+        movimientosValidos.any((element) => element[0] == fila && element[1] == columna)){
+          moverPieza(fila, columna);
+      }
+
       print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
       movimientosValidos = calcularMovimientos(
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
+    });
+  }
+
+  //MOVER PIEZA
+  void moverPieza(int filaNueva, int columnaNueva) async{
+    List <int> coordenadasAntiguasApi = convertirAppToApi(filaSeleccionada, columnaSeleccionada);
+    List <int> coordenadasNuevasApi = convertirAppToApi(filaNueva, columnaNueva);
+
+    print('TABLERO ANTES DE MOVER LA PIEZA\n');
+    print(jsonString);
+
+    Map<String, dynamic> jsonMapTableroAntiguo = jsonDecode(jsonString) as Map<String, dynamic>;
+
+    jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+    if (listaPiezas is List) {
+      // Itera sobre cada pieza en la lista
+      for (var pieza in listaPiezas) {
+        // Verifica si las coordenadas coinciden con las coordenadas antiguas
+        if (pieza['x'] == coordenadasAntiguasApi[0] && pieza['y'] == coordenadasAntiguasApi[1]) {
+            // Modifica las coordenadas con las nuevas coordenadas
+            pieza['x'] = coordenadasNuevasApi[0];
+            pieza['y'] = coordenadasNuevasApi[1];
+            break;
+          }
+        }
+      }
+    });
+
+    if(jsonMapTableroAntiguo['turno'] == 'blancas'){
+      jsonMapTablero['turno'] = 'negras';
+    }
+    else{
+      jsonMapTablero['turno'] = 'blancas';
+    }
+
+    jsonString = jsonEncode(jsonMapTablero);
+
+    //enviamos el tablero con la posible jugada 
+    bool jugadaValida = await _postTablero();
+
+    print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
+    print(jsonString);
+    
+    if(!jugadaValida){
+      print('Jugada no valida');
+      //devolvemos el string a su estado original
+      jsonString = jsonEncode(jsonMapTableroAntiguo);
+      jsonMapTablero = jsonMapTableroAntiguo;
+      return;
+    }
+    
+    print('Jugada valida');
+    tablero[filaNueva][columnaNueva] = piezaSeleccionada;
+    tablero[filaSeleccionada][columnaSeleccionada] = null;
+
+    //limpiamos la selección
+    setState(() {
+      piezaSeleccionada = null;
+      filaSeleccionada = -1;
+      columnaSeleccionada = -1;
+      movimientosValidos = [];
     });
   }
 

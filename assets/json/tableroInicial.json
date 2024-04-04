@@ -80,14 +80,19 @@
     ],
     "alfil": [
         {
-            "x": 5,
-            "y": 3,
+            "x": 2,
+            "y": 0,
             "color": "blancas"
         },
         {
             "x": 5,
             "y": 0,
             "color": "blancas"
+        },
+        {
+            "x": 2,
+            "y": 7,
+            "color": "negras"
         },
         {
             "x": 0,
@@ -107,23 +112,34 @@
             "color": "blancas"
         },
         {
+            "x": 1,
+            "y": 7,
+            "color": "negras"
+        },
+        {
             "x": 6,
-            "y": 5,
+            "y": 7,
             "color": "negras"
         }
     ],
     "torre": [
         {
-            "x": 1,
-            "y": 3,
+            "x": 0,
+            "y": 0,
             "color": "blancas",
             "lado": "izquierda"
         },
         {
             "x": 7,
-            "y": 4,
+            "y": 0,
             "color": "blancas",
             "lado": "derecha"
+        },
+        {
+            "x": 0,
+            "y": 7,
+            "color": "negras",
+            "lado": "izquierda"
         },
         {
             "x": 7,
@@ -139,15 +155,15 @@
             "color": "blancas"
         },
         {
-            "x": 4,
-            "y": 6,
+            "x": 3,
+            "y": 7,
             "color": "negras"
         }
     ],
     "rey": [
         {
             "x": 3,
-            "y": 3,
+            "y": 0,
             "color": "blancas"
         },
         {

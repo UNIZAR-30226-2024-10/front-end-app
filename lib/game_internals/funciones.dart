@@ -24,8 +24,8 @@ String nombrePieza(PiezaAjedrez? tipoPieza) {
     pieza = 'caballos';
   } else if (tipoPieza.tipoPieza == TipoPieza.reyes) {
     pieza = 'reyes';
-  } else if (tipoPieza.tipoPieza == TipoPieza.reinas) {
-    pieza = 'reinas';
+  } else if (tipoPieza.tipoPieza == TipoPieza.damas) {
+    pieza = 'damas';
   }
 
   return pieza;
