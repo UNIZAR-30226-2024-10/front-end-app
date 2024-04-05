@@ -11,11 +11,11 @@ import '../settings/settings.dart';
 //import '../style/responsive_screen.dart';
 
 void main() {
-  runApp(LoginScreen());
+  runApp(RegisterScreen());
 }
 
-class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -77,13 +77,13 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         Container(
             color: Color.fromRGBO(49, 45, 45, 1),
             width: 350,
-            height: 200,
+            height: 350,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Text('Log In',
+                    child: Text('Register',
                         style:
                             TextStyle(color: Color.fromRGBO(255, 136, 0, 1)))),
                 Padding(
@@ -140,27 +140,27 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     ),
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      GoRouter.of(context).go('/login');
+                    },
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromRGBO(255, 136, 0, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    child: Text('Register',
+                        style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                  ),
+                ),
               ],
             )),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 25.0),
-          child: ElevatedButton(
-            onPressed: () {
-              GoRouter.of(context).go('/login');
-            },
-            style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(
-                  Color.fromRGBO(255, 136, 0, 1)),
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-            ),
-            child: Text('Register',
-                style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
-          ),
-        ),
       ],
     );
   }

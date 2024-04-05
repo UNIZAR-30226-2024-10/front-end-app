@@ -77,7 +77,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         Container(
             color: Color.fromRGBO(49, 45, 45, 1),
             width: 350,
-            height: 275,
+            height: 300,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -141,6 +141,22 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     ),
                     child: Text('Login',
                         style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      GoRouter.of(context).go('/register');
+                    },
+                    child: Text(
+                      'Si no tienes cuenta puedes registrarte aquí',
+                      style: TextStyle(
+                          fontSize: 15.0,
+                          color: Color.fromRGBO(255, 136, 0, 1),
+                          decoration: TextDecoration.underline,
+                          decorationColor: Color.fromRGBO(255, 136, 0, 1)),
+                    ),
                   ),
                 ),
               ],

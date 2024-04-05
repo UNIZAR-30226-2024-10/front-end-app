@@ -25,6 +25,7 @@ import 'battle_pass/battle_pass.dart';
 import 'log_in/user_screen.dart';
 import 'history/match_history_screen.dart';
 import 'arenas/arenas_screen.dart';
+import 'register/register_screen.dart';
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -117,6 +118,10 @@ final router = GoRouter(
         GoRoute(
           path: 'arenas',
           builder: (context, state) => Arenas(),
+        ),
+        GoRoute(
+          path: 'register',
+          builder: (context, state) => RegisterScreen(),
         )
       ],
     ),
