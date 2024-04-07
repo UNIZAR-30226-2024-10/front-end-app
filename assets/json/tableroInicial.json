@@ -62,6 +62,11 @@
             "color": "negras"
         },
         {
+            "x": 4,
+            "y": 6,
+            "color": "negras"
+        },
+        {
             "x": 5,
             "y": 6,
             "color": "negras"
@@ -95,8 +100,8 @@
             "color": "negras"
         },
         {
-            "x": 0,
-            "y": 5,
+            "x": 5,
+            "y": 7,
             "color": "negras"
         }
     ],
@@ -131,7 +136,7 @@
         },
         {
             "x": 7,
-            "y": 0,
+            "y": 7,
             "color": "blancas",
             "lado": "derecha"
         },
@@ -139,13 +144,13 @@
             "x": 0,
             "y": 7,
             "color": "negras",
-            "lado": "izquierda"
+            "lado": "derecha"
         },
         {
             "x": 7,
             "y": 7,
             "color": "negras",
-            "lado": "derecha"
+            "lado": "izquierda"
         }
     ],
     "dama": [
@@ -162,7 +167,7 @@
     ],
     "rey": [
         {
-            "x": 3,
+            "x": 4,
             "y": 0,
             "color": "blancas"
         },

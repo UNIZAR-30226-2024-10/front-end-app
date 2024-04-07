@@ -7,12 +7,14 @@ import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/play_session/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -40,6 +42,12 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   Map<String, dynamic> jsonMapTablero = {};
 
   Map<String, dynamic> jsonMapMovimientos = {};
+
+  List<PiezaAjedrez> piezasBlancasMuertas = [];
+
+  List<PiezaAjedrez> piezasNegrasMuertas = [];
+
+  bool esTurnoBlancas = true;
 
   @override
   void initState() {
@@ -245,7 +253,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         tipoPieza: TipoPieza.damas,
         esBlanca: false,
         nombreImagen: 'assets/images/queen-b.svg');
-    nuevoTablero[7][4] = PiezaAjedrez(
+    nuevoTablero[7][3] = PiezaAjedrez(
         tipoPieza: TipoPieza.damas,
         esBlanca: true,
         nombreImagen: 'assets/images/queen-w.svg');
@@ -254,7 +262,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         tipoPieza: TipoPieza.reyes,
         esBlanca: false,
         nombreImagen: 'assets/images/king-b.svg');
-    nuevoTablero[7][3] = PiezaAjedrez(
+    nuevoTablero[7][4] = PiezaAjedrez(
         tipoPieza: TipoPieza.reyes,
         esBlanca: true,
         nombreImagen: 'assets/images/king-w.svg');
@@ -264,11 +272,19 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   void seleccionadaPieza(int fila, int columna) {
     setState(() {
-      if (tablero[fila][columna] != null) {
+      if (piezaSeleccionada == null && tablero[fila][columna] != null) {
+        if(tablero[fila][columna]!.esBlanca == esTurnoBlancas){
+          piezaSeleccionada = tablero[fila][columna];
+          filaSeleccionada = fila;
+          columnaSeleccionada = columna;
+        }
+      } 
+      else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
         piezaSeleccionada = tablero[fila][columna];
         filaSeleccionada = fila;
         columnaSeleccionada = columna;
-      } else if (piezaSeleccionada != null &&
+      }
+      else if (piezaSeleccionada != null &&
           movimientosValidos
               .any((element) => element[0] == fila && element[1] == columna)) {
         moverPieza(fila, columna);
@@ -279,6 +295,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
     });
   }
+
 
   //MOVER PIEZA
   void moverPieza(int filaNueva, int columnaNueva) async {
@@ -291,6 +308,22 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
     Map<String, dynamic> jsonMapTableroAntiguo =
         jsonDecode(jsonString) as Map<String, dynamic>;
+
+    if(tablero[filaNueva][columnaNueva] != null){
+      if(tablero[filaNueva][columnaNueva]!.esBlanca){
+        piezasBlancasMuertas.add(tablero[filaNueva][columnaNueva]!);
+      }
+      else{
+        piezasNegrasMuertas.add(tablero[filaNueva][columnaNueva]!);
+      }
+      //si se trata de una muerte, debemos eliminar la pieza del tablero
+      jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+        if (listaPiezas is List) {
+          // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
+          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+        }
+      });
+    }
 
     jsonMapTablero.forEach((tipoPieza, listaPiezas) {
       if (listaPiezas is List) {
@@ -308,10 +341,12 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
     });
 
-    if (jsonMapTableroAntiguo['turno'] == 'blancas') {
+    if (esTurnoBlancas) {
       jsonMapTablero['turno'] = 'negras';
+      esTurnoBlancas = false;
     } else {
       jsonMapTablero['turno'] = 'blancas';
+      esTurnoBlancas = true;
     }
 
     jsonString = jsonEncode(jsonMapTablero);
@@ -348,7 +383,22 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     return Scaffold(
       body: Column(
         children: [
+          //PIEZAS BLANCAS MUERTAS
           Expanded(
+            child: GridView.builder(
+              itemCount: piezasBlancasMuertas.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8),
+              itemBuilder: (context, index) => PiezaMuerta(
+                pathImagen: piezasBlancasMuertas[index].nombreImagen,
+                esBlanca: true,
+              ),
+            ),
+          ),
+
+          //TABLERO
+          Expanded(
+            flex:3,
             child: GridView.builder(
               itemCount: 8 * 8,
               physics: const NeverScrollableScrollPhysics(),
@@ -357,10 +407,10 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               itemBuilder: (context, index) {
                 int fila = index ~/ 8;
                 int columna = index % 8;
-
+            
                 bool seleccionada =
                     filaSeleccionada == fila && columnaSeleccionada == columna;
-
+            
                 bool esValido = false;
                 for (var position in movimientosValidos) {
                   if (position[0] == fila && position[1] == columna) {
@@ -368,7 +418,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                     break;
                   }
                 }
-
+            
                 return CasillaAjedrez(
                   seleccionada: seleccionada,
                   esBlanca: esBlanca(index),
@@ -379,6 +429,20 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               },
             ),
           ),
+
+          //PIEZAS NEGRAS MUERTAS
+          Expanded(
+            child: GridView.builder(
+              itemCount: piezasNegrasMuertas.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 8),
+              itemBuilder: (context, index) => PiezaMuerta(
+                pathImagen: piezasNegrasMuertas[index].nombreImagen,
+                esBlanca: false,
+              ),
+            ),
+          ),
+
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(

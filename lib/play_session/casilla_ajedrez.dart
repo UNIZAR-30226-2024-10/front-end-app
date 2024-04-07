@@ -40,6 +40,7 @@ class CasillaAjedrez extends StatelessWidget {
       onTap: onTap,
       child: Container(
         color: colorCasilla,
+        margin: EdgeInsets.all(esValido ? 8 : 0),
         child: pieza != null
             ?
             //adaptar la imagen de la pieza
