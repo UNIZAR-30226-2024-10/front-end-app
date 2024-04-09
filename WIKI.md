@@ -196,3 +196,6 @@
         }
     ]
 }
+
+# Lanzar la aplicación en ventana #
+start ms-settings:developers

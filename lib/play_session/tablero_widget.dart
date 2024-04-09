@@ -49,6 +49,10 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   bool esTurnoBlancas = true;
 
+  bool hayJaque = false;
+
+  bool hayJaqueMate = false;
+
   @override
   void initState() {
     super.initState();
@@ -66,6 +70,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   //Función que envía al backend un tablero nuevo de ajedrez
   Future<bool> _postTablero() async {
     // Construye la URL y realiza la solicitud POST
+    //http://192.168.1.97:3001/play/
     Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
     http.Response response = await http.post(
       uri,
@@ -82,10 +87,23 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       print('La solicitud POST fue exitosa');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
-      if (jsonMapMovimientos['jugadaLegal'] == false) {
-        return false;
+
+      //Primero comprobamos si hay jaque mate
+      if(jsonMapMovimientos.containsKey('rey') && jsonMapMovimientos['rey'].length == 0 && jsonMapMovimientos.containsKey('comer') && jsonMapMovimientos['comer'].length == 0 && 
+        jsonMapMovimientos.containsKey('bloquear') && jsonMapMovimientos['bloquear'].length == 0){
+        hayJaqueMate = true;
+        print('JAQUE MATE\n');
       }
-      return true;
+      //Segundo comprobamos si hay jaque 
+      else if(jsonMapMovimientos.containsKey('rey') && jsonMapMovimientos['rey'].length != 0 && jsonMapMovimientos.containsKey('comer') && jsonMapMovimientos['comer'].length != 0 && 
+        jsonMapMovimientos.containsKey('bloquear') && jsonMapMovimientos['bloquear'].length != 0){
+        hayJaque = true;
+        print('RESPUESTA DE LA API TRAS JAQUE\n');
+        String prueba = jsonMapMovimientos['allMovements'] as String;
+        print(prueba);
+      }
+      //Finalmente devolvemos si la jugada es legal o no
+      return jsonMapMovimientos['jugadaLegal'] as bool;
     } else {
       throw Exception('Error en la solicitud POST: ${response.statusCode}');
     }
@@ -295,7 +313,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
     });
   }
-
 
   //MOVER PIEZA
   void moverPieza(int filaNueva, int columnaNueva) async {
