@@ -123,6 +123,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
     }
     */
+
+    //print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
+    //Recorremos el mapa de movimientos válidos
+    //print(jsonMapMovimientos['allMovements']['peones'][0][1]);
+    //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.PEONES, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES
