@@ -1,5 +1,11 @@
 {
     "turno": "blancas",
+    "ha_movido_rey_blanco": false,
+    "ha_movido_rey_negro": false,
+    "ha_movido_torre_blanca_dcha": false,
+    "ha_movido_torre_blanca_izqda": false,
+    "ha_movido_torre_negra_dcha": false,
+    "ha_movido_torre_negra_izqda": false,
     "peon": [
         {
             "x": 0,
@@ -136,7 +142,7 @@
         },
         {
             "x": 7,
-            "y": 7,
+            "y": 0,
             "color": "blancas",
             "lado": "derecha"
         },

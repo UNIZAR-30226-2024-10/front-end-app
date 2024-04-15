@@ -27,6 +27,8 @@ class TableroAjedrez extends StatefulWidget {
 }
 
 class _TableroAjedrezState extends State<TableroAjedrez> {
+  //VARIABLES
+
   late List<List<PiezaAjedrez?>> tablero;
 
   PiezaAjedrez? piezaSeleccionada;
@@ -53,21 +55,27 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   bool hayJaqueMate = false;
 
+  //MÉTODOS
+
   @override
+  //INICIAR EL ESTADO
   void initState() {
     super.initState();
     _cargarTableroInicial();
     _inicializarTablero();
   }
 
+  //CARGAR TABLERO INICIAL
   void _cargarTableroInicial() async {
     // Cargar el tablero inicial
     jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
     jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
+    print('TABLERO INICIAL\n');
+    print(jsonMapTablero);
     _postTablero();
   }
 
-  //Función que envía al backend un tablero nuevo de ajedrez
+  //ENVIAR TABLERO A BACKEND
   Future<bool> _postTablero() async {
     // Construye la URL y realiza la solicitud POST
     //http://192.168.1.97:3001/play/
@@ -84,11 +92,14 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
     // Verifica el estado de la respuesta
     if (response.statusCode == 200) {
-      print('La solicitud POST fue exitosa');
+      print('ENVIO DE TABLERO A BACKEND EXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
+      print(jsonMapMovimientos['allMovements']);
 
       //Primero comprobamos si hay jaque mate
+      /*
+          ************CÓDIGO EN MANTENIMIENTO************
       if(jsonMapMovimientos.containsKey('rey') && jsonMapMovimientos['rey'].length == 0 && jsonMapMovimientos.containsKey('comer') && jsonMapMovimientos['comer'].length == 0 && 
         jsonMapMovimientos.containsKey('bloquear') && jsonMapMovimientos['bloquear'].length == 0){
         hayJaqueMate = true;
@@ -102,6 +113,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         String prueba = jsonMapMovimientos['allMovements'] as String;
         print(prueba);
       }
+      */
+      
       //Finalmente devolvemos si la jugada es legal o no
       return jsonMapMovimientos['jugadaLegal'] as bool;
     } else {
@@ -111,7 +124,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     /*
     print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
     //Recorremos el mapa de movimientos válidos
-    List<String> movimientosValidos = obtenerMovimientosValidos(1, 0, PiezaAjedrez(tipoPieza: TipoPieza.peones, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+    List<String> movimientosValidos = obtenerMovimientosValidos(1, 0, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
     List<List<int>> movimientosValidosInt = calcularMovimientos(movimientosValidos);
 
     //Mostramos el resultado
@@ -126,10 +139,10 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
     //print('PRUEBA DE CORRECTO LISTADO DE MOVIMIENTOS VÁLIDOS\n');
     //Recorremos el mapa de movimientos válidos
-    //print(jsonMapMovimientos['allMovements']['peones'][0][1]);
-    //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.PEONES, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+    //print(jsonMapMovimientos['allMovements']['peon'][0][1]);
+    //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
   }
-
+  
   //CALCULAR MOVIMIENTOS POSIBLES
   List<String> obtenerMovimientosValidos(
       int fila, int columna, PiezaAjedrez pieza) {
@@ -171,7 +184,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     }
     return movimientosValidosString;
   }
-
+  
+  //OBTENER COORDENADAS DE STRING
   List<int> obtenerXYFromString(String coordenadaString) {
     // Parsear el string a un mapa
     Map<String, dynamic> coordenadaMap =
@@ -184,7 +198,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     // Devolver una lista con los valores de x e y
     return [x, y];
   }
-
+  
+  //CALCULAR MOVIMIENTOS DE PIEZA SELECCIONADA
   List<List<int>> calcularMovimientos(List<String> movimientosValidos) {
     List<List<int>> movimientosValidosInt = [];
 
@@ -198,8 +213,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     }
     return movimientosValidosInt;
   }
-
-  //Función que inicializa el tablero de ajedrez
+  
+  //INICIALIZAR TABLERO
   void _inicializarTablero() {
     List<List<PiezaAjedrez?>> nuevoTablero =
         List.generate(8, (index) => List.generate(8, (index) => null));
@@ -207,92 +222,95 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     //Place pawn
     for (int i = 0; i < 8; i++) {
       nuevoTablero[1][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peones,
+          tipoPieza: TipoPieza.peon,
           esBlanca: false,
           nombreImagen: 'assets/images/pawn-b.svg');
 
       nuevoTablero[6][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peones,
+          tipoPieza: TipoPieza.peon,
           esBlanca: true,
           nombreImagen: 'assets/images/pawn-w.svg');
     }
 
     //Place rooks
     nuevoTablero[0][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torres,
+        tipoPieza: TipoPieza.torre,
         esBlanca: false,
         nombreImagen: 'assets/images/rook-b.svg');
     nuevoTablero[0][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torres,
+        tipoPieza: TipoPieza.torre,
         esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg');
+        nombreImagen: 'assets/images/rook-b.svg',
+        ladoIzquierdo: true);
     nuevoTablero[7][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torres,
+        tipoPieza: TipoPieza.torre,
         esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg');
+        nombreImagen: 'assets/images/rook-w.svg',
+        ladoIzquierdo: true);
     nuevoTablero[7][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torres,
+        tipoPieza: TipoPieza.torre,
         esBlanca: true,
         nombreImagen: 'assets/images/rook-w.svg');
 
     //Place knights
     nuevoTablero[0][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballos,
+        tipoPieza: TipoPieza.caballo,
         esBlanca: false,
         nombreImagen: 'assets/images/knight-b.svg');
     nuevoTablero[0][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballos,
+        tipoPieza: TipoPieza.caballo,
         esBlanca: false,
         nombreImagen: 'assets/images/knight-b.svg');
     nuevoTablero[7][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballos,
+        tipoPieza: TipoPieza.caballo,
         esBlanca: true,
         nombreImagen: 'assets/images/knight-w.svg');
     nuevoTablero[7][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballos,
+        tipoPieza: TipoPieza.caballo,
         esBlanca: true,
         nombreImagen: 'assets/images/knight-w.svg');
 
     //Place bishops
     nuevoTablero[0][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfiles,
+        tipoPieza: TipoPieza.alfil,
         esBlanca: false,
         nombreImagen: 'assets/images/bishop-b.svg');
     nuevoTablero[0][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfiles,
+        tipoPieza: TipoPieza.alfil,
         esBlanca: false,
         nombreImagen: 'assets/images/bishop-b.svg');
     nuevoTablero[7][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfiles,
+        tipoPieza: TipoPieza.alfil,
         esBlanca: true,
         nombreImagen: 'assets/images/bishop-w.svg');
     nuevoTablero[7][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfiles,
+        tipoPieza: TipoPieza.alfil,
         esBlanca: true,
         nombreImagen: 'assets/images/bishop-w.svg');
 
     //Place queens
     nuevoTablero[0][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.damas,
+        tipoPieza: TipoPieza.dama,
         esBlanca: false,
         nombreImagen: 'assets/images/queen-b.svg');
     nuevoTablero[7][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.damas,
+        tipoPieza: TipoPieza.dama,
         esBlanca: true,
         nombreImagen: 'assets/images/queen-w.svg');
     //Place kings
     nuevoTablero[0][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.reyes,
+        tipoPieza: TipoPieza.rey,
         esBlanca: false,
         nombreImagen: 'assets/images/king-b.svg');
     nuevoTablero[7][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.reyes,
+        tipoPieza: TipoPieza.rey,
         esBlanca: true,
         nombreImagen: 'assets/images/king-w.svg');
 
     tablero = nuevoTablero;
   }
-
+  
+  //SELECCIONAR PIEZA
   void seleccionadaPieza(int fila, int columna) {
     setState(() {
       if (piezaSeleccionada == null && tablero[fila][columna] != null) {
@@ -318,7 +336,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
     });
   }
-
+  
   //MOVER PIEZA
   void moverPieza(int filaNueva, int columnaNueva) async {
     List<int> coordenadasAntiguasApi =
@@ -347,6 +365,129 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       });
     }
 
+
+    if (esTurnoBlancas) {
+      jsonMapTablero['turno'] = 'negras';
+      esTurnoBlancas = false;
+    } else {
+      jsonMapTablero['turno'] = 'blancas';
+      esTurnoBlancas = true;
+    }
+
+    //Marcamos que la pieza torre ha sido movida para que el backend no permita enrocar
+    if(piezaSeleccionada!.tipoPieza == TipoPieza.torre){
+      if(piezaSeleccionada!.esBlanca && piezaSeleccionada!.ladoIzquierdo){
+        jsonMapTablero['ha_movido_torre_blanca_izqda'] = true;
+      }
+      else if(piezaSeleccionada!.esBlanca){
+        jsonMapTablero['ha_movido_torre_blanca_dcha'] = true;
+      }
+      else if(piezaSeleccionada!.ladoIzquierdo){
+        jsonMapTablero['ha_movido_torre_negra_izqda'] = true;
+      }
+      else{
+        jsonMapTablero['ha_movido_torre_negra_dcha'] = true;
+      }
+    }
+
+    //Revisamos si hay enroque y si existe hacemos los cambios correspondientes
+    if(piezaSeleccionada!.tipoPieza == TipoPieza.rey && (jsonMapTablero['ha_movido_rey_blanco'] == false && 
+      (jsonMapTablero['ha_movido_torre_blanca_izqda'] == false || jsonMapTablero['ha_movido_torre_blanca_dcha'] == false)
+     || jsonMapTablero['ha_movido_rey_negro'] == false &&
+      (jsonMapTablero['ha_movido_torre_negra_izqda'] == false || jsonMapTablero['ha_movido_torre_negra_dcha'] == false)) 
+      && hayEnroque(coordenadasAntiguasApi, coordenadasNuevasApi)){
+
+      int filaNueva = 0, columnaNueva = 0, filaAntigua = 0, columnaAntigua = 0;
+      bool hayEnroque = false;
+
+      List<bool> torreEnrocar = torreEnroque(coordenadasNuevasApi);
+        
+      if(jsonMapTablero['ha_movido_rey_blanco'] == false){
+        //Si se trata de un enroque con la torre blanca izquierda
+        if(torreEnrocar[0]){
+          print("ENROQUE BLANCA IZQUIERDA");
+          filaNueva = filaSeleccionada;
+          columnaNueva = columnaSeleccionada - 1;
+          filaAntigua = 7;
+          columnaAntigua = 0;
+
+          jsonMapTablero['ha_movido_torre_blanca_izqda'] = true;
+          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
+          tablero[filaAntigua][columnaAntigua] = null;
+          hayEnroque = true;
+        }
+        else if(torreEnrocar[1]){
+          print("ENROQUE BLANCA DERECHA");
+          filaNueva = filaSeleccionada;
+          columnaNueva = columnaSeleccionada + 1;
+          filaAntigua = 7;
+          columnaAntigua = 7;
+
+          jsonMapTablero['ha_movido_torre_blanca_dcha'] = true;
+          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
+          tablero[filaAntigua][columnaAntigua] = null;
+          hayEnroque = true;
+        }
+      }
+      else if(jsonMapTablero['ha_movido_rey_negro'] == false){
+        if(torreEnrocar[3]){
+          print("ENROQUE NEGRA IZQUIERDA");
+          filaNueva = filaSeleccionada;
+          columnaNueva = columnaSeleccionada + 1;
+          filaAntigua = 0;
+          columnaAntigua = 7;
+
+          jsonMapTablero['ha_movido_torre_negra_izqda'] = true;
+          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
+          tablero[filaAntigua][columnaAntigua] = null;
+          hayEnroque = true;
+        }
+        else if(torreEnrocar[2]){
+          print("ENROQUE NEGRA DERECHA");
+          filaNueva = filaSeleccionada;
+          columnaNueva = columnaSeleccionada - 1;
+          filaAntigua = 0;
+          columnaAntigua = 0;
+
+          jsonMapTablero['ha_movido_torre_negra_dcha'] = true;
+          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
+          tablero[filaAntigua][columnaAntigua] = null;
+          hayEnroque = true;
+        }
+      }
+
+      if(hayEnroque){
+        List<int> auxAntiguasApi = convertirAppToApi(filaAntigua, columnaAntigua);
+        List<int> auxNuevasApi = convertirAppToApi(filaNueva, columnaNueva);
+
+        jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+        if (listaPiezas is List) {
+          // Itera sobre cada pieza en la lista
+            for (var pieza in listaPiezas) {
+              // Verifica si las coordenadas coinciden con las coordenadas antiguas
+              if (pieza['x'] == auxAntiguasApi[0] &&
+                  pieza['y'] == auxAntiguasApi[1]) {
+                // Modifica las coordenadas con las nuevas coordenadas
+                pieza['x'] = auxNuevasApi[0];
+                pieza['y'] = auxNuevasApi[1];
+                break;
+              }
+            }
+          }
+        });
+      }
+    }
+
+    //Marcamos que la pieza rey ha sido movida para que el backend no permita enrocar
+    if(piezaSeleccionada!.tipoPieza == TipoPieza.rey){
+      if(piezaSeleccionada!.esBlanca){
+        jsonMapTablero['ha_movido_rey_blanco'] = true;
+      }
+      else{
+        jsonMapTablero['ha_movido_rey_negro'] = true;
+      }
+    }
+
     jsonMapTablero.forEach((tipoPieza, listaPiezas) {
       if (listaPiezas is List) {
         // Itera sobre cada pieza en la lista
@@ -362,18 +503,10 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         }
       }
     });
-
-    if (esTurnoBlancas) {
-      jsonMapTablero['turno'] = 'negras';
-      esTurnoBlancas = false;
-    } else {
-      jsonMapTablero['turno'] = 'blancas';
-      esTurnoBlancas = true;
-    }
-
+    
     jsonString = jsonEncode(jsonMapTablero);
 
-    //enviamos el tablero con la posible jugada
+    //Enviamos el tablero con la posible jugada
     bool jugadaValida = await _postTablero();
 
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
@@ -400,6 +533,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     });
   }
 
+  //CONSTRUIR WIDGET
   @override
   Widget build(BuildContext context) {
     return Scaffold(
