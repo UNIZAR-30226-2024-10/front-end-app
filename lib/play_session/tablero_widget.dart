@@ -79,7 +79,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   Future<bool> _postTablero() async {
     // Construye la URL y realiza la solicitud POST
     //http://192.168.1.97:3001/play/
-    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
+    Uri uri = Uri.parse('http://localhost:3001/play/');
     http.Response response = await http.post(
       uri,
       body:
@@ -412,8 +412,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           columnaAntigua = 0;
 
           jsonMapTablero['ha_movido_torre_blanca_izqda'] = true;
-          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
-          tablero[filaAntigua][columnaAntigua] = null;
           hayEnroque = true;
         }
         else if(torreEnrocar[1]){
@@ -424,8 +422,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           columnaAntigua = 7;
 
           jsonMapTablero['ha_movido_torre_blanca_dcha'] = true;
-          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
-          tablero[filaAntigua][columnaAntigua] = null;
           hayEnroque = true;
         }
       }
@@ -438,8 +434,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           columnaAntigua = 7;
 
           jsonMapTablero['ha_movido_torre_negra_izqda'] = true;
-          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
-          tablero[filaAntigua][columnaAntigua] = null;
           hayEnroque = true;
         }
         else if(torreEnrocar[2]){
@@ -450,16 +444,18 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
           columnaAntigua = 0;
 
           jsonMapTablero['ha_movido_torre_negra_dcha'] = true;
-          tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
-          tablero[filaAntigua][columnaAntigua] = null;
           hayEnroque = true;
         }
       }
 
       if(hayEnroque){
+
+        tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
+        tablero[filaAntigua][columnaAntigua] = null;
+
         List<int> auxAntiguasApi = convertirAppToApi(filaAntigua, columnaAntigua);
         List<int> auxNuevasApi = convertirAppToApi(filaNueva, columnaNueva);
-
+        //Esto se puede cambiar con asignación de variables pedazo de vago
         jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Itera sobre cada pieza en la lista
@@ -488,6 +484,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
     }
 
+    //Esto igual, se puede cambiar con asignación de variables
     jsonMapTablero.forEach((tipoPieza, listaPiezas) {
       if (listaPiezas is List) {
         // Itera sobre cada pieza en la lista
