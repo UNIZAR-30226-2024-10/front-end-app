@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../style/header.dart';
 
 class BattlePass extends StatefulWidget {
   @override
@@ -58,7 +59,6 @@ class _BattlePassState extends State<BattlePass> {
   Widget build(BuildContext context) {
     // Ordenar los tiers por nivel
     tiers.sort((a, b) => a.level.compareTo(b.level));
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Battle Pass', style: TextStyle(color: Colors.orange),
@@ -102,21 +102,21 @@ class _BattlePassState extends State<BattlePass> {
                       children: [
                         if (tier.rewardType == 'pieza') ...[
                           SvgPicture.asset(
-                            'assets/images/images_pase/pieces/${tier.reward}/bK.svg',
-                            width: 24,
-                            height: 24,
+                            '../assets/images/images_pase/pieces/${tier.reward}/bK.svg',
+                            width: 42,
+                            height: 42,
                           ),
                           SizedBox(width: 8),
                           SvgPicture.asset(
-                            'assets/images/images_pase/pieces/${tier.reward}/bQ.svg',
-                            width: 24,
-                            height: 24,
+                            '../assets/images/images_pase/pieces/${tier.reward}/bQ.svg',
+                            width: 42,
+                            height: 42,
                           ),
                         ],
                         if (tier.rewardType == 'emoticono')
                           Text(
                             tier.reward,
-                            style: TextStyle(fontSize: 32),
+                            style: TextStyle(fontSize: 42),
                           ),
                       ],
                     ),
