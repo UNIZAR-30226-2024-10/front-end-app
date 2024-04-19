@@ -4,7 +4,9 @@
 
 //import 'dart:js';
 
-import 'ranking/ranking_screen.dart';
+import 'package:ChessHub/ranking/elegir_tipo_ranking.dart';
+
+import 'ranking/ranking_screen_blitz.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -93,7 +95,7 @@ final router = GoRouter(
         ),
         GoRoute(
           path: 'ranking',
-          builder: (context, state) => RankingScreen(),
+          builder: (context, state) => ElegirTipoRanking(),
         ),
         GoRoute(
           path: 'login',
@@ -122,7 +124,11 @@ final router = GoRouter(
         GoRoute(
           path: 'register',
           builder: (context, state) => RegisterScreen(),
-        )
+        ),
+        GoRoute(
+          path: 'ranking/blitz',
+          builder: (context, state) => RankingScreenBlitz(),
+        ),
       ],
     ),
   ],
