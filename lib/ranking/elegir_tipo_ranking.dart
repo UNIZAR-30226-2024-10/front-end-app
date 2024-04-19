@@ -7,7 +7,8 @@ class ElegirTipoRanking extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Elegir Tipo de Ranking', style: TextStyle(color: Colors.orange)),
+        backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+        title: Text('Elegir Tipo de Ranking', style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
       ),
       backgroundColor: Color.fromRGBO(49, 45, 45, 1),
       body: Center(
@@ -23,7 +24,7 @@ class ElegirTipoRanking extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
                 textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
               ),
-              child: Text('BLITZ'),
+              child: Text('BLITZ', style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -35,7 +36,7 @@ class ElegirTipoRanking extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
                 textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
               ),
-              child: Text('RAPID'),
+              child: Text('RAPID', style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
             ),
             SizedBox(height: 20),
             ElevatedButton(
@@ -47,7 +48,7 @@ class ElegirTipoRanking extends StatelessWidget {
                 padding: MaterialStateProperty.all(EdgeInsets.symmetric(horizontal: 40, vertical: 20)),
                 textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
               ),
-              child: Text('BULLET'),
+              child: Text('BULLET', style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
             ),
           ],
         ),

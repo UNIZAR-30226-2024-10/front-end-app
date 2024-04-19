@@ -61,11 +61,11 @@ class _BattlePassState extends State<BattlePass> {
     tiers.sort((a, b) => a.level.compareTo(b.level));
     return Scaffold(
       appBar: AppBar(
-        title: Text('Battle Pass', style: TextStyle(color: Colors.orange),
+        title: Text('Battle Pass', style: TextStyle(color: Colors.white,fontFamily: 'Oswald'),
       ),
-      backgroundColor: Colors.black,),
+      backgroundColor: Color.fromRGBO(49, 45, 45, 1),),
       body: Container(
-        color: Color.fromRGBO(255, 255, 255, 1),
+        color: Colors.black,
         child: ListView.builder(
           itemCount: tiers.length,
           itemBuilder: (context, index) {
@@ -74,7 +74,7 @@ class _BattlePassState extends State<BattlePass> {
             return Card(
               elevation: 3,
               margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-              color: Color.fromARGB(255, 238, 238, 238), // Cambia el color de fondo de la tarjeta
+              color: Color.fromRGBO(49, 45, 45, 1), // Cambia el color de fondo de la tarjeta
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -85,30 +85,30 @@ class _BattlePassState extends State<BattlePass> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Color.fromRGBO(8, 8, 8, 1),
+                        color: Colors.white,
                       ),
                     ),
                     SizedBox(height: 8),
                     Row(children: [
                       Text('Puntos requeridos: ${tier.requiredPoints}',
-                      style: TextStyle(fontSize: 14,color: Color.fromRGBO(56, 56, 56, 1))),
+                      style: TextStyle(fontSize: 14,color: Colors.orange)),
                     ],),
                     Row(children: [
                       Text('Tipo de recompensa: ${tier.rewardType}',
-                      style: TextStyle(fontSize: 14,color: Color.fromRGBO(56, 56, 56, 1)))
+                      style: TextStyle(fontSize: 14,color: Colors.orange),)
                     ],),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center, // Centra las imágenes y los emoticonos
                       children: [
                         if (tier.rewardType == 'pieza') ...[
                           SvgPicture.asset(
-                            '../assets/images/images_pase/pieces/${tier.reward}/bK.svg',
+                            '../assets/images/images_pase/pieces/${tier.reward}/wK.svg',
                             width: 42,
                             height: 42,
                           ),
                           SizedBox(width: 8),
                           SvgPicture.asset(
-                            '../assets/images/images_pase/pieces/${tier.reward}/bQ.svg',
+                            '../assets/images/images_pase/pieces/${tier.reward}/wQ.svg',
                             width: 42,
                             height: 42,
                           ),
@@ -116,7 +116,7 @@ class _BattlePassState extends State<BattlePass> {
                         if (tier.rewardType == 'emoticono')
                           Text(
                             tier.reward,
-                            style: TextStyle(fontSize: 42),
+                            style: TextStyle(fontSize: 42,color: Colors.white),
                           ),
                       ],
                     ),

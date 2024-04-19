@@ -9,12 +9,12 @@ class User {
   User({required this.name, required this.points, required this.puesto});
 }
 
-class RankingScreenBlitz extends StatefulWidget {
+class RankingScreenBullet extends StatefulWidget {
   @override
-  _RankingScreenStateBlitz createState() => _RankingScreenStateBlitz();
+  _RankingScreenStateBullet createState() => _RankingScreenStateBullet();
 }
 
-class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
+class _RankingScreenStateBullet extends State<RankingScreenBullet> {
   final List<User> users = [
     User(name: 'elrey900', points: 150, puesto: 1),
     User(name: 'gambito18', points: 120, puesto: 2),
@@ -42,7 +42,7 @@ class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Ranking BLITZ',
+          'Ranking BULLET',
           style: TextStyle(color: Colors.white,fontFamily: 'Oswald'),
         ),
         backgroundColor: Color.fromRGBO(49,45,45,1),
@@ -65,12 +65,11 @@ class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
                   elevation: 3,
                   child: ListTile(
                     title: Text(
-                      '${user.puesto}.\t${user.name}\t${user.points} pts',
+                      '${user.puesto}. ${user.name}   ${user.points} pts',
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16), 
                     ),
                     // Personaliza el estilo del usuario actual
                     tileColor: realIndex == userIndex ? Colors.orange[200] : null,
-                    
                   ),
                 ),
               );
