@@ -4,22 +4,15 @@
 import 'package:ChessHub/play_session/tablero_widget.dart';
 import 'package:ChessHub/style/my_button.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ChessHub/style/header.dart';
 
-class ChessPlaySessionScreen extends StatefulWidget {
+class ChessPlaySessionScreen extends StatelessWidget {
   const ChessPlaySessionScreen({super.key});
 
   @override
-  State<ChessPlaySessionScreen> createState() => _ChessPlaySessionScreenState();
-}
-
-class _ChessPlaySessionScreenState extends State<ChessPlaySessionScreen> {
-  //static final _log = Logger('ChessPlaySessionScreen');
-  static const _gap = SizedBox(height: 10);
-
-  @override
   Widget build(BuildContext context) {
-    //final palette = context.watch<Palette>();
-    return TableroAjedrez();
+    return Scaffold(
+      appBar: Header(),
+    );
   }
 }
