@@ -102,7 +102,7 @@ class _ArenasState extends State<Arenas> {
                           children: [
                             Image(
                               image: AssetImage(
-                                  'assets/images/images_pase/boards/arena_${tier.level}.jpg'),
+                                  'assets/images/images_pase/boards/arena_${tier.level}.png'),
                               width: 300,
                               height: 300,
                             ),
