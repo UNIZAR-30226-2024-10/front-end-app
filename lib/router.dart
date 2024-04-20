@@ -4,6 +4,7 @@
 
 //import 'dart:js';
 
+import 'package:ChessHub/play_session/tablero_widget.dart';
 import 'package:ChessHub/ranking/elegir_tipo_ranking.dart';
 
 import 'ranking/ranking_screen_blitz.dart';
@@ -30,6 +31,7 @@ import 'log_in/user_screen.dart';
 import 'history/match_history_screen.dart';
 import 'arenas/arenas_screen.dart';
 import 'register/register_screen.dart';
+import 'package:ChessHub/constantes/constantes.dart';
 
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
@@ -138,6 +140,26 @@ final router = GoRouter(
         GoRoute(
           path: 'ranking/rapid',
           builder: (context, state) => RankingScreenRapid(),
+        ),
+        GoRoute(
+          path: 'juegoLocalBLITZ',
+          builder: (context, state) => TableroAjedrez(modoJuego: Modos.BLITZ),
+        ),
+        GoRoute(
+          path: 'juegoLocalBULLET',
+          builder: (context, state) => TableroAjedrez(modoJuego: Modos.BULLET),
+        ),
+        GoRoute(
+          path: 'juegoLocalRAPID',
+          pageBuilder: (context, state) {
+            return buildMyTransition<void>(
+              key: ValueKey('juegoLocalRAPID'),
+              color: context.watch<Palette>().backgroundPlaySession,
+              child: const TableroAjedrez(
+                modoJuego: Modos.RAPID,
+              ),
+            );
+          },
         ),
       ],
     ),

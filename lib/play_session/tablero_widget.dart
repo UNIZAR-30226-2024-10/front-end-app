@@ -4,6 +4,7 @@
 //import 'dart:ffi';
 
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/play_session/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
@@ -13,14 +14,15 @@ import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
 class TableroAjedrez extends StatefulWidget {
-  const TableroAjedrez({super.key});
+  
+  final Modos modoJuego;
+  const TableroAjedrez({Key? key, required this.modoJuego}) : super(key: key);
 
   @override
   State<TableroAjedrez> createState() => _TableroAjedrezState();
@@ -54,6 +56,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   bool hayJaque = false;
 
   bool hayJaqueMate = false;
+
 
   //MÉTODOS
 
@@ -533,6 +536,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   //CONSTRUIR WIDGET
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: Column(
         children: [
@@ -582,7 +586,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               },
             ),
           ),
-
           //PIEZAS NEGRAS MUERTAS
           Expanded(
             child: GridView.builder(
@@ -595,7 +598,6 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               ),
             ),
           ),
-
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
