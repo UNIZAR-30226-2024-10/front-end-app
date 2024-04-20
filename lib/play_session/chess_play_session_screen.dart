@@ -14,14 +14,14 @@ class ChessPlaySessionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: Header(),
-      body: Container(
+       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomRight,
-            colors: [Color.fromRGBO(49, 45, 45, 1), Colors.grey[500]!],
-          ),
-        ),
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomRight,
+                          colors: [Color.fromRGBO(49, 45, 45, 1), Colors.grey[500]!],
+                        ),
+                      ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -29,34 +29,39 @@ class ChessPlaySessionScreen extends StatelessWidget {
               child: Container(
                 color: Colors.transparent,
                 width: double.infinity,
-                child: ListView(
-                  //mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        //CONTENEDOR DEL JUEGO EN LOCAL
-                        width: 450,
-                        height: 400,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [Colors.orange[900]!, Colors.orange[300]!],
-                          ),
+                      //CONTENEDOR DEL JUEGO EN LOCAL
+                      width: 450,
+                      height: 400,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1), // Borde blanco de 2 píxeles de ancho
+                        gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [Colors.orange[900]!, Colors.orange[300]!],
                         ),
-                        child: Column(children: [
+                      ),
+                      child:Column(
+                        children: [
                           SizedBox(height: 30),
                           Align(
-                              alignment: Alignment.topCenter,
-                              child: Text('JUGAR EN MODO LOCAL',
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                                  'JUGAR EN MODO LOCAL',
                                   style: GoogleFonts.play(
                                     fontSize: 25,
                                     color: Colors.white,
                                     fontWeight: FontWeight.bold,
-                                  ))),
+                                  )
+                            )
+                          ),
                           SizedBox(height: 30),
                           GestureDetector(
                             onTap: () {
-                              GoRouter.of(context).go('/chess/rapid');
+                              context.go('/chess/rapid');
                             },
                             child :Align(
                               alignment: Alignment.center,
@@ -84,7 +89,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              GoRouter.of(context).go('/chess/bullet');
+                              context.go('/chess/bullet');
                             },
                             child :Align(
                               alignment: Alignment.center,
@@ -134,6 +139,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                       width: 450,
                       height: 400,
                       decoration: BoxDecoration(
+                        border: Border.all(color: Colors.black, width: 1),
                         gradient: LinearGradient(
                           begin: Alignment.centerLeft,
                           end: Alignment.centerRight,
@@ -163,123 +169,58 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                     fontSize: 25,
                                     color: Colors.white,
                                     fontFamily: 'Cantarell',
-                                  ),
-                                )),
+                                  )
+                            )
                           ),
                           Align(
-                              alignment: Alignment.center,
-                              child: Text('-',
+                            alignment: Alignment.center,
+                            child: Text(
+                                  '-',
                                   style: TextStyle(
                                     fontSize: 35,
                                     color: Colors.black,
                                     fontFamily: 'Cantarell',
                                     fontWeight: FontWeight.bold,
-                                  ))),
-                          GestureDetector(
-                            onTap: () {
-                              context.go('juegoLocalBULLET');
-                            },
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
+                                  )
+                            )
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
                                   'BULLET',
                                   style: TextStyle(
                                     fontSize: 25,
                                     color: Colors.white,
                                     fontFamily: 'Cantarell',
-                                  ),
-                                )),
+                                  )
+                            )
                           ),
                           Align(
-                              alignment: Alignment.center,
-                              child: Text('-',
+                            alignment: Alignment.center,
+                            child: Text(
+                                  '-',
                                   style: TextStyle(
                                     fontSize: 35,
                                     color: Colors.black,
                                     fontFamily: 'Cantarell',
                                     fontWeight: FontWeight.bold,
-                                  ))),
-                          GestureDetector(
-                            onTap: () {
-                              GoRouter.of(context).go('juegoLocalBLITZ');
-                            },
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
+                                  )
+                            )
+                          ),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
                                   'BLITZ',
                                   style: TextStyle(
                                     fontSize: 25,
                                     color: Colors.white,
                                     fontFamily: 'Cantarell',
-                                  ),
-                                )),
+                                  )
+                            )
                           ),
-                        ])),
-                    SizedBox(height: 20),
-                    Container(
-                        width: 450,
-                        height: 400,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [Colors.orange[900]!, Colors.orange[300]!],
-                          ),
-                        ),
-                        child: Column(children: [
-                          SizedBox(height: 30),
-                          Align(
-                              alignment: Alignment.topCenter,
-                              child: Text('JUGAR EN MODO ONLINE',
-                                  style: GoogleFonts.play(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ))),
-                          SizedBox(height: 30),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text('RAPID',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text('-',
-                                  style: TextStyle(
-                                    fontSize: 35,
-                                    color: Colors.black,
-                                    fontFamily: 'Cantarell',
-                                    fontWeight: FontWeight.bold,
-                                  ))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text('BULLET',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text('-',
-                                  style: TextStyle(
-                                    fontSize: 35,
-                                    color: Colors.black,
-                                    fontFamily: 'Cantarell',
-                                    fontWeight: FontWeight.bold,
-                                  ))),
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text('BLITZ',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ))),
-                        ])),
+                        ]
+                      )
+                    ),
                   ],
                 ),
               ),
