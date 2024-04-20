@@ -31,6 +31,7 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             Scaffold(
+              resizeToAvoidBottomInset: true,
               backgroundColor: Colors.transparent,
               appBar: AppBar(
                 backgroundColor: Color.fromRGBO(49, 45, 45, 1),
@@ -144,7 +145,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                  padding: const EdgeInsets.symmetric(vertical: 12.0),
                   child: GestureDetector(
                     onTap: () {
                       GoRouter.of(context).go('/register');
