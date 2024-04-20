@@ -62,7 +62,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           SizedBox(height: 30),
                           GestureDetector(
                             onTap: () {
-                              context.go('juegoLocalRAPID');
+                              GoRouter.of(context).go('/chess/rapid');
                             },
                             child :Align(
                               alignment: Alignment.center,
@@ -90,7 +90,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              context.go('juegoLocalBULLET');
+                              GoRouter.of(context).go('/chess/bullet');
                             },
                             child :Align(
                               alignment: Alignment.center,
@@ -118,7 +118,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           ),
                           GestureDetector(
                             onTap: () {
-                              GoRouter.of(context).go('juegoLocalBLITZ');
+                              GoRouter.of(context).go('/chess/blitz');
                             },
                             child :Align(
                               alignment: Alignment.center,

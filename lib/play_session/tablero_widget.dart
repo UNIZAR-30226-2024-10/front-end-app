@@ -4,11 +4,13 @@
 //import 'dart:ffi';
 
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/play_session/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:flutter/widgets.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
@@ -16,6 +18,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
+import 'package:ChessHub/play_session/stats_game.dart';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
@@ -29,6 +32,7 @@ class TableroAjedrez extends StatefulWidget {
 }
 
 class _TableroAjedrezState extends State<TableroAjedrez> {
+
   //VARIABLES
 
   late List<List<PiezaAjedrez?>> tablero;
@@ -57,15 +61,30 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   bool hayJaqueMate = false;
 
+  String modoDeJuego = '';
+
+
 
   //MÉTODOS
-
   @override
   //INICIAR EL ESTADO
   void initState() {
     super.initState();
+    _tratamientoMododeJuego();
     _cargarTableroInicial();
     _inicializarTablero();
+  }
+
+  void _tratamientoMododeJuego() async{
+    if(widget.modoJuego == Modos.BLITZ){
+      modoDeJuego = 'BLITZ';
+    }
+    else if(widget.modoJuego == Modos.RAPID){
+      modoDeJuego = 'RAPID';
+    }
+    else{
+      modoDeJuego = 'BULLET';
+    }
   }
 
   //CARGAR TABLERO INICIAL
@@ -520,6 +539,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       return;
     }
 
+    //PARAR CRONOMETRO Y CAMBIAR DE TURNO
     print('Jugada valida');
     tablero[filaNueva][columnaNueva] = piezaSeleccionada;
     tablero[filaSeleccionada][columnaSeleccionada] = null;
@@ -538,84 +558,129 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      body: Column(
-        children: [
-          //PIEZAS BLANCAS MUERTAS
-          Expanded(
-            child: GridView.builder(
-              itemCount: piezasBlancasMuertas.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 8),
-              itemBuilder: (context, index) => PiezaMuerta(
-                pathImagen: piezasBlancasMuertas[index].nombreImagen,
-                esBlanca: true,
-              ),
-            ),
-          ),
-
-          //TABLERO
-          Expanded(
-            flex:3,
-            child: GridView.builder(
-              itemCount: 8 * 8,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 8),
-              itemBuilder: (context, index) {
-                int fila = index ~/ 8;
-                int columna = index % 8;
-            
-                bool seleccionada =
-                    filaSeleccionada == fila && columnaSeleccionada == columna;
-            
-                bool esValido = false;
-                for (var position in movimientosValidos) {
-                  if (position[0] == fila && position[1] == columna) {
-                    esValido = true;
-                    break;
-                  }
-                }
-            
-                return CasillaAjedrez(
-                  seleccionada: seleccionada,
-                  esBlanca: esBlanca(index),
-                  pieza: tablero[fila][columna],
-                  esValido: esValido,
-                  onTap: () => seleccionadaPieza(fila, columna),
-                );
-              },
-            ),
-          ),
-          //PIEZAS NEGRAS MUERTAS
-          Expanded(
-            child: GridView.builder(
-              itemCount: piezasNegrasMuertas.length,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 8),
-              itemBuilder: (context, index) => PiezaMuerta(
-                pathImagen: piezasNegrasMuertas[index].nombreImagen,
-                esBlanca: false,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () => GoRouter.of(context).go('/'),
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(
-                    Color.fromRGBO(255, 136, 0, 1)),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+      body: Container(
+        color : Color.fromRGBO(49, 45, 45, 1),
+        child: Column(
+          children: [
+            //MODO DE JUEGO
+            Flexible(
+              child: Container(
+                margin: EdgeInsets.only(top: 10), // Añade margen en la parte superior
+                alignment: Alignment.topCenter,
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(10), // Redondea los bordes
+                ),
+                height: 50,
+                width: 170,
+                 child: Center(
+                    child: Text(
+                      modoDeJuego,
+                      style: GoogleFonts.play(
+                        fontSize: 25,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      )
+                    ),
                   ),
+              ),
+            ),
+            SizedBox(height: 40),
+            //PIEZAS BLANCAS MUERTAS
+            /*
+            Expanded(
+              child: GridView.builder(
+                itemCount: piezasBlancasMuertas.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 8),
+                itemBuilder: (context, index) => PiezaMuerta(
+                  pathImagen: piezasBlancasMuertas[index].nombreImagen,
+                  esBlanca: true,
                 ),
               ),
-              child: const Text('Back',
-                  style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
             ),
-          ),
-        ],
+            */
+            Column(
+              children: [
+                PlayerRow(playerName: 'Jugador 1',initialTime: Duration(minutes: 10), esBlanca: false),
+              ]
+            ),
+            SizedBox(height: 10),
+            //TABLERO
+            Flexible(
+              flex:3,
+              child:Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child:  GridView.builder(
+                  itemCount: 8 * 8,
+                  physics: const NeverScrollableScrollPhysics(),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 8),
+                  itemBuilder: (context, index) {
+                    int fila = index ~/ 8;
+                    int columna = index % 8;
+                
+                    bool seleccionada =
+                        filaSeleccionada == fila && columnaSeleccionada == columna;
+                
+                    bool esValido = false;
+                    for (var position in movimientosValidos) {
+                      if (position[0] == fila && position[1] == columna) {
+                        esValido = true;
+                        break;
+                      }
+                    }
+                
+                    return CasillaAjedrez(
+                      seleccionada: seleccionada,
+                      esBlanca: esBlanca(index),
+                      pieza: tablero[fila][columna],
+                      esValido: esValido,
+                      onTap: () => seleccionadaPieza(fila, columna),
+                    );
+                  },
+                ),
+              ),
+            ),
+            //PIEZAS NEGRAS MUERTAS
+            /*
+            Expanded(
+              child: GridView.builder(
+                itemCount: piezasNegrasMuertas.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 8),
+                itemBuilder: (context, index) => PiezaMuerta(
+                  pathImagen: piezasNegrasMuertas[index].nombreImagen,
+                  esBlanca: false,
+                ),
+              ),
+            ),
+            */
+            //SizedBox(height: 10),
+            Column(
+              children: [
+                PlayerRow(playerName: 'Jugador 2',initialTime: Duration(minutes: 10), esBlanca: true),
+              ]
+            ),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton(
+                onPressed: () => GoRouter.of(context).go('/chess'),
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromRGBO(255, 136, 0, 1)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                child: const Text('Back',
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

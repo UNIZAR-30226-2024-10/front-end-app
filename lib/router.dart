@@ -142,24 +142,16 @@ final router = GoRouter(
           builder: (context, state) => RankingScreenRapid(),
         ),
         GoRoute(
-          path: 'juegoLocalBLITZ',
-          builder: (context, state) => TableroAjedrez(modoJuego: Modos.BLITZ),
-        ),
-        GoRoute(
-          path: 'juegoLocalBULLET',
+          path: 'chess/bullet',
           builder: (context, state) => TableroAjedrez(modoJuego: Modos.BULLET),
         ),
         GoRoute(
-          path: 'juegoLocalRAPID',
-          pageBuilder: (context, state) {
-            return buildMyTransition<void>(
-              key: ValueKey('juegoLocalRAPID'),
-              color: context.watch<Palette>().backgroundPlaySession,
-              child: const TableroAjedrez(
-                modoJuego: Modos.RAPID,
-              ),
-            );
-          },
+          path: 'chess/rapid',
+          builder: (context, state) => TableroAjedrez(modoJuego: Modos.RAPID),
+        ),
+        GoRoute(
+          path: 'chess/blitz',
+          builder: (context, state) => TableroAjedrez(modoJuego: Modos.BLITZ),
         ),
       ],
     ),
