@@ -165,13 +165,13 @@ class _BattlePassState extends State<BattlePass> {
                           children: [
                             if (tier.rewardType == 'pieza') ...[
                               SvgPicture.asset(
-                                '../assets/images/images_pase/pieces/${tier.reward}/bK.svg',
+                                'assets/images/images_pase/pieces/${tier.reward}/bK.svg',
                                 width: 42,
                                 height: 42,
                               ),
                               SizedBox(width: 8),
                               SvgPicture.asset(
-                                '../assets/images/images_pase/pieces/${tier.reward}/wQ.svg',
+                                'assets/images/images_pase/pieces/${tier.reward}/wQ.svg',
                                 width: 42,
                                 height: 42,
                               ),

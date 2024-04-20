@@ -34,6 +34,23 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/images_pase/boards/
+    - assets/images/images_pase/pieces/alpha/
+    - assets/images/images_pase/pieces/anarcandy/
+    - assets/images/images_pase/pieces/cardinal/
+    - assets/images/images_pase/pieces/cburnett/
+    - assets/images/images_pase/pieces/celtic/
+    - assets/images/images_pase/pieces/chess7/
+    - assets/images/images_pase/pieces/chessnut/
+    - assets/images/images_pase/pieces/companion/
+    - assets/images/images_pase/pieces/fantasy/
+    - assets/images/images_pase/pieces/fresca/
+    - assets/images/images_pase/pieces/governor/
+    - assets/images/images_pase/pieces/kosal/
+    - assets/images/images_pase/pieces/leipzig/
+    - assets/images/images_pase/pieces/maestro/
+    - assets/images/images_pase/pieces/mpchess/
+    - assets/images/images_pase/pieces/pixel/
     - assets/json/
     - assets/music/
     - assets/sfx/
