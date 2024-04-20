@@ -1,35 +1,57 @@
 import 'dart:async';
+import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PlayerRow extends StatefulWidget {
   final String playerName;
-  final Duration initialTime;
+  Duration initialTime;
   final bool esBlanca;
+  //Si es bñanca es true, si es negra es false
+  bool _timerPaused = true;
+  int piecesCaptured = 0;
 
-  const PlayerRow({
+  PlayerRow({
     Key? key,
     required this.playerName,
     required this.initialTime,
     required this.esBlanca,
   }) : super(key: key);
 
+  void changeTimer(Duration newTime) {
+    this.initialTime = newTime;
+    if(esBlanca){
+      this._timerPaused = false;
+    }
+  }
+
+  void pauseTimer() {
+    this._timerPaused = true;
+  }
+
+  void resumeTimer() {
+    this._timerPaused = false;
+  }
+
+  void incrementPiecesCaptured() {
+    this.piecesCaptured++;
+  }
+
+ 
   @override
   _PlayerRowState createState() => _PlayerRowState();
+
 }
 
 class _PlayerRowState extends State<PlayerRow> {
-  late int piecesCaptured;
   late Timer _timer;
   late Duration _elapsedTime;
-  bool _timerPaused = false;
 
   @override
   void initState() {
     super.initState();
-    piecesCaptured = 0;
     _elapsedTime = widget.initialTime;
-    _timer = Timer.periodic(Duration(seconds: 1), _incrementTimer);
+    _timer = Timer.periodic(Duration(seconds: 1), _decrementTimer);
   }
 
   @override
@@ -38,30 +60,12 @@ class _PlayerRowState extends State<PlayerRow> {
     super.dispose();
   }
 
-  void _incrementTimer(Timer timer) {
-    if (!_timerPaused) {
+  void _decrementTimer(Timer timer) {
+    if (!widget._timerPaused) {
       setState(() {
         _elapsedTime -= Duration(seconds: 1);
       });
     }
-  }
-
-  void incrementPiecesCaptured() {
-    setState(() {
-      piecesCaptured++;
-    });
-  }
-
-  void pauseTimer() {
-    setState(() {
-      _timerPaused = true;
-    });
-  }
-
-  void resumeTimer() {
-    setState(() {
-      _timerPaused = false;
-    });
   }
 
   @override
@@ -96,11 +100,11 @@ class _PlayerRowState extends State<PlayerRow> {
                 ),
             ),
           ),
-          SizedBox(width: 50),
+          SizedBox(width: 40),
           Align(
             alignment: Alignment.centerRight,
             child : Text(
-            'Fichas comidas: $piecesCaptured',
+            'Fichas comidas: ' + widget.piecesCaptured.toString(),
             style: GoogleFonts.play(
                   fontSize: 15,
                   color: Colors.white,

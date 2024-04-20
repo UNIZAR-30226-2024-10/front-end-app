@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/play_session/stats_game.dart';
+import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
@@ -55,6 +56,12 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   List<PiezaAjedrez> piezasNegrasMuertas = [];
 
+  Duration duracionPartida = Duration(minutes: 10);
+
+  PlayerRow player1 = PlayerRow(playerName: 'Jugador 1',initialTime: Duration(minutes: 10), esBlanca: false);
+
+  PlayerRow player2 = PlayerRow(playerName: 'Jugador 2',initialTime: Duration(minutes: 10), esBlanca: true);
+
   bool esTurnoBlancas = true;
 
   bool hayJaque = false;
@@ -78,12 +85,18 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   void _tratamientoMododeJuego() async{
     if(widget.modoJuego == Modos.BLITZ){
       modoDeJuego = 'BLITZ';
+      player1.changeTimer(Duration(minutes: 3));
+      player2.changeTimer(Duration(minutes: 3));
     }
     else if(widget.modoJuego == Modos.RAPID){
       modoDeJuego = 'RAPID';
+      player1.changeTimer(Duration(minutes: 10));
+      player2.changeTimer(Duration(minutes: 10));
     }
     else{
       modoDeJuego = 'BULLET';
+      player1.changeTimer(Duration(minutes: 1));
+      player2.changeTimer(Duration(minutes: 1));
     }
   }
 
@@ -374,9 +387,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     if(tablero[filaNueva][columnaNueva] != null){
       if(tablero[filaNueva][columnaNueva]!.esBlanca){
         piezasBlancasMuertas.add(tablero[filaNueva][columnaNueva]!);
+        player1.incrementPiecesCaptured();
       }
       else{
         piezasNegrasMuertas.add(tablero[filaNueva][columnaNueva]!);
+        player2.incrementPiecesCaptured();
       }
       //si se trata de una muerte, debemos eliminar la pieza del tablero
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
@@ -540,6 +555,15 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     }
 
     //PARAR CRONOMETRO Y CAMBIAR DE TURNO
+    if(jsonMapTableroAntiguo['turno'] == 'blancas'){
+      player2.pauseTimer();
+      player1.resumeTimer();
+    }
+    else{
+      player2.resumeTimer();
+      player1.pauseTimer();
+    }
+
     print('Jugada valida');
     tablero[filaNueva][columnaNueva] = piezaSeleccionada;
     tablero[filaSeleccionada][columnaSeleccionada] = null;
@@ -600,15 +624,18 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               ),
             ),
             */
-            Column(
+             Column(
               children: [
-                PlayerRow(playerName: 'Jugador 1',initialTime: Duration(minutes: 10), esBlanca: false),
+                Padding(padding: 
+                  EdgeInsets.symmetric(horizontal: 7.0),
+                  child:player1,
+                ),
               ]
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             //TABLERO
             Flexible(
-              flex:3,
+              flex:2,
               child:Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child:  GridView.builder(
@@ -656,12 +683,15 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               ),
             ),
             */
-            //SizedBox(height: 10),
             Column(
               children: [
-                PlayerRow(playerName: 'Jugador 2',initialTime: Duration(minutes: 10), esBlanca: true),
+                Padding(padding: 
+                  EdgeInsets.symmetric(horizontal: 7.0),
+                  child: player2,
+                ),
               ]
             ),
+            SizedBox(height: 50),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: ElevatedButton(
@@ -675,13 +705,19 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                     ),
                   ),
                 ),
-                child: const Text('Back',
-                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                child: Text(
+                      'Rendirse',
+                      style: GoogleFonts.play(
+                        fontSize: 25,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
               ),
             ),
+            ),
           ],
-        ),
       ),
+    )
     );
   }
 }
