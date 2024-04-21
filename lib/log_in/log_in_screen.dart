@@ -145,7 +145,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12.0),
+                  padding: const EdgeInsets.symmetric(vertical: 0.0),
                   child: GestureDetector(
                     onTap: () {
                       GoRouter.of(context).go('/register');
