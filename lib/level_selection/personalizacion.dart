@@ -59,135 +59,122 @@ class Personalizacion extends StatelessWidget {
   bool _isSwitched = false;
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Stack(children: [
-          Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/images/board2.jpg"),
-                fit: BoxFit.fill,
-              ),
+    return Stack(children: [
+      Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/images/board2.jpg"),
+            fit: BoxFit.fill,
+          ),
+        ),
+      ),
+      DefaultTabController(
+        initialIndex: 0,
+        length: 2,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+            title: Text('Personalización',
+                style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
+            bottom: const TabBar(
+              labelColor: Color.fromRGBO(255, 136, 0, 1),
+              indicatorColor: Color.fromRGBO(255, 136, 0, 1),
+              overlayColor: MaterialStatePropertyAll(Colors.transparent),
+              tabs: <Widget>[
+                Tab(
+                  icon: Icon(Icons.brush),
+                ),
+                Tab(
+                  icon: Icon(Icons.emoji_emotions),
+                ),
+              ],
             ),
           ),
-          DefaultTabController(
-            initialIndex: 0,
-            length: 2,
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-                title: GestureDetector(
-                  onTap: () {
-                    GoRouter.of(context).push('/');
+          body: TabBarView(
+            children: <Widget>[
+              Container(
+                color: Colors.transparent,
+                child: ListView.builder(
+                  itemCount: sets.length,
+                  itemBuilder: (context, index) {
+                    final set = sets[index];
+
+                    return Card(
+                      elevation: 3,
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      color: Color.fromRGBO(49, 45, 45,
+                          1), // Cambia el color de fondo de la tarjeta
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${set.name}',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  'assets/images/images_pase/pieces/${set.name}/bK.svg',
+                                  width: 42,
+                                  height: 42,
+                                ),
+                                SvgPicture.asset(
+                                  'assets/images/images_pase/pieces/${set.name}/wQ.svg',
+                                  width: 42,
+                                  height: 42,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    );
                   },
-                  child: Text(
-                    'ChessHub',
-                    style: TextStyle(
-                        fontFamily: 'Oswald',
-                        color: Color.fromRGBO(255, 255, 255, 1)),
-                  ),
-                ),
-                bottom: const TabBar(
-                  labelColor: Color.fromRGBO(255, 136, 0, 1),
-                  indicatorColor: Color.fromRGBO(255, 136, 0, 1),
-                  overlayColor: MaterialStatePropertyAll(Colors.transparent),
-                  tabs: <Widget>[
-                    Tab(
-                      icon: Icon(Icons.brush),
-                    ),
-                    Tab(
-                      icon: Icon(Icons.emoji_emotions),
-                    ),
-                  ],
                 ),
               ),
-              body: TabBarView(
-                children: <Widget>[
-                  Container(
-                    color: Colors.transparent,
-                    child: ListView.builder(
-                      itemCount: sets.length,
-                      itemBuilder: (context, index) {
-                        final set = sets[index];
+              Container(
+                color: Colors.transparent,
+                child: ListView.builder(
+                  itemCount: emotes.length,
+                  itemBuilder: (context, index) {
+                    final emote = emotes[index];
 
-                        return Card(
-                          elevation: 3,
-                          margin:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                          color: Color.fromRGBO(49, 45, 45,
-                              1), // Cambia el color de fondo de la tarjeta
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${set.name}',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    SvgPicture.asset(
-                                      'assets/images/images_pase/pieces/${set.name}/bK.svg',
-                                      width: 42,
-                                      height: 42,
-                                    ),
-                                    SvgPicture.asset(
-                                      'assets/images/images_pase/pieces/${set.name}/wQ.svg',
-                                      width: 42,
-                                      height: 42,
-                                    ),
-                                  ],
-                                )
-                              ],
+                    return Card(
+                      elevation: 3,
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                      color: Color.fromRGBO(49, 45, 45,
+                          1), // Cambia el color de fondo de la tarjeta
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${emote.emoji}',
+                              style: TextStyle(
+                                fontSize: 30,
+                                color: Colors.white,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  Container(
-                    color: Colors.transparent,
-                    child: ListView.builder(
-                      itemCount: emotes.length,
-                      itemBuilder: (context, index) {
-                        final emote = emotes[index];
-
-                        return Card(
-                          elevation: 3,
-                          margin:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-                          color: Color.fromRGBO(49, 45, 45,
-                              1), // Cambia el color de fondo de la tarjeta
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Text(
-                                  '${emote.emoji}',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                ],
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
-            ),
+            ],
           ),
-        ]));
+        ),
+      ),
+    ]);
   }
 }

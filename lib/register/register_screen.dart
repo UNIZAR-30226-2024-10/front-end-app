@@ -18,43 +18,32 @@ class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage("assets/images/board2.jpg"),
-                  fit: BoxFit.fill,
-                ),
-              ),
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/board2.jpg"),
+              fit: BoxFit.fill,
             ),
-            Scaffold(
-              backgroundColor: Colors.transparent,
-              appBar: AppBar(
-                backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-                title: GestureDetector(
-                  onTap: () {
-                    GoRouter.of(context).push('/');
-                  },
-                  child: Text(
-                    'ChessHub',
-                    style: TextStyle(
-                        fontFamily: 'Oswald',
-                        color: Color.fromRGBO(255, 255, 255, 1)),
-                  ),
-                ),
-              ),
-              body: Center(
-                child: Padding(
-                  padding: EdgeInsets.all(20.0),
-                  child: LoginFormWidget(),
-                ),
-              ),
+          ),
+        ),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+            title: Text('Registrar Cuenta',
+                style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
+          ),
+          body: Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: LoginFormWidget(),
             ),
-          ],
-        ));
+          ),
+        ),
+      ],
+    );
   }
 }
 

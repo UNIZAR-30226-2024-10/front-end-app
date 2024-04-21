@@ -39,46 +39,51 @@ class SettingsScreen extends StatelessWidget {
           title: Text('Settings',
               style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
         ),
-        body: ResponsiveScreen(
-          squarishMainArea: ListView(
-            children: [
-              _gap,
-              const _NameChangeLine(
-                'Name',
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: settings.soundsOn,
-                builder: (context, soundsOn, child) => _SettingsLine(
-                  'Sound FX',
-                  Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off),
-                  onSelected: () => settings.toggleSoundsOn(),
+        body: Card(
+          elevation: 3,
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          color: Color(0xFF506C64), // Cambia el color de fondo de la tarjeta
+          child: ResponsiveScreen(
+            squarishMainArea: ListView(
+              children: [
+                _gap,
+                const _NameChangeLine(
+                  'Name',
                 ),
-              ),
-              ValueListenableBuilder<bool>(
-                valueListenable: settings.musicOn,
-                builder: (context, musicOn, child) => _SettingsLine(
-                  'Music',
-                  Icon(musicOn ? Icons.music_note : Icons.music_off),
-                  onSelected: () => settings.toggleMusicOn(),
+                ValueListenableBuilder<bool>(
+                  valueListenable: settings.soundsOn,
+                  builder: (context, soundsOn, child) => _SettingsLine(
+                    'Sound FX',
+                    Icon(soundsOn ? Icons.graphic_eq : Icons.volume_off),
+                    onSelected: () => settings.toggleSoundsOn(),
+                  ),
                 ),
-              ),
-              _SettingsLine(
-                'Reset progress',
-                const Icon(Icons.delete),
-                onSelected: () {
-                  context.read<PlayerProgress>().reset();
+                ValueListenableBuilder<bool>(
+                  valueListenable: settings.musicOn,
+                  builder: (context, musicOn, child) => _SettingsLine(
+                    'Music',
+                    Icon(musicOn ? Icons.music_note : Icons.music_off),
+                    onSelected: () => settings.toggleMusicOn(),
+                  ),
+                ),
+                _SettingsLine(
+                  'Reset progress',
+                  const Icon(Icons.delete),
+                  onSelected: () {
+                    context.read<PlayerProgress>().reset();
 
-                  final messenger = ScaffoldMessenger.of(context);
-                  messenger.showSnackBar(
-                    const SnackBar(
-                        content: Text('Player progress has been reset.')),
-                  );
-                },
-              ),
-              _gap,
-            ],
+                    final messenger = ScaffoldMessenger.of(context);
+                    messenger.showSnackBar(
+                      const SnackBar(
+                          content: Text('Player progress has been reset.')),
+                    );
+                  },
+                ),
+                _gap,
+              ],
+            ),
+            rectangularMenuArea: Spacer(),
           ),
-          rectangularMenuArea: Spacer(),
         ),
       ),
     ]);
