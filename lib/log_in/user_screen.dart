@@ -10,7 +10,7 @@ class UserProfileScreen extends StatelessWidget {
       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/images/board.jpg"),
+            image: AssetImage("assets/images/board2.jpg"),
             fit: BoxFit.fill,
           ),
         ),
@@ -42,13 +42,13 @@ class UserProfileScreen extends StatelessWidget {
               Text(
                 'Elo: 1800',
                 style: TextStyle(
-                  fontSize: 16,
-                ),
+                    fontSize: 16, color: Color.fromRGBO(255, 136, 0, 1)),
               ),
               SizedBox(height: 16),
               Text(
                 'W/L: 33/10',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                    fontSize: 16, color: Color.fromRGBO(255, 136, 0, 1)),
               ),
             ],
           ),

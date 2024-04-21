@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-//import 'package:provider/provider.dart';
+import '../style/header.dart';
 
-//import '../audio/audio_controller.dart';
-//import '../audio/sounds.dart';
+class Game {
+  final String fecha;
+  final String wl;
+  final int elo;
+
+  Game({required this.fecha, required this.wl, required this.elo});
+}
 
 class MatchHistory extends StatefulWidget {
   @override
@@ -11,8 +15,28 @@ class MatchHistory extends StatefulWidget {
 }
 
 class _MatchHistoryState extends State<MatchHistory> {
+  final List<Game> games = [
+    Game(fecha: '10/10/10', elo: 30, wl: 'W'),
+    Game(fecha: '11/10/10', elo: 27, wl: 'W'),
+    Game(fecha: '11/10/10', elo: 25, wl: 'W'),
+    Game(fecha: '12/10/10', elo: 32, wl: 'W'),
+    Game(fecha: '12/10/10', elo: -15, wl: 'L'),
+    Game(fecha: '15/10/10', elo: -20, wl: 'L'),
+    Game(fecha: '16/10/10', elo: 32, wl: 'W'),
+    Game(fecha: '16/10/10', elo: -15, wl: 'L'),
+    Game(fecha: '17/10/10', elo: -20, wl: 'L'),
+    Game(fecha: '18/10/10', elo: 32, wl: 'W'),
+    Game(fecha: '19/10/10', elo: -15, wl: 'L'),
+    Game(fecha: '19/10/10', elo: -20, wl: 'L'),
+    Game(fecha: '20/10/10', elo: 32, wl: 'W'),
+    Game(fecha: '20/10/10', elo: -15, wl: 'L'),
+    Game(fecha: '21/10/10', elo: 33, wl: 'W'),
+    // Añade más games aquí...
+  ];
+
   @override
   Widget build(BuildContext context) {
+    // Ordena la lista de usuarios por puntos en orden descendente
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
@@ -25,57 +49,55 @@ class _MatchHistoryState extends State<MatchHistory> {
       Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          title: Text(
+            'Historial',
+            style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
+          ),
           backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-          title: Text('Historial',
-              style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[_buildTable()],
-              ),
-              SizedBox(height: 20.0),
-            ],
+        body: Container(
+          color: Colors.transparent,
+          child: ListView.builder(
+            itemCount: games.length,
+            itemBuilder: (context, index) {
+              final game = games[index];
+
+              return Card(
+                elevation: 3,
+                margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                color: Color.fromRGBO(
+                    49, 45, 45, 1), // Cambia el color de fondo de la tarjeta
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Fecha: ${game.fecha}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text('W/L: ${game.wl}',
+                          style: TextStyle(fontSize: 18, color: Colors.orange)),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Text('+/-: ${game.elo}',
+                              style: TextStyle(
+                                  fontSize: 18, color: Colors.orange)),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
           ),
         ),
-      ),
+      )
     ]);
   }
-
-  Widget _buildTable() {
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(),
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      padding: EdgeInsets.all(10.0),
-      child: Column(
-        children: <Widget>[
-          Text(
-            'Table',
-            style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10.0),
-          _buildTableRow(),
-          _buildTableRow(),
-          _buildTableRow(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTableRow() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: <Widget>[
-        Text('Match 1'),
-        Text('Match 2'),
-        Text('Match 3'),
-      ],
-    );
-  }
 }
-// rwq
