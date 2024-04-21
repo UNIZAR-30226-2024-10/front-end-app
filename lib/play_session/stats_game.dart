@@ -5,7 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class PlayerRow extends StatefulWidget {
   final String playerName;
-  Duration initialTime;
+  Duration initialTime = Duration(minutes: 0, seconds: 0);
   final bool esBlanca;
   //Si es bñanca es true, si es negra es false
   bool _timerPaused = true;
@@ -14,7 +14,6 @@ class PlayerRow extends StatefulWidget {
   PlayerRow({
     Key? key,
     required this.playerName,
-    required this.initialTime,
     required this.esBlanca,
   }) : super(key: key);
 

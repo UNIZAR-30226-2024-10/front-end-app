@@ -58,9 +58,9 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   Duration duracionPartida = Duration(minutes: 10);
 
-  PlayerRow player1 = PlayerRow(playerName: 'Jugador 1',initialTime: Duration(minutes: 10), esBlanca: false);
+  PlayerRow player1 = PlayerRow(playerName: 'Jugador 1', esBlanca: false);
 
-  PlayerRow player2 = PlayerRow(playerName: 'Jugador 2',initialTime: Duration(minutes: 10), esBlanca: true);
+  PlayerRow player2 = PlayerRow(playerName: 'Jugador 2', esBlanca: true);
 
   bool esTurnoBlancas = true;
 
