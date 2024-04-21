@@ -29,7 +29,7 @@ class SettingsScreen extends StatelessWidget {
           Container(
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: AssetImage("assets/images/board.jpg"),
+                image: AssetImage("assets/images/board2.jpg"),
                 fit: BoxFit.fill,
               ),
             ),
