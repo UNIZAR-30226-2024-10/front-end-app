@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:ChessHub/main_menu/introduction_screen.dart';
 import '../audio/audio_controller.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
@@ -173,38 +173,19 @@ class MainMenuScreen extends StatelessWidget {
               ],
             ),
           ),
+          //INFORMACION DEL JUEGO
           body: Center(
-              child: Container(
-                  color: Color.fromRGBO(49, 45, 45, 1),
-                  width: 300,
-                  height: 375,
-                  child: Center(
-                      child: RichText(
-                    textAlign: TextAlign.center,
-                    text: TextSpan(
-                      text: 'Modos de juego: \n\n',
-                      style: TextStyle(
-                          color: Color.fromRGBO(255, 255, 255, 1),
-                          fontSize: 33),
-                      children: const <TextSpan>[
-                        TextSpan(
-                            text: 'Bullet: 1 minuto de juego \n\n',
-                            style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                                fontSize: 20)),
-                        TextSpan(
-                            text: 'Blitz: 3 minutos de juego \n\n',
-                            style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                                fontSize: 20)),
-                        TextSpan(
-                            text: 'Rapid: 10 minutos de juego \n\n',
-                            style: TextStyle(
-                                color: Color.fromRGBO(255, 255, 255, 1),
-                                fontSize: 20)),
-                      ],
-                    ),
-                  )))),
+
+            child: Padding(
+              padding: EdgeInsets.only(
+                left:30,
+                right:30,
+                top:30,
+                bottom: 30,
+              ),
+              child: IntroductionScreen(),
+            )
+          )
         )
       ],
     );
