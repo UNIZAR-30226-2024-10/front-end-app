@@ -19,6 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/play_session/stats_game.dart';
+import 'package:ChessHub/win_game/jaque_mate.dart';
 import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -67,6 +68,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   bool hayJaque = false;
 
   bool hayJaqueMate = false;
+
+  bool finPartida = false;
 
   String modoDeJuego = '';
 
@@ -130,25 +133,16 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       print('ENVIO DE TABLERO A BACKEND EXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
-      print(jsonMapMovimientos['allMovements']);
+      if(jsonMapMovimientos['allMovements'] != null){
+        print(jsonMapMovimientos['allMovements']);
+      }
 
-      //Primero comprobamos si hay jaque mate
-      /*
-          ************CÓDIGO EN MANTENIMIENTO************
-      if(jsonMapMovimientos.containsKey('rey') && jsonMapMovimientos['rey'].length == 0 && jsonMapMovimientos.containsKey('comer') && jsonMapMovimientos['comer'].length == 0 && 
-        jsonMapMovimientos.containsKey('bloquear') && jsonMapMovimientos['bloquear'].length == 0){
-        hayJaqueMate = true;
+      //Comprobamos si hay jaque mate
+      if(jsonMapMovimientos['Jaque mate'] != null){
         print('JAQUE MATE\n');
+        hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
+        return true;
       }
-      //Segundo comprobamos si hay jaque 
-      else if(jsonMapMovimientos.containsKey('rey') && jsonMapMovimientos['rey'].length != 0 && jsonMapMovimientos.containsKey('comer') && jsonMapMovimientos['comer'].length != 0 && 
-        jsonMapMovimientos.containsKey('bloquear') && jsonMapMovimientos['bloquear'].length != 0){
-        hayJaque = true;
-        print('RESPUESTA DE LA API TRAS JAQUE\n');
-        String prueba = jsonMapMovimientos['allMovements'] as String;
-        print(prueba);
-      }
-      */
       
       //Finalmente devolvemos si la jugada es legal o no
       return jsonMapMovimientos['jugadaLegal'] as bool;
@@ -568,6 +562,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     tablero[filaNueva][columnaNueva] = piezaSeleccionada;
     tablero[filaSeleccionada][columnaSeleccionada] = null;
 
+    if(hayJaqueMate){
+      finPartida = true;
+      player1.pauseTimer();
+      player2.pauseTimer();
+    }
     //limpiamos la selección
     setState(() {
       piezaSeleccionada = null;
@@ -584,7 +583,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     return Scaffold(
       body: Container(
         color : Color.fromRGBO(49, 45, 45, 1),
-        child: Column(
+        child:
+         Column(
           children: [
             //MODO DE JUEGO
             Flexible(
@@ -638,35 +638,40 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               flex:2,
               child:Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child:  GridView.builder(
-                  itemCount: 8 * 8,
-                  physics: const NeverScrollableScrollPhysics(),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 8),
-                  itemBuilder: (context, index) {
-                    int fila = index ~/ 8;
-                    int columna = index % 8;
-                
-                    bool seleccionada =
-                        filaSeleccionada == fila && columnaSeleccionada == columna;
-                
-                    bool esValido = false;
-                    for (var position in movimientosValidos) {
-                      if (position[0] == fila && position[1] == columna) {
-                        esValido = true;
-                        break;
-                      }
-                    }
-                
-                    return CasillaAjedrez(
-                      seleccionada: seleccionada,
-                      esBlanca: esBlanca(index),
-                      pieza: tablero[fila][columna],
-                      esValido: esValido,
-                      onTap: () => seleccionadaPieza(fila, columna),
-                    );
-                  },
-                ),
+                child: 
+                finPartida
+                  //Hay jaque mate
+                  ? JaqueMate(esColorBlanca: !esTurnoBlancas)
+                  :  
+                  GridView.builder(
+                        itemCount: 8 * 8,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 8),
+                        itemBuilder: (context, index) {
+                          int fila = index ~/ 8;
+                          int columna = index % 8;
+                      
+                          bool seleccionada =
+                              filaSeleccionada == fila && columnaSeleccionada == columna;
+                      
+                          bool esValido = false;
+                          for (var position in movimientosValidos) {
+                            if (position[0] == fila && position[1] == columna) {
+                              esValido = true;
+                              break;
+                            }
+                          }
+                      
+                          return CasillaAjedrez(
+                            seleccionada: seleccionada,
+                            esBlanca: esBlanca(index),
+                            pieza: tablero[fila][columna],
+                            esValido: esValido,
+                            onTap: () => seleccionadaPieza(fila, columna),
+                          );
+                        },
+                      )
               ),
             ),
             //PIEZAS NEGRAS MUERTAS
@@ -692,9 +697,22 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
               ]
             ),
             SizedBox(height: 50),
+
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
+              child: 
+              finPartida
+              //Hay jaque mate
+              ? Text(
+                      'PARTIDA FINALIZADA',
+                      style: GoogleFonts.play(
+                        fontSize: 25,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+              )
+              : 
+              ElevatedButton(
                 onPressed: () => GoRouter.of(context).go('/chess'),
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all<Color>(
@@ -705,7 +723,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                     ),
                   ),
                 ),
-                child: Text(
+                child: 
+                Text(
                       'Rendirse',
                       style: GoogleFonts.play(
                         fontSize: 25,

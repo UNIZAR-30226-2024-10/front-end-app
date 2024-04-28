@@ -8,7 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 
 class ChessPlaySessionScreen extends StatelessWidget {
-  const ChessPlaySessionScreen({super.key});
+  const ChessPlaySessionScreen({super.key,});
 
   @override
   Widget build(BuildContext context) {
