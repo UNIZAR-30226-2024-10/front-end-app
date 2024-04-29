@@ -651,13 +651,13 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                     ),
             ),
           ),
-          SizedBox(height: 20),
+          //SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           // PlayRow de Jugador 2
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 7.0),
             child: player2,
           ),
-          SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
           // Botones de rendirse o continuar la partida
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -774,7 +774,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                         ),
                       ),
                     ),
-                  SizedBox(height: 280),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             ],
           ),
         ],
