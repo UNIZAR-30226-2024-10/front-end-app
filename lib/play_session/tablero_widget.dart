@@ -59,9 +59,9 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   Duration duracionPartida = Duration(minutes: 10);
 
-  PlayerRow player1 = PlayerRow(playerName: 'Jugador 1', esBlanca: false);
+  PlayerRow player1 = PlayerRow(playerName: 'NEGRAS', esBlanca: false);
 
-  PlayerRow player2 = PlayerRow(playerName: 'Jugador 2', esBlanca: true);
+  PlayerRow player2 = PlayerRow(playerName: 'BLANCAS', esBlanca: true);
 
   bool esTurnoBlancas = true;
 
@@ -618,7 +618,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
             padding: EdgeInsets.symmetric(horizontal: 7.0),
             child: player1,
           ),
-          SizedBox(height: 20),
+          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
           // TABLERO
           Expanded(
             flex: 4, // Ajusta este valor según tus necesidades
@@ -657,8 +657,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
             padding: EdgeInsets.symmetric(horizontal: 7.0),
             child: player2,
           ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          // Botones de rendirse o continuar la partida
+          SizedBox(height: MediaQuery.of(context).size.height * 0.07),
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -680,7 +679,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                       child: Column(
                         children: [
                           Align(
-                            alignment: Alignment.center,
+                            alignment: Alignment.bottomCenter,
                             child: Text(
                               '¿Estás seguro de que quieres rendirte?',
                               style: GoogleFonts.play(
@@ -774,7 +773,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                         ),
                       ),
                     ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.17),
             ],
           ),
         ],

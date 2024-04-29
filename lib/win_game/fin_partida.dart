@@ -19,7 +19,7 @@ class FinPartida extends StatelessWidget {
         : 'Rey ahogado\nEmpate\nNingún jugador gana';
 
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Color.fromRGBO(49, 45, 45, 1),
       body: Center(
         child: Container(
           width: 450,
@@ -52,7 +52,7 @@ class FinPartida extends StatelessWidget {
                   GoRouter.of(context).go('/chess');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[900]!,
+                  backgroundColor: Colors.grey,
                   padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
