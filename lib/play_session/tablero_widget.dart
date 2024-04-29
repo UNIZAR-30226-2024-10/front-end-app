@@ -137,6 +137,16 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
 
       if(jsonMapMovimientos['allMovements'] != null){
+        
+        if (jsonMapMovimientos['jaque'] == null) {
+          print('JAQUE\n');
+          print(jsonMapMovimientos['jaque']);
+          hayJaque = true;
+        }
+        else{
+          hayJaque = false;
+        }
+        print('MOVIMIENTOS VÁLIDOS\n');
         print(jsonMapMovimientos['allMovements']);
       }
       //Comprobamos si hay jaque mate
@@ -180,9 +190,32 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
   }
   
-  //CALCULAR MOVIMIENTOS POSIBLES
-  List<String> obtenerMovimientosValidos(
-      int fila, int columna, PiezaAjedrez pieza) {
+  //CALULAR MOVIMIENTOS DE REY EN JAQUE
+
+  List<String> obtenerMovimientosReyJaque(){
+    List<String> movimientosValidosString = [];
+    int len = (jsonMapMovimientos['allMovements']['rey'].length as int);
+      for (int i = 1; i < len; i++) {
+        String mov =
+                jsonEncode(jsonMapMovimientos['allMovements']['rey'][i]);
+            print('Anyadiendo el siguiente movimiento: ');
+            print(mov);
+            movimientosValidosString.add(mov);
+      }
+    return movimientosValidosString;
+  }
+  
+  List<String> obtenerMovimientosValidosJaque(int fila, int columna,PiezaAjedrez pieza){
+    List<String> movimientosValidosString = [];
+    List<int> coordenadasApi = convertirAppToApi(fila, columna);
+    bool blanca = pieza.esBlanca;
+    String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';
+
+    return movimientosValidosString;
+  }
+
+  //CALCULAR MOVIMIENTOS POSIBLES SIN JAQUE
+  List<String> obtenerMovimientosValidos(int fila, int columna, PiezaAjedrez pieza) {
     List<String> movimientosValidosString = [];
     // Transformar la fila y la columna en el formato de la API para que pueda ser leído
     List<int> coordenadasApi = convertirAppToApi(fila, columna);
@@ -369,8 +402,15 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       }
 
       print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
-      movimientosValidos = calcularMovimientos(
+      if(!hayJaque){
+        movimientosValidos = calcularMovimientos(
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
+      }
+      else if (jsonMapMovimientos['allMovements']['rey'] != null && piezaSeleccionada?.tipoPieza == TipoPieza.rey){
+        print("MOVIMIENTOS PARA REY EN JAQUE\n");
+        print(jsonMapMovimientos['allMovements']['rey']);
+        movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
+      }
     });
   }
   
@@ -389,11 +429,15 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     if(tablero[filaNueva][columnaNueva] != null){
       if(tablero[filaNueva][columnaNueva]!.esBlanca){
         piezasBlancasMuertas.add(tablero[filaNueva][columnaNueva]!);
-        player1.incrementPiecesCaptured();
+        setState(() {
+          player1.incrementPiecesCaptured();
+        });
       }
       else{
         piezasNegrasMuertas.add(tablero[filaNueva][columnaNueva]!);
-        player2.incrementPiecesCaptured();
+        setState(() {
+          player2.incrementPiecesCaptured();
+        });
       }
       //si se trata de una muerte, debemos eliminar la pieza del tablero
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
@@ -553,6 +597,10 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       //devolvemos el string a su estado original
       jsonString = jsonEncode(jsonMapTableroAntiguo);
       jsonMapTablero = jsonMapTableroAntiguo;
+      //PONER VARIABLES DE CONTROL A FALSE
+      hayJaque = false;
+      hayJaqueMate = false;
+      hayTablas = false;
       return;
     }
 
@@ -781,6 +829,5 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     ),
   );
 }
-
 
 }
