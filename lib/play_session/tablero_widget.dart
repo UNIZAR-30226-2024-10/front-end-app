@@ -19,7 +19,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ChessHub/play_session/piezaMuerta.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/play_session/stats_game.dart';
-import 'package:ChessHub/win_game/jaque_mate.dart';
+import 'package:ChessHub/win_game/fin_partida.dart';
 import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -74,6 +74,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   String modoDeJuego = '';
 
   bool posibleRendicion = false;
+
+  bool hayTablas = false;
 
   //MÉTODOS
   @override
@@ -133,14 +135,20 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       print('ENVIO DE TABLERO A BACKEND EXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
+
       if(jsonMapMovimientos['allMovements'] != null){
         print(jsonMapMovimientos['allMovements']);
       }
-
       //Comprobamos si hay jaque mate
-      if(jsonMapMovimientos['Jaque mate'] != null){
+      else if(jsonMapMovimientos['Jaque mate'] != null){
         print('JAQUE MATE\n');
         hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
+        return true;
+      }
+      //Comprobamos si hay tablas
+      else if(jsonMapMovimientos['tablas'] != null){
+        print('TABLAS\n');
+        hayTablas = jsonMapMovimientos['tablas'] as bool;
         return true;
       }
       
@@ -562,11 +570,13 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     tablero[filaNueva][columnaNueva] = piezaSeleccionada;
     tablero[filaSeleccionada][columnaSeleccionada] = null;
 
-    if(hayJaqueMate){
+    if(hayJaqueMate || hayTablas){
       finPartida = true;
       player1.pauseTimer();
       player2.pauseTimer();
     }
+
+
     //limpiamos la selección
     setState(() {
       piezaSeleccionada = null;
@@ -577,128 +587,96 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   }
 
   //CONSTRUIR WIDGET
-  @override
+@override
   Widget build(BuildContext context) {
+  return Scaffold(
+    body: Container(
+      color: Color.fromRGBO(49, 45, 45, 1),
+      child: Column(
+        children: [
+          // MODO DE JUEGO
+          Container(
+            margin: EdgeInsets.only(top: 10),
+            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+            decoration: BoxDecoration(
+              color: Colors.orange,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              modoDeJuego,
+              style: GoogleFonts.play(
+                fontSize: 25,
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          SizedBox(height: 20),
+          // PlayRow de Jugador 1
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 7.0),
+            child: player1,
+          ),
+          SizedBox(height: 20),
+          // TABLERO
+          Expanded(
+            flex: 4, // Ajusta este valor según tus necesidades
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10.0),
+              child: finPartida && (hayJaqueMate || hayTablas)
+                  ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate)
+                  : GridView.builder(
+                      itemCount: 8 * 8,
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 8,
+                      ),
+                      itemBuilder: (context, index) {
+                        int fila = index ~/ 8;
+                        int columna = index % 8;
 
-    return Scaffold(
-      body: Container(
-        color : Color.fromRGBO(49, 45, 45, 1),
-        child:
-         Column(
-          children: [
-            //MODO DE JUEGO
-            Flexible(
-              child: Container(
-                margin: EdgeInsets.only(top: 10), // Añade margen en la parte superior
-                alignment: Alignment.topCenter,
-                decoration: BoxDecoration(
-                  color: Colors.orange,
-                  borderRadius: BorderRadius.circular(10), // Redondea los bordes
-                ),
-                height: 50,
-                width: 170,
-                 child: Center(
-                    child: Text(
-                      modoDeJuego,
+                        bool seleccionada = filaSeleccionada == fila && columnaSeleccionada == columna;
+
+                        bool esValido = movimientosValidos.any((position) => position[0] == fila && position[1] == columna);
+
+                        return CasillaAjedrez(
+                          seleccionada: seleccionada,
+                          esBlanca: esBlanca(index),
+                          pieza: tablero[fila][columna],
+                          esValido: esValido,
+                          onTap: () => seleccionadaPieza(fila, columna),
+                        );
+                      },
+                    ),
+            ),
+          ),
+          SizedBox(height: 20),
+          // PlayRow de Jugador 2
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 7.0),
+            child: player2,
+          ),
+          SizedBox(height: 20),
+          // Botones de rendirse o continuar la partida
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Se muestra si la partida ha finalizado
+              finPartida
+                  ? Text(
+                      'PARTIDA FINALIZADA',
                       style: GoogleFonts.play(
                         fontSize: 25,
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                      )
-                    ),
-                  ),
-              ),
-            ),
-            SizedBox(height: 40),
-            //PIEZAS BLANCAS MUERTAS
-            /*
-            Expanded(
-              child: GridView.builder(
-                itemCount: piezasBlancasMuertas.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 8),
-                itemBuilder: (context, index) => PiezaMuerta(
-                  pathImagen: piezasBlancasMuertas[index].nombreImagen,
-                  esBlanca: true,
-                ),
-              ),
-            ),
-            */
-             Column(
-              children: [
-                Padding(padding: 
-                  EdgeInsets.symmetric(horizontal: 7.0),
-                  child:player1,
-                ),
-              ]
-            ),
-            SizedBox(height: 20),
-            //TABLERO
-            Flexible(
-              flex:2,
-              child:Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: 
-                finPartida
-                  //Hay jaque mate
-                  ? JaqueMate(esColorBlanca: !esTurnoBlancas)
-                  :  
-                  GridView.builder(
-                        itemCount: 8 * 8,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 8),
-                        itemBuilder: (context, index) {
-                          int fila = index ~/ 8;
-                          int columna = index % 8;
-                      
-                          bool seleccionada =
-                              filaSeleccionada == fila && columnaSeleccionada == columna;
-                      
-                          bool esValido = false;
-                          for (var position in movimientosValidos) {
-                            if (position[0] == fila && position[1] == columna) {
-                              esValido = true;
-                              break;
-                            }
-                          }
-                      
-                          return CasillaAjedrez(
-                            seleccionada: seleccionada,
-                            esBlanca: esBlanca(index),
-                            pieza: tablero[fila][columna],
-                            esValido: esValido,
-                            onTap: () => seleccionadaPieza(fila, columna),
-                          );
-                        },
-                      )
-              ),
-            ),
-            Column(
-              children: [
-                Padding(padding: 
-                  EdgeInsets.symmetric(horizontal: 7.0),
-                  child: player2,
-                ),
-              ]
-            ),
-            SizedBox(height: 50),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                finPartida
-                    ? Text(
-                        'PARTIDA FINALIZADA',
-                        style: GoogleFonts.play(
-                          fontSize: 25,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      )
-                    : SizedBox(), // Espacio vacío si la partida no ha finalizado
-                !finPartida && posibleRendicion
-                    ? 
-                    Container(
+                      ),
+                    )
+                  : SizedBox(), // Espacio vacío si la partida no ha finalizado
+              // Se muestra si es posible rendirse
+              !finPartida && posibleRendicion
+                  ? Container(
+                      // Contenedor con pregunta y botones de sí y no
                       child: Column(
                         children: [
                           Align(
@@ -713,93 +691,97 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                             ),
                           ),
                           Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    GoRouter.of(context).go('/chess');
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                      Colors.red,
-                                    ),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  GoRouter.of(context).go('/chess');
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(
+                                    Colors.red,
                                   ),
-                                  child: Text(
-                                    'Sí',
-                                    style: GoogleFonts.play(
-                                      fontSize: 25,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 20),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      posibleRendicion = false; // Cambia el estado de posibleRendicion
-                                    });
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                      Colors.grey,
-                                    ),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
+                                child: Text(
+                                  'Sí',
+                                  style: GoogleFonts.play(
+                                    fontSize: 25,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  child: Text(
-                                    'No',
-                                    style: GoogleFonts.play(
-                                      fontSize: 25,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 20),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    posibleRendicion = false; // Cambia el estado de posibleRendicion
+                                  });
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(
+                                    Colors.grey,
+                                  ),
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                                child: Text(
+                                  'No',
+                                  style: GoogleFonts.play(
+                                    fontSize: 25,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     )
-                    : ElevatedButton(
-                        onPressed: () {
-                          // Realiza la lógica para rendirse o continuar la partida
-                          setState(() {
-                            posibleRendicion = true; // Cambia el estado de posibleRendicion
-                          });
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromRGBO(255, 136, 0, 1),
-                          ),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
+                  : ElevatedButton(
+                      // Botón de rendirse
+                      onPressed: () {
+                        // Realiza la lógica para rendirse o continuar la partida
+                        setState(() {
+                          posibleRendicion = true; // Cambia el estado de posibleRendicion
+                        });
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromRGBO(255, 136, 0, 1),
                         ),
-                        child: Text(
-                          'Rendirse',
-                          style: GoogleFonts.play(
-                            fontSize: 25,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
                           ),
                         ),
                       ),
-              ],
-            ),
-          ],
-        )
-      )
-    );
-  }  
+                      child: Text(
+                        'Rendirse',
+                        style: GoogleFonts.play(
+                          fontSize: 25,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  SizedBox(height: 280),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+
 }
