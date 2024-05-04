@@ -138,19 +138,19 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
       if(jsonMapMovimientos['allMovements'] != null){
         
-        if (jsonMapMovimientos['jaque'] == null) {
+        if (jsonMapMovimientos['jaque'] as bool) {
           print('JAQUE\n');
-          print(jsonMapMovimientos['jaque']);
+          print(jsonMapMovimientos);
           hayJaque = true;
         }
         else{
           hayJaque = false;
         }
         print('MOVIMIENTOS VÁLIDOS\n');
-        print(jsonMapMovimientos['allMovements']);
+        print(jsonMapMovimientos);
       }
       //Comprobamos si hay jaque mate
-      else if(jsonMapMovimientos['Jaque mate'] != null){
+      else if(jsonMapMovimientos['Jaque mate'] as bool){
         print('JAQUE MATE\n');
         hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
         return true;
@@ -191,13 +191,14 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   }
   
   //CALULAR MOVIMIENTOS DE REY EN JAQUE
-
   List<String> obtenerMovimientosReyJaque(){
+    print('MOVIMIENTOS REY EN JAQUE\n');
+    print(jsonMapMovimientos['allMovements']['rey'][0][1]);
     List<String> movimientosValidosString = [];
-    int len = (jsonMapMovimientos['allMovements']['rey'].length as int);
+    int len = (jsonMapMovimientos['allMovements']['rey'][0].length as int);
       for (int i = 1; i < len; i++) {
         String mov =
-                jsonEncode(jsonMapMovimientos['allMovements']['rey'][i]);
+                jsonEncode(jsonMapMovimientos['allMovements']['rey'][0][i]);
             print('Anyadiendo el siguiente movimiento: ');
             print(mov);
             movimientosValidosString.add(mov);
@@ -205,13 +206,48 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     return movimientosValidosString;
   }
   
-  List<String> obtenerMovimientosValidosJaque(int fila, int columna,PiezaAjedrez pieza){
-    List<String> movimientosValidosString = [];
+  List<List<int>> obtenerMovimientosValidosJaque(int fila, int columna,PiezaAjedrez pieza){
+    List<List<int>> movimientosValidosInt = [];
     List<int> coordenadasApi = convertirAppToApi(fila, columna);
     bool blanca = pieza.esBlanca;
-    String color = blanca ? '"fromColor":"blancas"' : '"fromColor":"negras"';
+    String npieza = nombrePieza(pieza);
 
-    return movimientosValidosString;
+    print('COMER O BLOQUEAR\n');
+
+    
+    print('MOVIMIENTOS BLOQUEAR\n');
+    if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza] != null){
+      print('ENTRA EN BLOQUEAR\n');
+      if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza]  as List != []){
+        if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['fromX'] == coordenadasApi[0] && jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['fromY'] == coordenadasApi[1]){
+          print('HAY MOVIMIENTOS PARA BLOQUEAR\n');
+          movimientosValidosInt.add(convertirApiToApp(jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['x'] as int, jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['y'] as int));
+        }
+        else{
+          print('NO HAY MOVIMIENTOS PARA BLOQUEAR\n');
+        }
+      }
+    }
+    
+    print('MOVIMIENTOS COMER\n');
+    if(jsonMapMovimientos['allMovements']['comer'][0][npieza] is List &&
+      (jsonMapMovimientos['allMovements']['comer'][0][npieza] as List).isNotEmpty) {
+      print('ENTRA EN COMER\n');
+      
+      if((jsonMapMovimientos['allMovements']['comer'][0][npieza][0] as Map<String, dynamic>?)?.isNotEmpty ?? false) {
+        if((jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromX'] as int?) == coordenadasApi[0] &&
+          (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromY'] as int?) == coordenadasApi[1]) {
+          print('HAY MOVIMIENTOS PARA COMER\n');
+          movimientosValidosInt.add(convertirApiToApp(
+            (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['x'] as int),
+            (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['y'] as int)
+          ));
+        } else {
+          print('NO HAY MOVIMIENTOS PARA COMER\n');
+        }
+      }
+  }
+    return movimientosValidosInt;
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES SIN JAQUE
@@ -306,12 +342,13 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     nuevoTablero[0][0] = PiezaAjedrez(
         tipoPieza: TipoPieza.torre,
         esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg');
+        nombreImagen: 'assets/images/rook-b.svg',
+        ladoIzquierdo: true);
     nuevoTablero[0][7] = PiezaAjedrez(
         tipoPieza: TipoPieza.torre,
         esBlanca: false,
         nombreImagen: 'assets/images/rook-b.svg',
-        ladoIzquierdo: true);
+        ladoIzquierdo: false);
     nuevoTablero[7][0] = PiezaAjedrez(
         tipoPieza: TipoPieza.torre,
         esBlanca: true,
@@ -320,7 +357,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     nuevoTablero[7][7] = PiezaAjedrez(
         tipoPieza: TipoPieza.torre,
         esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg');
+        nombreImagen: 'assets/images/rook-w.svg',
+         ladoIzquierdo: false);
 
     //Place knights
     nuevoTablero[0][1] = PiezaAjedrez(
@@ -406,10 +444,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         movimientosValidos = calcularMovimientos(
           obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
       }
-      else if (jsonMapMovimientos['allMovements']['rey'] != null && piezaSeleccionada?.tipoPieza == TipoPieza.rey){
-        print("MOVIMIENTOS PARA REY EN JAQUE\n");
-        print(jsonMapMovimientos['allMovements']['rey']);
+      else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
         movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
+      }
+      else{
+        movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
       }
     });
   }

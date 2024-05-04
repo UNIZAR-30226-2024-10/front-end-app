@@ -32,7 +32,7 @@ class _RankingScreenStateRapid extends State<RankingScreenRapid> {
   }
 
   Future<void> fetchLeaderBoard() async {
-    final url = Uri.parse('http://192.168.1.138:3001/users/ranking/rapid');
+    final url = Uri.parse('http://192.168.1.97:3001/users/ranking/rapid');
     final response = await http.get(url);
     if(response.statusCode == 200){
       final userMap = jsonDecode(response.body) as List<dynamic>;
