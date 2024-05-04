@@ -31,6 +31,54 @@ String nombrePieza(PiezaAjedrez? tipoPieza) {
   return pieza;
 }
 
+String nombrePiezaTipo(TipoPieza tipoPieza){
+  String pieza = '';
+
+  if (tipoPieza == TipoPieza.peon) {
+    pieza = 'peon';
+  } else if (tipoPieza == TipoPieza.torre) {
+    pieza = 'torre';
+  } else if (tipoPieza == TipoPieza.alfil) {
+    pieza = 'alfil';
+  } else if (tipoPieza == TipoPieza.caballo) {
+    pieza = 'caballo';
+  } else if (tipoPieza == TipoPieza.rey) {
+    pieza = 'rey';
+  } else if (tipoPieza == TipoPieza.dama) {
+    pieza = 'dama';
+  }
+
+  return pieza;
+}
+
+String obtenerRutaImagen(TipoPieza tipoPieza, bool esBlanca) {
+  String colorPrefix = esBlanca ? 'w' : 'b';
+  String pieceName;
+  
+  switch (tipoPieza) {
+    case TipoPieza.peon:
+      pieceName = 'pawn';
+      break;
+    case TipoPieza.torre:
+      pieceName = 'rook';
+      break;
+    case TipoPieza.caballo:
+      pieceName = 'knight';
+      break;
+    case TipoPieza.alfil:
+      pieceName = 'bishop';
+      break;
+    case TipoPieza.dama:
+      pieceName = 'queen';
+      break;
+    case TipoPieza.rey:
+      pieceName = 'king';
+      break;
+  }
+  
+  return 'assets/images/$pieceName-$colorPrefix.svg';
+}
+
 
 // Función para convertir coordenadas de la aplicación a las de la API
 List<int> convertirAppToApi(int fila, int columna) {

@@ -6,6 +6,7 @@
 import 'package:ChessHub/play_session/pieza_ajedrez.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/play_session/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
@@ -16,10 +17,11 @@ import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ChessHub/play_session/piezaMuerta.dart';
+import 'package:ChessHub/play_session/pieza_coronar.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/play_session/stats_game.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
+import 'package:ChessHub/play_session/coronar_widget.dart';
 import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -76,6 +78,12 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   bool posibleRendicion = false;
 
   bool hayTablas = false;
+
+  bool hayCoronacion = false;
+
+  bool terminadaCoronacion = false;
+
+  TipoPieza tipoPiezaCoronada = TipoPieza.peon;
 
   //MÉTODOS
   @override
@@ -418,8 +426,26 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     tablero = nuevoTablero;
   }
   
+  Future<void> _realizarMovimiento(int fila, int columna) async {
+    if (esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0) {
+      print('CORONAR PEON BLANCO\n');
+      hayCoronacion = true;
+      while (!terminadaCoronacion) {
+        await Future.delayed(Duration(seconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+      }
+      print('CORONACION TERMINADA\n');
+    } else if (piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7) {
+      hayCoronacion = true;
+      while (!terminadaCoronacion) {
+        await Future.delayed(Duration(seconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+      }
+    }
+    terminadaCoronacion = false;
+    moverPieza(fila, columna);
+  }
+
   //SELECCIONAR PIEZA
-  void seleccionadaPieza(int fila, int columna) {
+  void seleccionadaPieza (int fila, int columna){
     setState(() {
       if (piezaSeleccionada == null && tablero[fila][columna] != null) {
         if(tablero[fila][columna]!.esBlanca == esTurnoBlancas){
@@ -433,10 +459,14 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
         filaSeleccionada = fila;
         columnaSeleccionada = columna;
       }
-      else if (piezaSeleccionada != null &&
-          movimientosValidos
-              .any((element) => element[0] == fila && element[1] == columna)) {
-        moverPieza(fila, columna);
+      else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
+        if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
+          hayCoronacion = true;
+        }
+        else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
+          hayCoronacion = true;
+        } 
+        _realizarMovimiento(fila, columna);
       }
 
       print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
@@ -487,6 +517,36 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       });
     }
 
+    //Coronación
+    if(hayCoronacion && esTurnoBlancas){
+      String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
+      //Coronamos peon blanco
+      jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+        if (listaPiezas is List) {
+          // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
+          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+        }
+      });
+      String color = "blancas";
+      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({'x': coordenadasNuevasApi[0], 'y': coordenadasNuevasApi[1], 'color': color});
+      jsonMapTablero['piezaCoronada'] = nombrePiezaTipo(tipoPiezaCoronada);
+      piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
+    }
+    else if(hayCoronacion && !esTurnoBlancas){
+      String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
+      //Coronamos peon negro
+      jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+        if (listaPiezas is List) {
+          // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
+          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+        }
+      });
+
+      String color = "negras";
+      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({'x': coordenadasNuevasApi[0], 'y': coordenadasNuevasApi[1], 'color': color});
+      jsonMapTablero['piezaCoronada'] = nombrePiezaTipo(tipoPiezaCoronada);
+      piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
+    }
 
     if (esTurnoBlancas) {
       jsonMapTablero['turno'] = 'negras';
@@ -607,22 +667,26 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     }
 
     //Esto igual, se puede cambiar con asignación de variables
-    jsonMapTablero.forEach((tipoPieza, listaPiezas) {
-      if (listaPiezas is List) {
-        // Itera sobre cada pieza en la lista
-        for (var pieza in listaPiezas) {
-          // Verifica si las coordenadas coinciden con las coordenadas antiguas
-          if (pieza['x'] == coordenadasAntiguasApi[0] &&
-              pieza['y'] == coordenadasAntiguasApi[1]) {
-            // Modifica las coordenadas con las nuevas coordenadas
-            pieza['x'] = coordenadasNuevasApi[0];
-            pieza['y'] = coordenadasNuevasApi[1];
-            break;
+
+    if (!hayCoronacion) {
+      jsonMapTablero.forEach((tipoPieza, listaPiezas) {
+        if (listaPiezas is List) {
+          // Itera sobre cada pieza en la lista
+          for (var pieza in listaPiezas) {
+            // Verifica si las coordenadas coinciden con las coordenadas antiguas
+            if (pieza['x'] == coordenadasAntiguasApi[0] &&
+                pieza['y'] == coordenadasAntiguasApi[1]) {
+              // Modifica las coordenadas con las nuevas coordenadas
+              pieza['x'] = coordenadasNuevasApi[0];
+              pieza['y'] = coordenadasNuevasApi[1];
+              break;
+            }
           }
         }
-      }
-    });
-    
+      });
+    }
+    hayCoronacion = false;
+
     jsonString = jsonEncode(jsonMapTablero);
 
     //Enviamos el tablero con la posible jugada
@@ -860,7 +924,50 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                         ),
                       ),
                     ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.17),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                if (hayCoronacion)
+                      Column(
+                        children: [
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    // Acción a realizar cuando se toca la pieza dama
+                                    tipoPiezaCoronada = TipoPieza.dama;
+                                    terminadaCoronacion = true;
+                                  },
+                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Acción a realizar cuando se toca la pieza alfil
+                                    tipoPiezaCoronada = TipoPieza.alfil;
+                                    terminadaCoronacion = true;
+                                  },
+                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Acción a realizar cuando se toca la pieza caballo
+                                    tipoPiezaCoronada = TipoPieza.caballo;
+                                    terminadaCoronacion = true;
+                                  },
+                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Acción a realizar cuando se toca la pieza torre
+                                    tipoPiezaCoronada = TipoPieza.torre;
+                                    terminadaCoronacion = true;
+                                  },
+                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre),
+                                ),
+                              ],
+                            ),
+                        ],
+                      ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.10),
             ],
           ),
         ],
@@ -868,5 +975,4 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     ),
   );
 }
-
 }

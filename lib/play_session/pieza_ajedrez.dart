@@ -15,6 +15,16 @@ class PiezaAjedrez {
     required this.nombreImagen,
     this.ladoIzquierdo = false,
   });
+
+  //Método para cambiar el tiop de pieza
+  PiezaAjedrez cambiarTipoPieza(TipoPieza nuevoTipo, String nombreImagenNueva){
+    return PiezaAjedrez(
+      tipoPieza: nuevoTipo,
+      esBlanca: esBlanca,
+      nombreImagen: nombreImagenNueva,
+      ladoIzquierdo: ladoIzquierdo,
+    );
+  }
 }
 
 
