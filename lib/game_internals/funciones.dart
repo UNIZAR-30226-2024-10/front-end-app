@@ -1,6 +1,6 @@
 //Nombre: funciones.dart
 //Descripción: Contiene las funciones necesarias para el juego de ajedrez.
-import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 
 bool esBlanca(int index) {

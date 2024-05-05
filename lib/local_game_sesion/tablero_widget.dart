@@ -3,12 +3,12 @@
 
 //import 'dart:ffi';
 
-import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:ChessHub/play_session/casilla_ajedrez.dart';
+import 'package:ChessHub/local_game_sesion/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,9 +17,9 @@ import 'dart:convert'; // Para manejar la codificación y decodificación JSON
 import 'dart:io'; // Para leer archivos
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:ChessHub/play_session/pieza_coronar.dart';
+import 'package:ChessHub/local_game_sesion/pieza_coronar.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
-import 'package:ChessHub/play_session/stats_game.dart';
+import 'package:ChessHub/local_game_sesion/stats_game.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
 import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
@@ -96,7 +96,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     _tratamientoMododeJuego();
     _cargarTableroInicial();
     _inicializarTablero();
-    _timer = Timer.periodic(Duration(milliseconds: 500), _decrementTimer);
+    _timer = Timer.periodic(Duration(milliseconds: 50), _decrementTimer);
   }
 
   void _tratamientoMododeJuego() async{

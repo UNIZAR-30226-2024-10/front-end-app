@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ChessHub/play_session/pieza_ajedrez.dart';
+import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 
 class PiezaCoronar extends StatelessWidget {

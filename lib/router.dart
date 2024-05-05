@@ -4,7 +4,7 @@
 
 //import 'dart:js';
 
-import 'package:ChessHub/play_session/tablero_widget.dart';
+import 'package:ChessHub/local_game_sesion/tablero_widget.dart';
 import 'package:ChessHub/ranking/elegir_tipo_ranking.dart';
 
 import 'ranking/ranking_screen_blitz.dart';
@@ -23,7 +23,7 @@ import 'settings/settings_screen.dart';
 import 'style/my_transition.dart';
 import 'style/palette.dart';
 import 'win_game/win_game_screen.dart';
-import 'play_session/chess_play_session_screen.dart';
+import 'local_game_sesion/chess_play_session_screen.dart';
 import 'log_in/log_in_screen.dart';
 import 'battle_pass/battle_pass.dart';
 //import 'battle_pass/pase_de_recompensas.dart';
