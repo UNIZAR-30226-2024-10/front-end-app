@@ -5,18 +5,41 @@ import 'package:go_router/go_router.dart';
 class FinPartida extends StatelessWidget {
   final bool esColorBlanca;
   final bool esJaqueMate;
+  final bool tiempoAgotado;
+  final bool esAhogado;
 
   const FinPartida({
     Key? key,
     this.esColorBlanca = false,
     this.esJaqueMate = false,
+    this.tiempoAgotado = false,
+    this.esAhogado = false
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    String mensajeFinal = esJaqueMate
-        ? 'Jaque Mate\nGanan las piezas ${esColorBlanca ? 'Negras' : 'Blancas'}'
-        : 'Rey ahogado\nEmpate\nNingún jugador gana';
+    String mensajeFinal = '';
+    switch (esColorBlanca) {
+      case true:
+        if (esJaqueMate) {
+          mensajeFinal = '¡Jaque mate!\nGanaron las blancas';
+        } else if (tiempoAgotado) {
+          mensajeFinal =  '¡Tiempo agotado!\nGanaron las blancas';
+        } else if (esAhogado) {
+          mensajeFinal = '¡Ahogado!\nGanaron las blancas';
+        }
+        break;
+      case false:
+        if (esJaqueMate) {
+          mensajeFinal =  '¡Jaque mate!\nGanaron las negras';
+        } else if (tiempoAgotado) {
+          mensajeFinal = '¡Tiempo agotado!\nGanaron las negras';
+        } else if (esAhogado) {
+          mensajeFinal = '¡Ahogado!\nGanaron las negras';
+        }
+        break;
+    }
+    
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(49, 45, 45, 1),

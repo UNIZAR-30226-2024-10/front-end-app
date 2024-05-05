@@ -7,6 +7,7 @@ class PlayerRow extends StatefulWidget {
   Duration initialTime = Duration(minutes: 0, seconds: 0);
   final bool esBlanca;
   bool _timerPaused = true;
+
   int piecesCaptured = 0;
 
   PlayerRow({
@@ -21,7 +22,7 @@ class PlayerRow extends StatefulWidget {
       this._timerPaused = false;
     }
   }
-
+  
   void pauseTimer() {
     this._timerPaused = true;
   }
@@ -34,18 +35,19 @@ class PlayerRow extends StatefulWidget {
     this.piecesCaptured++;
   }
 
+  bool tiempoAgotado() {
+    return this.initialTime.inSeconds == 0;
+  }
   @override
   _PlayerRowState createState() => _PlayerRowState();
 }
 
 class _PlayerRowState extends State<PlayerRow> {
   late Timer _timer;
-  late Duration _elapsedTime;
 
   @override
   void initState() {
     super.initState();
-    _elapsedTime = widget.initialTime;
     _timer = Timer.periodic(Duration(seconds: 1), _decrementTimer);
   }
 
@@ -58,7 +60,7 @@ class _PlayerRowState extends State<PlayerRow> {
   void _decrementTimer(Timer timer) {
     if (!widget._timerPaused) {
       setState(() {
-        _elapsedTime -= Duration(seconds: 1);
+        widget.initialTime -= Duration(seconds: 1);
       });
     }
   }
@@ -85,7 +87,7 @@ class _PlayerRowState extends State<PlayerRow> {
           ),
           SizedBox(width: 16.0),
           Text(
-            '${_elapsedTime.inMinutes} : ${_elapsedTime.inSeconds % 60}',
+            '${widget.initialTime.inMinutes} : ${widget.initialTime.inSeconds % 60}',
             style: GoogleFonts.play(
               fontSize: 15,
               color: Colors.white,

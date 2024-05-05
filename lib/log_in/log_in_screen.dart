@@ -74,7 +74,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
-      Uri uri = Uri.parse('http://localhost:3001/users/login');
+      Uri uri = Uri.parse('http://192.168.1.97:3001/users/login');
       http.Response response = await http.post(
         uri,
         body:

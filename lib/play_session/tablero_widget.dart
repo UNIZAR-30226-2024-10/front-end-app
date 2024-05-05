@@ -21,7 +21,6 @@ import 'package:ChessHub/play_session/pieza_coronar.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/play_session/stats_game.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
-import 'package:ChessHub/play_session/coronar_widget.dart';
 import 'dart:async';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
@@ -83,7 +82,11 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   bool terminadaCoronacion = false;
 
+  bool tiempoAgotado = false;
+
   TipoPieza tipoPiezaCoronada = TipoPieza.peon;
+
+  late Timer _timer;
 
   //MÉTODOS
   @override
@@ -93,6 +96,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     _tratamientoMododeJuego();
     _cargarTableroInicial();
     _inicializarTablero();
+    _timer = Timer.periodic(Duration(milliseconds: 500), _decrementTimer);
   }
 
   void _tratamientoMododeJuego() async{
@@ -313,6 +317,20 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     return [x, y];
   }
   
+  //OBSERVAR SI SE HA AGOTADO EL TIEMPO
+  void _decrementTimer(Timer timer) {
+    if(player1.tiempoAgotado() || player2.tiempoAgotado()){
+      tiempoAgotado = true;
+      _timer.cancel();
+      setState(() {
+        finPartida = true;
+        tiempoAgotado = true;
+        player1.pauseTimer();
+        player2.pauseTimer();
+      });
+    }
+  }
+
   //CALCULAR MOVIMIENTOS DE PIEZA SELECCIONADA
   List<List<int>> calcularMovimientos(List<String> movimientosValidos) {
     List<List<int>> movimientosValidosInt = [];
@@ -431,13 +449,13 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
       print('CORONAR PEON BLANCO\n');
       hayCoronacion = true;
       while (!terminadaCoronacion) {
-        await Future.delayed(Duration(seconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+        await Future.delayed(Duration(milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
       }
       print('CORONACION TERMINADA\n');
     } else if (piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7) {
       hayCoronacion = true;
       while (!terminadaCoronacion) {
-        await Future.delayed(Duration(seconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+        await Future.delayed(Duration(milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
       }
     }
     terminadaCoronacion = false;
@@ -775,8 +793,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
             flex: 4, // Ajusta este valor según tus necesidades
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: finPartida && (hayJaqueMate || hayTablas)
-                  ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate)
+              child: finPartida && (hayJaqueMate || hayTablas || tiempoAgotado)
+                  ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate, esAhogado: hayTablas, tiempoAgotado: tiempoAgotado)
                   : GridView.builder(
                       itemCount: 8 * 8,
                       physics: const NeverScrollableScrollPhysics(),
