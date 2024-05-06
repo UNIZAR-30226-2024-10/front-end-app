@@ -45,6 +45,8 @@ class _RankingScreenStateRapid extends State<RankingScreenRapid> {
       setState(() {
         users = userList;
       });
+      LoginState loginState = LoginState();
+      int idUsuario = loginState.id;
     } else {
       throw Exception('Failed to load leaderboard');
     }
@@ -69,7 +71,7 @@ Widget build(BuildContext context) {
           User user = users[index];
           // Define el color de fondo de la caja
           Color tileColor = Colors.transparent;
-          if (user.nombre == 'calvera') {
+          if (user.id == idUsuario) {
             tileColor = Colors.orange[200]!;
           }
           return Padding(

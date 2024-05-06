@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'lib/log_in/log_in_screen.dart';
 
 class User {
   final int id;
@@ -44,6 +45,8 @@ class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
       setState(() {
         users = userList;
       });
+      LoginState loginState = LoginState();
+      int idUsuario = loginState.id;
     } else {
       throw Exception('Failed to load leaderboard');
     }
@@ -68,7 +71,7 @@ class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
             User user = users[index];
             // Define el color de fondo de la caja
             Color tileColor = Colors.transparent;
-            if (user.nombre == 'calvera') {
+            if (user.id == idUsuario) {
               tileColor = Colors.orange[200]!;
             }
             return Padding(
