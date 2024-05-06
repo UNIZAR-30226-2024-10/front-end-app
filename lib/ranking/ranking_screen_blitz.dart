@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'lib/log_in/log_in_screen.dart';
+import '../log_in/log_in_screen.dart';
+import 'package:provider/provider.dart';
 
 class User {
   final int id;
@@ -24,15 +25,15 @@ class RankingScreenBlitz extends StatefulWidget {
 
 class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
   List<User> users = [];
-
+  int idUsuario = 0;
   @override
   void initState() {
     super.initState();
-    fetchLeaderBoard();
+    fetchLeaderBoard(idUsuario);
   }
 
-  Future<void> fetchLeaderBoard() async {
-    final url = Uri.parse('http://192.168.1.97:3001/users/ranking/blitz');
+  Future<void> fetchLeaderBoard(int id) async {
+    final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/ranking/blitz');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final userMap = jsonDecode(response.body) as List<dynamic>;
@@ -45,8 +46,8 @@ class _RankingScreenStateBlitz extends State<RankingScreenBlitz> {
       setState(() {
         users = userList;
       });
-      LoginState loginState = LoginState();
-      int idUsuario = loginState.id;
+      LoginState loginState = Provider.of<LoginState>(context, listen: false);
+      id = loginState.id;
     } else {
       throw Exception('Failed to load leaderboard');
     }
