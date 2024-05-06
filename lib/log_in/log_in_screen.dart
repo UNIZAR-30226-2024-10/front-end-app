@@ -20,7 +20,7 @@ void main() {
 }
 
 class LoginScreen extends StatelessWidget {
-  const LoginScreen({super.key});
+  LoginScreen({super.key});
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -53,8 +53,28 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
+
+class LoginState extends ChangeNotifier {
+  int _id = 0;
+  bool _logueado = false;
+
+  int get id => _id;
+  bool get logueado => _logueado;
+
+  void setId(int id) {
+    _id = id;
+    notifyListeners(); // Notifica a los oyentes que 'id' ha cambiado
+  }
+
+  void setLogueado(bool logueado) {
+    _logueado = logueado;
+    notifyListeners(); // Notifica a los oyentes que 'logueado' ha cambiado
+  }
+}
+
+
 class LoginFormWidget extends StatefulWidget {
-  const LoginFormWidget({super.key});
+  LoginFormWidget({super.key});
   @override
   LoginFormWidgetState createState() => LoginFormWidgetState();
 }
@@ -65,10 +85,12 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
 
   String _username = '';
   String _password = '';
-  int id = 0;
 
   @override
   Widget build(BuildContext context) {
+    int id = 0;
+    bool logueado = false;
+    LoginState loginState = context.watch<LoginState>();
     final settingsController = context.watch<SettingsController>();
 
     void _login(String jsonString) async {
@@ -95,6 +117,9 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
       } else if (response.statusCode == 200) {
         print(res['message']);
         id = res['userId'] as int;
+        loginState.setId(id);
+        logueado = true;
+        loginState.setLogueado(logueado);
         settingsController.toggleLoggedIn();
         GoRouter.of(context).go('/');
       } else {
