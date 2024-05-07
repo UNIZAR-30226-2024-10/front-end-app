@@ -240,7 +240,7 @@ class _BattlePassState extends State<BattlePass> {
                             child: Text(
                               puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level > user.rewardsClaimed
                                   ? 'Reclamar'
-                                  : (puntos > int.parse(tier.requiredPoints) && value.logueado == true && tier.level <= user.rewardsClaimed)
+                                  : (puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level <= user.rewardsClaimed)
                                       ? 'Reclamado'
                                       : 'No disponible',
                             ),
