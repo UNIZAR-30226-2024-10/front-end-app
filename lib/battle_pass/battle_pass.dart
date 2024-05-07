@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import '../style/header.dart';
+import '../log_in/log_in_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class BattlePass extends StatefulWidget {
   @override
@@ -19,6 +22,16 @@ class Tier {
     required this.rewardType,
     required this.requiredPoints,
   });
+}
+
+
+class Puntos{
+  final int puntos;
+
+  Puntos({required this.puntos});
+
+  Puntos.fromJson(Map<String, dynamic> json)
+      : puntos = json['puntos'] as int;
 }
 
 final List<Tier> tiers = [
@@ -85,7 +98,24 @@ final List<Tier> tiers = [
 ];
 
 class _BattlePassState extends State<BattlePass> {
+  int puntos = 0;
+  int id = 0;
   @override
+  void initState() {
+    super.initState();
+    fetchPuntos(id,puntos);
+  }
+
+  Future<void> fetchPuntos(int id, int p) async{
+    LoginState loginState = Provider.of<LoginState>(context, listen: false);
+    id = loginState.id;
+    final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/puntos_pase_batalla/$id');
+    final response = await http.get(url);
+    final puntosMap = jsonDecode(response.body) as Map<String, dynamic>;
+    String strPuntos = Puntos.fromJson(puntosMap).puntos.toString();
+    p = int.parse(strPuntos);
+  }
+  
   Widget build(BuildContext context) {
     // Ordenar los tiers por nivel
     tiers.sort((a, b) => a.level.compareTo(b.level));
@@ -180,8 +210,29 @@ class _BattlePassState extends State<BattlePass> {
                           ElevatedButton(
                             onPressed: () {
                               // Lógica para reclamar la recompensa
+                              if(puntos >= int.parse(tier.requiredPoints)){
+                                if(tier.reward == 'pieza'){
+                                  Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
+                                  final response = http.post(url, body: {'setPiezas': tier.reward});
+                                  if(response == 400){
+                                    throw Exception('Failed to claim reward');
+                                  }
+                                }
+                                else if(tier.reward == 'emoticono'){
+                                  Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_emoticono/$id');
+                                  final response = http.post(url, body: {'emoticonos': tier.reward});
+                                  if(response == 400){
+                                    throw Exception('Failed to claim reward');
+                                  }
+                                }
+                              }
                             },
-                            child: Text('Reclamar'),
+                            child: Text(
+                              puntos >= int.parse(tier.requiredPoints)
+                                  ? 'Reclamar'
+                                  : 'No disponible',
+                                  style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) ? Colors.green : Colors.grey),
+                            ),
                           ),
                         ],
                       ),

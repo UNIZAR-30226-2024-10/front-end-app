@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
+import '../log_in/log_in_screen.dart';
 
 class User {
   final int id;
@@ -24,15 +26,15 @@ class RankingScreenBullet extends StatefulWidget {
 
 class _RankingScreenStateBullet extends State<RankingScreenBullet> {
   List<User> users = [];
-
+  int idUsuario = 0;
   @override
   void initState() {
     super.initState();
-    fetchLeaderBoard();
+    fetchLeaderBoard(idUsuario);
   }
 
-  Future<void> fetchLeaderBoard() async {
-    final url = Uri.parse('http://192.168.1.97:3001/users/ranking/bullet');
+  Future<void> fetchLeaderBoard(int id) async {
+    final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/ranking/bullet');
     final response = await http.get(url);
     if(response.statusCode == 200){
       final userMap = jsonDecode(response.body) as List<dynamic>;
@@ -45,6 +47,8 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
       setState(() {
         users = userList;
       });
+      LoginState loginState = Provider.of<LoginState>(context, listen: false);
+      id = loginState.id;
     } else {
       throw Exception('Failed to load leaderboard');
     }
@@ -69,7 +73,7 @@ Widget build(BuildContext context) {
           User user = users[index];
           // Define el color de fondo de la caja
           Color tileColor = Colors.transparent;
-          if (user.nombre == 'calvera') {
+          if (user.id == idUsuario) {
             tileColor = Colors.orange[200]!;
           }
           return Padding(
