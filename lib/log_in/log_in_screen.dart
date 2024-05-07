@@ -83,6 +83,10 @@ class LoginState extends ChangeNotifier {
     return _imagen;
   }
 
+  String getId(){
+    return _id.toString();
+  }
+
   int getEloBlitzUsuario() {
     getInfo(id.toString());
     return _eloBlitz;
@@ -110,19 +114,19 @@ class LoginState extends ChangeNotifier {
               'application/json', // Especifica el tipo de contenido como JSON
         },
       );
-
+    print('OBTENEIENDO DATOS DE USUARIO');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
-    print(res);
-    if (response.statusCode == 200) {
-      _eloBlitz = res['eloblitz'] as int;
-      _eloRapid = res['elorapid'] as int;
-      _eloBullet = res['elobullet'] as int;
-      _imagen = res['setpiezas'] as String;
-      notifyListeners();
-    } else {
-      throw Exception('Error en la solicitud GET: ${response.statusCode}');
-    }
+      print(res);
+      if (response.statusCode == 200) {
+        _eloBlitz = res['eloblitz'] as int;
+        _eloRapid = res['elorapid'] as int;
+        _eloBullet = res['elobullet'] as int;
+        _imagen = res['setpiezas'] as String;
+      }
+      else{
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
   }
 }
 
@@ -149,7 +153,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
-      Uri uri = Uri.parse('http://https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
       http.Response response = await http.post(
         uri,
         body:

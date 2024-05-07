@@ -10,6 +10,8 @@ class CasillaAjedrez extends StatelessWidget {
   final bool esBlanca;
   final bool esValido;
   final bool seleccionada;
+  final Color colorCasillaBlanca;
+  final Color colorCasillaNegra;
   final void Function()? onTap;
 
   const CasillaAjedrez({
@@ -19,6 +21,8 @@ class CasillaAjedrez extends StatelessWidget {
     required this.seleccionada,
     required this.esValido,
     required this.onTap,
+    required this.colorCasillaBlanca,
+    required this.colorCasillaNegra
   }) : super(key: key);
 
   @override
@@ -33,7 +37,7 @@ class CasillaAjedrez extends StatelessWidget {
     } 
     else {
       colorCasilla =
-          colorCasilla = esBlanca ? Color(0xFFADF597) : Color(0XFF2E960F);
+          colorCasilla = esBlanca ? colorCasillaBlanca : colorCasillaNegra;
     }
 
     return GestureDetector(

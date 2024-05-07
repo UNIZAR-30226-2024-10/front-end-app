@@ -811,6 +811,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
                           pieza: tablero[fila][columna],
                           esValido: esValido,
                           onTap: () => seleccionadaPieza(fila, columna),
+                          colorCasillaBlanca: Color(0xFFADF597),
+                          colorCasillaNegra: Color(0XFF2E960F),
                         );
                       },
                     ),

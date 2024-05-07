@@ -95,6 +95,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     super.initState();
     _tratamientoMododeJuego();
     _cargarTableroInicial();
+    _inicializarTablero();
     _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
   }
 
@@ -201,6 +202,18 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
   }
   
+  //INICIALIZAR TABLERO
+  void _inicializarTablero(){
+    
+    final login = context.read<LoginState>();
+    login.getInfo(login.getId());
+    print('CANARIOOO');
+    String nombrePieza = login.getImagenPieza();
+    print(nombrePieza);
+    tablero = inicializarTablero(nombrePieza);
+    
+  }
+
   //CALULAR MOVIMIENTOS DE REY EN JAQUE
   List<String> obtenerMovimientosReyJaque(){
     print('MOVIMIENTOS REY EN JAQUE\n');
@@ -712,23 +725,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     
                           bool esValido = movimientosValidos.any((position) => position[0] == fila && position[1] == columna);
 
-
-                          if(comienzaPartida){
-                            final login = context.read<LoginState>();
-                            login.getInfo(value.id.toString());
-                            print('CANARIOOO');
-                            comienzaPartida = false;
-                            String nombrePieza = value.imagen;
-                            print(nombrePieza);
-                            tablero = inicializarTablero(nombrePieza);
-                          }
-    
                           return CasillaAjedrez(
                             seleccionada: seleccionada,
                             esBlanca: esBlanca(index),
                             pieza: tablero[fila][columna],
                             esValido: esValido,
                             onTap: () => seleccionadaPieza(fila, columna),
+                            colorCasillaBlanca: Colors.white,
+                            colorCasillaNegra: Colors.black,
                           );
                         },
                       ),
