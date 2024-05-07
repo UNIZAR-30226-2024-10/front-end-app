@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../log_in/log_in_screen.dart';
@@ -7,7 +9,8 @@ import 'dart:convert';
 
 class BattlePass extends StatefulWidget {
   int puntos = 0;
-  BattlePass({Key? key, required this.puntos}) : super(key: key);
+  int id = 0;
+  BattlePass({Key? key, required this.puntos, required this.id}) : super(key: key);
   @override
   _BattlePassState createState() => _BattlePassState();
 }
@@ -120,13 +123,27 @@ Future<UserBattlePass> leerDatosUsuario(int id) async {
 
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
+  int id = 0;
+  UserBattlePass user = UserBattlePass(level: 0, rewardsClaimed: 0);
   @override
-  void initState() {
+  void initState(){
     puntos = widget.puntos;
+    id = widget.id;
+    print('ID DE USUARIO: $id');
+    _establecerDatosUsuario();
     super.initState();
   }
+
+  Future<void> _establecerDatosUsuario() async {
+    user = await leerDatosUsuario(id);
+    setState(() {
+      // Actualiza el estado del widget con los nuevos datos del usuario
+      user = user;
+    });
+  }
+
   
-  UserBattlePass user = UserBattlePass(level: 0, rewardsClaimed: 0);
+  
   
   @override
   Widget build(BuildContext context) {
@@ -219,7 +236,6 @@ class _BattlePassState extends State<BattlePass> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              user = await leerDatosUsuario(value.id);
                               if (puntos >= int.parse(tier.requiredPoints) && value.logueado && tier.level > user.rewardsClaimed) {
                                   Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
                                   final response = await http.put(url, body: {});

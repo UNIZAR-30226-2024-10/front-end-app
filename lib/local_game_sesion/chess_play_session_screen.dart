@@ -211,15 +211,19 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           ),
                         )
                         : Container(
-                          child: Text(
-                              'LOGUEATE PARA JUGAR ONLINE',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontFamily: 'Cantarell',
+                          child:
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  'CREATE UNA CUENTA PARA JUGAR ONLINE',
+                                  style: GoogleFonts.play(
+                                    fontSize: 18,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
                       ],
                     ),
                   ),

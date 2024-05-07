@@ -156,7 +156,7 @@ class MainMenuScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => BattlePass(puntos: value.puntosPase)
+                            builder: (context) => BattlePass(puntos: value.puntosPase, id:value.id)
                           ),
                         );
                       },
