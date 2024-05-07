@@ -148,10 +148,11 @@ List<bool> torreEnroque(List<int> coordenadasNuevasApi){
 }
 
 String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
+  nombrePieza = nombrePieza.toLowerCase();
   String color = esBlanca ? 'w' : 'b';
   switch (tipoPieza) {
     case TipoPieza.alfil:
-      return '/assets/images/images_pase/pieces/${nombrePieza}/${color}B.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}B.svg';
     case TipoPieza.caballo:
       return 'assets/images/images_pase/pieces/${nombrePieza}/${color}N.svg';
     case TipoPieza.torre:
