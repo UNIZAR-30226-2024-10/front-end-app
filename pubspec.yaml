@@ -53,6 +53,7 @@ flutter:
     - assets/images/images_pase/pieces/MAESTRO/
     - assets/images/images_pase/pieces/MPCHESS/
     - assets/images/images_pase/pieces/PIXEL/
+    - assets/images/images_pase/pieces/DEFECTO/
     - assets/json/
     - assets/music/
     - assets/sfx/

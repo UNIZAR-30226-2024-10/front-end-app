@@ -72,7 +72,7 @@ class FinPartida extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navegar a la ruta deseada al abandonar la partida
-                  GoRouter.of(context).go('/chess');
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey,
