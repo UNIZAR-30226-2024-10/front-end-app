@@ -127,7 +127,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   Future<bool> _postTablero() async {
     // Construye la URL y realiza la solicitud POST
     //http://192.168.1.97:3001/play/
-    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
+    Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/play/');
     http.Response response = await http.post(
       uri,
       body:

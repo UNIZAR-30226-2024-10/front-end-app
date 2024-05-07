@@ -145,37 +145,29 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
 List<Color> getColorCasilla(int elo) {
   List<Color> colorCasilla = [];
   if( elo <=1000){
-    colorCasilla[0] = Color.fromARGB(255, 239, 200, 3); 
-    colorCasilla[1] = Color.fromARGB(255, 241, 250, 83);
+    colorCasilla[0] = Color(0x8B4513); 
+    colorCasilla[1] = Color(0xD2B48C);
     print("ARENA 1");
   } else if (elo <= 1200){
-    colorCasilla[0] = Color.fromARGB(255, 78, 76, 76); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
+    colorCasilla[0] = Color(0xf5f5f5); 
+    colorCasilla[1] = Color(0xB8B8B8);
     print("ARENA 2");
   } else if (elo < 1400){
-    colorCasilla[0] = Color.fromARGB(255, 232, 243, 33); 
-    colorCasilla[1] = Color.fromARGB(255, 201, 213, 88);
+    colorCasilla[0] = Color(0xFFEA70); 
+    colorCasilla[1] = Color(0xF5D000);
     print("ARENA 3");
   } else if (elo < 1600){
-    colorCasilla[0] = Color(0xFFE0E0E0); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
+    colorCasilla[0] = Color(0x50C878); 
+    colorCasilla[1] = Color(0x38A869);
     print("ARENA 4");
   } else if (elo < 1800){
-    colorCasilla[0] = Color(0xFFE0E0E0); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
+    colorCasilla[0] = Color(0xF0F0F0); 
+    colorCasilla[1] = Color(0xB0E0E6);
     print("ARENA 5");
-  } else if (elo < 2000){
-    colorCasilla[0] = Color(0xFFE0E0E0); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
-    print("ARENA 6");
-  } else if (elo < 2200){
-    colorCasilla[0] = Color(0xFFE0E0E0); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
-    print("ARENA 7");
-  } else {
-    colorCasilla[0] = Color(0xFFE0E0E0); 
-    colorCasilla[1] = Color(0xFFC0C0C0);
-    print("ARENA 8");
+  }
+  else{
+    colorCasilla[0] = Color(0xF0F0F0); 
+    colorCasilla[1] = Color(0xB0E0E6);
   }
 
   return colorCasilla;

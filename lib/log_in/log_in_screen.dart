@@ -104,7 +104,7 @@ class LoginState extends ChangeNotifier {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
@@ -154,7 +154,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
-      Uri uri = Uri.parse('http://192.168.1.97:3001/users/login');
+      Uri uri = Uri.parse('http://https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
       http.Response response = await http.post(
         uri,
         body:
