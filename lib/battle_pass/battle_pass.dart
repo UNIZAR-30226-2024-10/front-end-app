@@ -100,15 +100,17 @@ final List<Tier> tiers = [
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
   int id = 0;
+  bool logueado = false;
   @override
   void initState() {
     super.initState();
-    fetchPuntos(id,puntos);
+    fetchPuntos(id,puntos,logueado);
   }
 
-  Future<void> fetchPuntos(int id, int p) async{
-    LoginState loginState = Provider.of<LoginState>(context, listen: false);
+  Future<void> fetchPuntos(int id, int p, bool log) async {
+    LoginState loginState = Provider.of<LoginState>(context, listen: true);
     id = loginState.id;
+    log = loginState.logueado;
     final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/puntos_pase_batalla/$id');
     final response = await http.get(url);
     final puntosMap = jsonDecode(response.body) as Map<String, dynamic>;
@@ -210,7 +212,7 @@ class _BattlePassState extends State<BattlePass> {
                           ElevatedButton(
                             onPressed: () {
                               // Lógica para reclamar la recompensa
-                              if(puntos >= int.parse(tier.requiredPoints)){
+                              if(puntos >= int.parse(tier.requiredPoints) && logueado == true){
                                 if(tier.reward == 'pieza'){
                                   Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
                                   final response = http.post(url, body: {'setPiezas': tier.reward});
@@ -228,7 +230,7 @@ class _BattlePassState extends State<BattlePass> {
                               }
                             },
                             child: Text(
-                              puntos >= int.parse(tier.requiredPoints)
+                              puntos >= int.parse(tier.requiredPoints) && logueado == true
                                   ? 'Reclamar'
                                   : 'No disponible',
                                   style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) ? Colors.green : Colors.grey),
