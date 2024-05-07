@@ -53,7 +53,6 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-
 class LoginState extends ChangeNotifier {
   int _id = 0;
   bool _logueado = false;
@@ -69,7 +68,6 @@ class LoginState extends ChangeNotifier {
   int get eloRapid => _eloRapid;
   int get eloBullet => _eloBullet;
 
-
   void setId(int id) {
     _id = id;
     notifyListeners(); // Notifica a los oyentes que 'id' ha cambiado
@@ -80,22 +78,22 @@ class LoginState extends ChangeNotifier {
     notifyListeners(); // Notifica a los oyentes que 'logueado' ha cambiado
   }
 
-  String getImagenPieza(){
+  String getImagenPieza() {
     getInfo(id.toString());
     return _imagen;
   }
 
-  int getEloBlitzUsuario(){
+  int getEloBlitzUsuario() {
     getInfo(id.toString());
     return _eloBlitz;
   }
 
-  int getEloRapidUsuario(){
+  int getEloRapidUsuario() {
     getInfo(id.toString());
     return _eloRapid;
   }
 
-  int getEloBulletUsuario(){
+  int getEloBulletUsuario() {
     getInfo(id.toString());
     return _eloBullet;
   }
@@ -113,23 +111,20 @@ class LoginState extends ChangeNotifier {
         },
       );
 
-      Map<String, dynamic> res =
-          jsonDecode(response.body) as Map<String, dynamic>;
-      print(res);
-      if (response.statusCode == 200) {
-        _eloBlitz = res['eloblitz'] as int;
-        _eloRapid = res['elorapid'] as int;
-        _eloBullet = res['elobullet'] as int;
-        _imagen = res['setpiezas'] as String;
-        notifyListeners();
-      }
-      else{
-        throw Exception('Error en la solicitud GET: ${response.statusCode}');
-      }
+    Map<String, dynamic> res =
+        jsonDecode(response.body) as Map<String, dynamic>;
+    print(res);
+    if (response.statusCode == 200) {
+      _eloBlitz = res['eloblitz'] as int;
+      _eloRapid = res['elorapid'] as int;
+      _eloBullet = res['elobullet'] as int;
+      _imagen = res['setpiezas'] as String;
+      notifyListeners();
+    } else {
+      throw Exception('Error en la solicitud GET: ${response.statusCode}');
+    }
   }
-
 }
-
 
 class LoginFormWidget extends StatefulWidget {
   LoginFormWidget({super.key});

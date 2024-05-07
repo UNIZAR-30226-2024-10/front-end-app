@@ -10,6 +10,10 @@ import '../settings/settings.dart';
 //import '../style/palette.dart';
 //import '../style/responsive_screen.dart';
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+
 void main() {
   runApp(RegisterScreen());
 }
@@ -56,10 +60,44 @@ class LoginFormWidget extends StatefulWidget {
 class LoginFormWidgetState extends State<LoginFormWidget> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _mailController = TextEditingController();
+
+  String _username = '';
+  String _password = '';
+  String _mail = '';
 
   @override
   Widget build(BuildContext context) {
     final settingsController = context.watch<SettingsController>();
+
+    void _register(String jsonString) async {
+      // Construye la URL y realiza la solicitud POST
+      //http://192.168.1.97:3001/play/
+      Uri uri = Uri.parse(
+          'https://chesshub-api-ffvrx5sara-ew.a.run.app:3001/users/register');
+      http.Response response = await http.post(
+        uri,
+        body:
+            jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+      Map<String, dynamic> res =
+          jsonDecode(response.body) as Map<String, dynamic>;
+      if (response.statusCode == 500) {
+        print(res['message']);
+      } else if (response.statusCode == 200) {
+        print(res['message']);
+
+        GoRouter.of(context).go(
+            '/login'); //Mandamos al login pero se podría dejar la sesión ya iniciada (liada)
+      } else {
+        throw Exception('Error en la solicitud POST: ${response.statusCode}');
+      }
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -81,6 +119,11 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     expands: false,
                     cursorColor: Color.fromRGBO(255, 136, 0, 1),
                     controller: _usernameController,
+                    onChanged: (value) {
+                      setState(() {
+                        _username = value;
+                      });
+                    },
                     decoration: InputDecoration(
                       labelText: 'Username',
                       floatingLabelStyle:
@@ -98,6 +141,11 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   child: TextField(
                     cursorColor: Color.fromRGBO(255, 136, 0, 1),
                     controller: _passwordController,
+                    onChanged: (value) {
+                      setState(() {
+                        _password = value;
+                      });
+                    },
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -116,9 +164,14 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   child: TextField(
                     expands: false,
                     cursorColor: Color.fromRGBO(255, 136, 0, 1),
-                    controller: _usernameController,
+                    controller: _mailController,
+                    onChanged: (value) {
+                      setState(() {
+                        _mail = value;
+                      });
+                    },
                     decoration: InputDecoration(
-                      labelText: 'Repeat Password',
+                      labelText: 'Email',
                       floatingLabelStyle:
                           TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
                       focusedBorder: OutlineInputBorder(
@@ -133,7 +186,20 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                   padding: const EdgeInsets.symmetric(vertical: 25.0),
                   child: ElevatedButton(
                     onPressed: () {
-                      GoRouter.of(context).go('/login');
+                      String username = _username;
+                      String password = _password;
+                      String mail = _mail;
+                      Map<String, dynamic> register = {
+                        'nombre': username,
+                        'contraseña': password,
+                        'correoElectronico': mail,
+                        'victorias': 0,
+                        'empates': 0,
+                        'derrotas': 0
+                      };
+                      String jsonString = jsonEncode(register);
+
+                      _register(jsonString);
                     },
                     style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
