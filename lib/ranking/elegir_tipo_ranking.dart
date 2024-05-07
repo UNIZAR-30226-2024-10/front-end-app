@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../style/header.dart';
+import '../log_in/log_in_screen.dart';
+import 'package:provider/provider.dart';
 
 class ElegirTipoRanking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    LoginState loginState = Provider.of<LoginState>(context, listen: true);
+    int id = loginState.id;
+    bool logueado = loginState.logueado;
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
@@ -27,7 +31,12 @@ class ElegirTipoRanking extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  context.go('/ranking/blitz');
+                  if(logueado){
+                    context.go('/ranking/blitz');
+                  }
+                  else{
+                    context.go('/login');
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.orange),
@@ -41,7 +50,12 @@ class ElegirTipoRanking extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  context.go('/ranking/rapid');
+                  if(logueado){
+                    context.go('/ranking/rapid');
+                  }
+                  else{
+                    context.go('/login');
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.orange),
@@ -55,7 +69,12 @@ class ElegirTipoRanking extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  context.go('/ranking/bullet');
+                  if(logueado){
+                    context.go('/ranking/bullet');
+                  }
+                  else{
+                    context.go('/login');
+                  }
                 },
                 style: ButtonStyle(
                   backgroundColor: MaterialStateProperty.all(Colors.orange),

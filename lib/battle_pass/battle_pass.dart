@@ -36,63 +36,63 @@ class Puntos{
 
 final List<Tier> tiers = [
   Tier(level: 1, reward: '😁️', rewardType: 'emoticono', requiredPoints: '10'),
-  Tier(level: 2, reward: 'alpha', rewardType: 'pieza', requiredPoints: '20'),
+  Tier(level: 2, reward: 'ALPHA', rewardType: 'pieza', requiredPoints: '20'),
   Tier(level: 3, reward: '😂️', rewardType: 'emoticono', requiredPoints: '30'),
-  Tier(level: 4, reward: 'cardinal', rewardType: 'pieza', requiredPoints: '40'),
+  Tier(level: 4, reward: 'CARDINAL', rewardType: 'pieza', requiredPoints: '40'),
   Tier(level: 5, reward: '👍️', rewardType: 'emoticono', requiredPoints: '50'),
-  Tier(level: 6, reward: 'celtic', rewardType: 'pieza', requiredPoints: '60'),
+  Tier(level: 6, reward: 'CELTIC', rewardType: 'pieza', requiredPoints: '60'),
   Tier(level: 7, reward: '😎️', rewardType: 'emoticono', requiredPoints: '70'),
-  Tier(level: 8, reward: 'chess7', rewardType: 'pieza', requiredPoints: '80'),
+  Tier(level: 8, reward: 'CELTIC', rewardType: 'pieza', requiredPoints: '80'),
   Tier(level: 9, reward: '😭️', rewardType: 'emoticono', requiredPoints: '90'),
   Tier(
       level: 10,
-      reward: 'chessnut',
+      reward: 'CHESSNUT',
       rewardType: 'pieza',
       requiredPoints: '100'),
   Tier(
       level: 11, reward: '😅️', rewardType: 'emoticono', requiredPoints: '110'),
   Tier(
       level: 12,
-      reward: 'companion',
+      reward: 'COMPANION',
       rewardType: 'pieza',
       requiredPoints: '120'),
   Tier(
       level: 13, reward: '👊️', rewardType: 'emoticono', requiredPoints: '130'),
   Tier(
-      level: 14, reward: 'fantasy', rewardType: 'pieza', requiredPoints: '140'),
+      level: 14, reward: 'FANTASY', rewardType: 'pieza', requiredPoints: '140'),
   Tier(
       level: 15, reward: '🤩️', rewardType: 'emoticono', requiredPoints: '150'),
-  Tier(level: 16, reward: 'fresca', rewardType: 'pieza', requiredPoints: '160'),
+  Tier(level: 16, reward: 'FRESCA', rewardType: 'pieza', requiredPoints: '160'),
   Tier(
       level: 17, reward: '🤯️', rewardType: 'emoticono', requiredPoints: '170'),
   Tier(
       level: 18,
-      reward: 'governor',
+      reward: 'GOVERNOR',
       rewardType: 'pieza',
       requiredPoints: '180'),
   Tier(
       level: 19, reward: '😜️', rewardType: 'emoticono', requiredPoints: '190'),
-  Tier(level: 20, reward: 'kosal', rewardType: 'pieza', requiredPoints: '200'),
+  Tier(level: 20, reward: 'KOSAL', rewardType: 'pieza', requiredPoints: '200'),
   Tier(
       level: 21, reward: '🫠️', rewardType: 'emoticono', requiredPoints: '210'),
   Tier(
-      level: 22, reward: 'leipzig', rewardType: 'pieza', requiredPoints: '220'),
+      level: 22, reward: 'LEIPZIG', rewardType: 'pieza', requiredPoints: '220'),
   Tier(
       level: 23, reward: '😎️', rewardType: 'emoticono', requiredPoints: '230'),
   Tier(
-      level: 24, reward: 'mpchess', rewardType: 'pieza', requiredPoints: '240'),
+      level: 24, reward: 'MPCHESS', rewardType: 'pieza', requiredPoints: '240'),
   Tier(
       level: 25, reward: '😡️', rewardType: 'emoticono', requiredPoints: '250'),
-  Tier(level: 26, reward: 'pixel', rewardType: 'pieza', requiredPoints: '260'),
+  Tier(level: 26, reward: 'PIXEL', rewardType: 'pieza', requiredPoints: '260'),
   Tier(
       level: 27, reward: '😈️', rewardType: 'emoticono', requiredPoints: '270'),
   Tier(
-      level: 28, reward: 'maestro', rewardType: 'pieza', requiredPoints: '280'),
+      level: 28, reward: 'MAESTRO', rewardType: 'pieza', requiredPoints: '280'),
   Tier(
       level: 29, reward: '👻️', rewardType: 'emoticono', requiredPoints: '290'),
   Tier(
       level: 30,
-      reward: 'anarcandy',
+      reward: 'ANARCANDY',
       rewardType: 'pieza',
       requiredPoints: '300'),
 ];
@@ -100,15 +100,17 @@ final List<Tier> tiers = [
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
   int id = 0;
+  bool logueado = false;
   @override
   void initState() {
     super.initState();
-    fetchPuntos(id,puntos);
+    fetchPuntos(id,puntos,logueado);
   }
 
-  Future<void> fetchPuntos(int id, int p) async{
-    LoginState loginState = Provider.of<LoginState>(context, listen: false);
+  Future<void> fetchPuntos(int id, int p, bool log) async {
+    LoginState loginState = Provider.of<LoginState>(context, listen: true);
     id = loginState.id;
+    log = loginState.logueado;
     final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/puntos_pase_batalla/$id');
     final response = await http.get(url);
     final puntosMap = jsonDecode(response.body) as Map<String, dynamic>;
@@ -210,7 +212,7 @@ class _BattlePassState extends State<BattlePass> {
                           ElevatedButton(
                             onPressed: () {
                               // Lógica para reclamar la recompensa
-                              if(puntos >= int.parse(tier.requiredPoints)){
+                              if(puntos >= int.parse(tier.requiredPoints) && logueado == true){
                                 if(tier.reward == 'pieza'){
                                   Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
                                   final response = http.post(url, body: {'setPiezas': tier.reward});
@@ -228,7 +230,7 @@ class _BattlePassState extends State<BattlePass> {
                               }
                             },
                             child: Text(
-                              puntos >= int.parse(tier.requiredPoints)
+                              puntos >= int.parse(tier.requiredPoints) && logueado == true
                                   ? 'Reclamar'
                                   : 'No disponible',
                                   style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) ? Colors.green : Colors.grey),
