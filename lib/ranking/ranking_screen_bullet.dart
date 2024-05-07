@@ -30,10 +30,10 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
   @override
   void initState() {
     super.initState();
-    fetchLeaderBoard(idUsuario);
+    fetchLeaderBoard();
   }
 
-  Future<void> fetchLeaderBoard(int id) async {
+  Future<void> fetchLeaderBoard() async {
     final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/ranking/bullet');
     final response = await http.get(url);
     if(response.statusCode == 200){
@@ -47,8 +47,6 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
       setState(() {
         users = userList;
       });
-      LoginState loginState = Provider.of<LoginState>(context, listen: false);
-      id = loginState.id;
     } else {
       throw Exception('Failed to load leaderboard');
     }
@@ -56,7 +54,7 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
 
 @override
 Widget build(BuildContext context) {
-  return Scaffold(
+  return Consumer<LoginState> (builder:(context,value,child) => Scaffold(
     appBar: AppBar(
       title: Text(
         'Ranking BULLET',
@@ -73,7 +71,7 @@ Widget build(BuildContext context) {
           User user = users[index];
           // Define el color de fondo de la caja
           Color tileColor = Colors.transparent;
-          if (user.id == idUsuario) {
+          if (user.id == value.id) {
             tileColor = Colors.orange[200]!;
           }
           return Padding(
@@ -93,7 +91,7 @@ Widget build(BuildContext context) {
         },
       ),
     ),
-  );
+  ));
 }
 
 }
