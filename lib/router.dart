@@ -112,10 +112,6 @@ final router = GoRouter(
           builder: (context, state) => Personalizacion(),
         ),
         GoRoute(
-          path: 'pass',
-          builder: (context, state) => BattlePass(),
-        ),
-        GoRoute(
           path: 'profile',
           builder: (context, state) => UserProfileScreen(),
         ),

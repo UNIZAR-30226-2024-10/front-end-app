@@ -18,10 +18,11 @@ class ChessPlaySessionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
 
     final login = context.read<LoginState>();
+    bool cuentalog = false;
     List<List<PiezaAjedrez?>> tablero = List.generate(8, (index) => List.generate(8, (index) => null));
     List<Color> coloresTablero = [];
     if (login.logueado) {
-
+      cuentalog = true;
       print("ARENA: ${login.arena}");
       print("COLOR: ${coloresTablero}");
       tablero = inicializarTablero(login.imagen);
@@ -114,6 +115,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 20),
+                        cuentalog ?
                         Container(
                           width: 450,
                           height: 400,
@@ -207,7 +209,17 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               ),
                             ],
                           ),
-                        ),
+                        )
+                        : Container(
+                          child: Text(
+                              'LOGUEATE PARA JUGAR ONLINE',
+                              style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white,
+                                fontFamily: 'Cantarell',
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
