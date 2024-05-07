@@ -6,6 +6,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class BattlePass extends StatefulWidget {
+  int puntos = 0;
+  BattlePass({Key? key, required this.puntos}) : super(key: key);
   @override
   _BattlePassState createState() => _BattlePassState();
 }
@@ -119,6 +121,12 @@ void leerDatosUsuario(int id,UserBattlePass user) async {
 
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
+  @override
+  void initState() {
+    puntos = widget.puntos;
+    super.initState();
+  }
+  
   UserBattlePass user = UserBattlePass(level: 0, points: 0, rewardsClaimed: 0);
   
   @override
@@ -132,7 +140,6 @@ class _BattlePassState extends State<BattlePass> {
           ),
         ),
       ),
-      
       Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -146,10 +153,6 @@ class _BattlePassState extends State<BattlePass> {
             itemCount: tiers.length,
             itemBuilder: (context, index) {
               final tier = tiers[index];
-              final login = context.read<LoginState>();
-              login.getInfo(login.getId());
-              puntos = value.puntosPase;
-              leerDatosUsuario(value.id,user);
               return Card(
                 elevation: 3,
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -217,6 +220,7 @@ class _BattlePassState extends State<BattlePass> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
+                              leerDatosUsuario(value.id,user);
                               if (puntos >= int.parse(tier.requiredPoints) && value.logueado && tier.level > user.rewardsClaimed) {
                                   Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
                                   final response = await http.put(url, body: {});

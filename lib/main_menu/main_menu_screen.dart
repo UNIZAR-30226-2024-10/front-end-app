@@ -2,6 +2,7 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:ChessHub/battle_pass/battle_pass.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -150,7 +151,12 @@ class MainMenuScreen extends StatelessWidget {
                             TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                     onTap: () {
                       audioController.playSfx(SfxType.buttonTap);
-                      GoRouter.of(context).push('/pass');
+                      Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => BattlePass()
+                                    ),
+                                  );
                     },
                   ),
                   ListTile(
