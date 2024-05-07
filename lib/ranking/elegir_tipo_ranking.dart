@@ -6,10 +6,7 @@ import 'package:provider/provider.dart';
 class ElegirTipoRanking extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    LoginState loginState = Provider.of<LoginState>(context, listen: true);
-    int id = loginState.id;
-    bool logueado = loginState.logueado;
-    return Stack(children: [
+    return Consumer<LoginState>( builder:(context,value,child) => Stack(children: [
       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -31,7 +28,7 @@ class ElegirTipoRanking extends StatelessWidget {
             children: [
               ElevatedButton(
                 onPressed: () {
-                  if(logueado){
+                  if(value.logueado){
                     context.go('/ranking/blitz');
                   }
                   else{
@@ -50,7 +47,7 @@ class ElegirTipoRanking extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if(logueado){
+                  if(value.logueado){
                     context.go('/ranking/rapid');
                   }
                   else{
@@ -69,7 +66,7 @@ class ElegirTipoRanking extends StatelessWidget {
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                  if(logueado){
+                  if(value.logueado){
                     context.go('/ranking/bullet');
                   }
                   else{
@@ -89,6 +86,6 @@ class ElegirTipoRanking extends StatelessWidget {
           ),
         ),
       )
-    ]);
+    ]));
   }
 }
