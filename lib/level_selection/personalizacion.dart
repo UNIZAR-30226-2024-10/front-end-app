@@ -5,54 +5,56 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 class Set {
   final String name;
-
+  final int level;
   Set({
     required this.name,
+    required this.level,
   });
 }
 
 final List<Set> sets = [
-  Set(name: 'alpha'),
-  Set(name: 'cardinal'),
-  Set(name: 'celtic'),
-  Set(name: 'chess7'),
-  Set(name: 'chessnut'),
-  Set(name: 'companion'),
-  Set(name: 'fantasy'),
-  Set(name: 'fresca'),
-  Set(name: 'governor'),
-  Set(name: 'kosal'),
-  Set(name: 'leipzig'),
-  Set(name: 'mpchess'),
-  Set(name: 'pixel'),
-  Set(name: 'maestro'),
-  Set(name: 'anarcandy'),
+  Set(name: 'alpha', level: 2),
+  Set(name: 'cardinal',level: 4),
+  Set(name: 'celtic', level: 6),
+  Set(name: 'chess7', level: 8),
+  Set(name: 'chessnut', level: 10),
+  Set(name: 'companion', level: 12),
+  Set(name: 'fantasy', level: 14),
+  Set(name: 'fresca', level: 16),
+  Set(name: 'governor', level: 18),
+  Set(name: 'kosal', level: 20),
+  Set(name: 'leipzig', level: 22),
+  Set(name: 'mpchess', level: 24),
+  Set(name: 'pixel', level: 26),
+  Set(name: 'maestro', level: 28),
+  Set(name: 'anarcandy', level: 30),
 ];
 
 class Emote {
   final String emoji;
-
+  final int level;
   Emote({
     required this.emoji,
+    required this.level,
   });
 }
 
 final List<Emote> emotes = [
-  Emote(emoji: '😁️'),
-  Emote(emoji: '😂️'),
-  Emote(emoji: '👍️'),
-  Emote(emoji: '😎️'),
-  Emote(emoji: '😭️'),
-  Emote(emoji: '😅️'),
-  Emote(emoji: '👊️'),
-  Emote(emoji: '🤩️'),
-  Emote(emoji: '🤯️'),
-  Emote(emoji: '😜️'),
-  Emote(emoji: '🫠️'),
-  Emote(emoji: '😎️'),
-  Emote(emoji: '😡️'),
-  Emote(emoji: '😈️'),
-  Emote(emoji: '👻️'),
+  Emote(emoji: '😁️', level: 1),
+  Emote(emoji: '😂️', level: 3),
+  Emote(emoji: '👍️', level: 5),
+  Emote(emoji: '😎️', level: 7),
+  Emote(emoji: '😭️', level: 9),
+  Emote(emoji: '😅️', level: 11),
+  Emote(emoji: '👊️', level: 13),
+  Emote(emoji: '🤩️', level: 15),
+  Emote(emoji: '🤯️', level: 17),
+  Emote(emoji: '😜️', level: 19),
+  Emote(emoji: '🫠️', level: 21),
+  Emote(emoji: '😎️', level: 23),
+  Emote(emoji: '😡️', level: 25),
+  Emote(emoji: '😈️', level: 27),
+  Emote(emoji: '👻️', level:29),
 ];
 
 class Personalizacion extends StatelessWidget {
@@ -132,7 +134,15 @@ class Personalizacion extends StatelessWidget {
                                   height: 42,
                                 ),
                               ],
-                            )
+                            ),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                                onPressed: () {
+                                  // Aquí puedes programar la lógica para el botón de este componente
+                                  // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
+                                },
+                                child: Text('Activar', style: TextStyle(color: Color.fromARGB(255, 112, 112, 112))),
+                            ),
                           ],
                         ),
                       ),
@@ -163,6 +173,14 @@ class Personalizacion extends StatelessWidget {
                                 fontSize: 30,
                                 color: Colors.white,
                               ),
+                            ),
+                            SizedBox(height: 16),
+                            ElevatedButton(
+                                onPressed: () {
+                                  // Aquí puedes programar la lógica para el botón de este componente
+                                  // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
+                                },
+                                child: Text('Activar', style: TextStyle(color: Color.fromARGB(255, 112, 112, 112))),
                             ),
                           ],
                         ),
