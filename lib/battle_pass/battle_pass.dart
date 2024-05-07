@@ -24,14 +24,21 @@ class Tier {
   });
 }
 
+class UserBattlePass{
+  int level;
+  int points;
+  int rewardsClaimed;
 
-class Puntos{
-  final int puntos;
+  UserBattlePass({
+    required this.level,
+    required this.points,
+    required this.rewardsClaimed,
+  });
 
-  Puntos({required this.puntos});
-
-  Puntos.fromJson(Map<String, dynamic> json)
-      : puntos = json['puntos'] as int;
+  UserBattlePass.fromJson(Map<String, dynamic> json)
+      : level = json['nivelpase'] as int,
+        points = json['puntospase'] as int,
+        rewardsClaimed = json['recompensamasalta'] as int;
 }
 
 final List<Tier> tiers = [
@@ -42,7 +49,7 @@ final List<Tier> tiers = [
   Tier(level: 5, reward: '👍️', rewardType: 'emoticono', requiredPoints: '50'),
   Tier(level: 6, reward: 'CELTIC', rewardType: 'pieza', requiredPoints: '60'),
   Tier(level: 7, reward: '😎️', rewardType: 'emoticono', requiredPoints: '70'),
-  Tier(level: 8, reward: 'CELTIC', rewardType: 'pieza', requiredPoints: '80'),
+  Tier(level: 8, reward: 'CHESS7', rewardType: 'pieza', requiredPoints: '80'),
   Tier(level: 9, reward: '😭️', rewardType: 'emoticono', requiredPoints: '90'),
   Tier(
       level: 10,
@@ -97,31 +104,26 @@ final List<Tier> tiers = [
       requiredPoints: '300'),
 ];
 
+
+void leerDatosUsuario(int id,UserBattlePass user) async {
+  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final userMap = jsonDecode(response.body) as Map<String, dynamic>;
+    user = UserBattlePass.fromJson(userMap);
+  } else {
+    throw Exception('Failed to load user');
+  }
+}
+
+
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
-  int id = 0;
-  bool logueado = false;
-  @override
-  void initState() {
-    super.initState();
-    fetchPuntos(id,puntos,logueado);
-  }
-
-  Future<void> fetchPuntos(int id, int p, bool log) async {
-    LoginState loginState = Provider.of<LoginState>(context, listen: true);
-    id = loginState.id;
-    log = loginState.logueado;
-    final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/puntos_pase_batalla/$id');
-    final response = await http.get(url);
-    final puntosMap = jsonDecode(response.body) as Map<String, dynamic>;
-    String strPuntos = Puntos.fromJson(puntosMap).puntos.toString();
-    p = int.parse(strPuntos);
-  }
+  UserBattlePass user = UserBattlePass(level: 0, points: 0, rewardsClaimed: 0);
   
+  @override
   Widget build(BuildContext context) {
-    // Ordenar los tiers por nivel
-    tiers.sort((a, b) => a.level.compareTo(b.level));
-    return Stack(children: [
+    return Consumer<LoginState>( builder:(context,value,child) => Stack(children: [
       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -130,6 +132,7 @@ class _BattlePassState extends State<BattlePass> {
           ),
         ),
       ),
+      
       Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
@@ -143,7 +146,10 @@ class _BattlePassState extends State<BattlePass> {
             itemCount: tiers.length,
             itemBuilder: (context, index) {
               final tier = tiers[index];
-
+              final login = context.read<LoginState>();
+              login.getInfo(login.getId());
+              puntos = value.puntosPase;
+              leerDatosUsuario(value.id,user);
               return Card(
                 elevation: 3,
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -210,30 +216,32 @@ class _BattlePassState extends State<BattlePass> {
                             MainAxisAlignment.center, // Centra el botón
                         children: [
                           ElevatedButton(
-                            onPressed: () {
-                              // Lógica para reclamar la recompensa
-                              if(puntos >= int.parse(tier.requiredPoints) && logueado == true){
-                                if(tier.reward == 'pieza'){
-                                  Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
-                                  final response = http.post(url, body: {'setPiezas': tier.reward});
-                                  if(response == 400){
-                                    throw Exception('Failed to claim reward');
+                            onPressed: () async {
+                              if (puntos >= int.parse(tier.requiredPoints) && value.logueado && tier.level > user.rewardsClaimed) {
+                                  Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
+                                  final response = await http.put(url, body: {});
+                                  if (response.statusCode == 500) {
+                                    print('No se ha podido reclamar');
                                   }
-                                }
-                                else if(tier.reward == 'emoticono'){
-                                  Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_emoticono/$id');
-                                  final response = http.post(url, body: {'emoticonos': tier.reward});
-                                  if(response == 400){
-                                    throw Exception('Failed to claim reward');
+                                  else if(response.statusCode == 200){
+                                    print('Recompensa reclamada');
+                                    user.rewardsClaimed++;
+                                    Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/${value.id}');
+                                    final response = await http.put(url, body: {"recompensamasalta": user.rewardsClaimed.toString()});
+                                    if (response.statusCode == 500) {
+                                      print('No se ha podido actualizar las recompenas reclamadas');
+                                    }
+                                    else if(response.statusCode == 200){
+                                      print('Recompensas actualizadas reclamadas');
+                                    }
                                   }
-                                }
                               }
                             },
                             child: Text(
-                              puntos >= int.parse(tier.requiredPoints) && logueado == true
+                              puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level > user.rewardsClaimed
                                   ? 'Reclamar'
                                   : 'No disponible',
-                                  style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) ? Colors.green : Colors.grey),
+                                  style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) && value.logueado == true ? Colors.green : Colors.grey),
                             ),
                           ),
                         ],
@@ -246,6 +254,7 @@ class _BattlePassState extends State<BattlePass> {
           ),
         ),
       ),
-    ]);
+    ])
+    );
   }
 }
