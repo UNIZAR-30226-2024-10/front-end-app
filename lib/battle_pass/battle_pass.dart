@@ -28,18 +28,16 @@ class Tier {
 
 class UserBattlePass{
   int level;
-  int points;
+  
   int rewardsClaimed;
 
   UserBattlePass({
     required this.level,
-    required this.points,
     required this.rewardsClaimed,
   });
 
   UserBattlePass.fromJson(Map<String, dynamic> json)
       : level = json['nivelpase'] as int,
-        points = json['puntospase'] as int,
         rewardsClaimed = json['recompensamasalta'] as int;
 }
 
@@ -107,12 +105,13 @@ final List<Tier> tiers = [
 ];
 
 
-void leerDatosUsuario(int id,UserBattlePass user) async {
+Future<UserBattlePass> leerDatosUsuario(int id) async {
   final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final userMap = jsonDecode(response.body) as Map<String, dynamic>;
-    user = UserBattlePass.fromJson(userMap);
+    UserBattlePass user = UserBattlePass.fromJson(userMap);
+    return user;
   } else {
     throw Exception('Failed to load user');
   }
@@ -127,7 +126,7 @@ class _BattlePassState extends State<BattlePass> {
     super.initState();
   }
   
-  UserBattlePass user = UserBattlePass(level: 0, points: 0, rewardsClaimed: 0);
+  UserBattlePass user = UserBattlePass(level: 0, rewardsClaimed: 0);
   
   @override
   Widget build(BuildContext context) {
@@ -220,7 +219,7 @@ class _BattlePassState extends State<BattlePass> {
                         children: [
                           ElevatedButton(
                             onPressed: () async {
-                              leerDatosUsuario(value.id,user);
+                              user = await leerDatosUsuario(value.id);
                               if (puntos >= int.parse(tier.requiredPoints) && value.logueado && tier.level > user.rewardsClaimed) {
                                   Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
                                   final response = await http.put(url, body: {});
@@ -247,6 +246,11 @@ class _BattlePassState extends State<BattlePass> {
                                   : (puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level <= user.rewardsClaimed)
                                       ? 'Reclamado'
                                       : 'No disponible',
+                              style: TextStyle(color: puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level > user.rewardsClaimed
+                                  ? Colors.blue
+                                  : (puntos >= int.parse(tier.requiredPoints) && value.logueado == true && tier.level <= user.rewardsClaimed)
+                                      ? Colors.grey
+                                      : const Color.fromARGB(255, 39, 39, 39)),
                             ),
                           ),
                         ],
