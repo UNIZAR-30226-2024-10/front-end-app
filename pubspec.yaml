@@ -37,23 +37,23 @@ flutter:
   assets:
     - assets/images/
     - assets/images/images_pase/boards/
-    - assets/images/images_pase/pieces/ALPHA/
-    - assets/images/images_pase/pieces/ANARCANDY/
-    - assets/images/images_pase/pieces/CARDINAL/
-    - assets/images/images_pase/pieces/CBURNETT/
-    - assets/images/images_pase/pieces/CELTIC/
-    - assets/images/images_pase/pieces/CHESS7/
-    - assets/images/images_pase/pieces/CHESSNUT/
-    - assets/images/images_pase/pieces/COMPANION/
-    - assets/images/images_pase/pieces/FANTASY/
-    - assets/images/images_pase/pieces/FRESCA/
-    - assets/images/images_pase/pieces/GOVERNOR/
-    - assets/images/images_pase/pieces/KOSAL/
-    - assets/images/images_pase/pieces/LEIPZIG/
-    - assets/images/images_pase/pieces/MAESTRO/
-    - assets/images/images_pase/pieces/MPCHESS/
-    - assets/images/images_pase/pieces/PIXEL/
-    - assets/images/images_pase/pieces/DEFECTO/
+    - assets/images/images_pase/pieces/alpha/
+    - assets/images/images_pase/pieces/anarcandy/
+    - assets/images/images_pase/pieces/cardinal/
+    - assets/images/images_pase/pieces/cburnett/
+    - assets/images/images_pase/pieces/celtic/
+    - assets/images/images_pase/pieces/chess7/
+    - assets/images/images_pase/pieces/chessnut/
+    - assets/images/images_pase/pieces/companion/
+    - assets/images/images_pase/pieces/fantasy/
+    - assets/images/images_pase/pieces/fresca/
+    - assets/images/images_pase/pieces/governor/
+    - assets/images/images_pase/pieces/kosal/
+    - assets/images/images_pase/pieces/defecto/
+    - assets/images/images_pase/pieces/leipzig/
+    - assets/images/images_pase/pieces/maestro/
+    - assets/images/images_pase/pieces/mpchess/
+    - assets/images/images_pase/pieces/pixel/
     - assets/json/
     - assets/music/
     - assets/sfx/
