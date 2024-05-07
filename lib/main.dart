@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
-
+import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'app_lifecycle/app_lifecycle.dart';
 import 'audio/audio_controller.dart';
 import 'player_progress/player_progress.dart';
@@ -38,7 +38,9 @@ void main() async {
     DeviceOrientation.portraitDown,
   ]);
 
-  runApp(MyApp());
+  runApp(ChangeNotifierProvider(
+    create:(context) => LoginState(),
+    child: MyApp()));
 }
 
 class MyApp extends StatelessWidget {

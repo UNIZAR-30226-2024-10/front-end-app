@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:ChessHub/style/header.dart';
@@ -118,30 +120,45 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: 30),
-                            Text(
-                              'RAPID',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontFamily: 'Cantarell',
+                            GestureDetector(
+                              onTap: () {
+                                GoRouter.of(context).go('/chess/rapidOnline');
+                              },
+                              child: Text(
+                                'RAPID',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontFamily: 'Cantarell',
+                                ),
                               ),
                             ),
                             SizedBox(height: 20),
-                            Text(
-                              'BULLET',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontFamily: 'Cantarell',
+                            GestureDetector(
+                              onTap: () {
+                                GoRouter.of(context).go('/chess/bulletOnline');
+                              },
+                              child: Text(
+                                'BULLET',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontFamily: 'Cantarell',
+                                ),
                               ),
                             ),
                             SizedBox(height: 20),
-                            Text(
-                              'BLITZ',
-                              style: TextStyle(
-                                fontSize: 25,
-                                color: Colors.white,
-                                fontFamily: 'Cantarell',
+                            GestureDetector(
+                              onTap: () {
+                                GoRouter.of(context).go('/chess/blitzOnline');
+                              },
+                              child: Text(
+                                'BLITZ',
+                                style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white,
+                                  fontFamily: 'Cantarell',
+                                ),
                               ),
                             ),
                           ],

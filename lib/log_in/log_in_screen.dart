@@ -57,9 +57,18 @@ class LoginScreen extends StatelessWidget {
 class LoginState extends ChangeNotifier {
   int _id = 0;
   bool _logueado = false;
+  String _imagen = '';
+  int _eloBlitz = 0;
+  int _eloRapid = 0;
+  int _eloBullet = 0;
 
   int get id => _id;
   bool get logueado => _logueado;
+  String get imagen => _imagen;
+  int get eloBlitz => _eloBlitz;
+  int get eloRapid => _eloRapid;
+  int get eloBullet => _eloBullet;
+
 
   void setId(int id) {
     _id = id;
@@ -70,6 +79,55 @@ class LoginState extends ChangeNotifier {
     _logueado = logueado;
     notifyListeners(); // Notifica a los oyentes que 'logueado' ha cambiado
   }
+
+  String getImagenPieza(){
+    getInfo(id.toString());
+    return _imagen;
+  }
+
+  int getEloBlitzUsuario(){
+    getInfo(id.toString());
+    return _eloBlitz;
+  }
+
+  int getEloRapidUsuario(){
+    getInfo(id.toString());
+    return _eloRapid;
+  }
+
+  int getEloBulletUsuario(){
+    getInfo(id.toString());
+    return _eloBullet;
+  }
+
+  void getInfo(String id) async {
+      // Construye la URL y realiza la solicitud POST
+      //http://192.168.1.97:3001/play/
+      print('OBTENIENDO INFORMACION DE USUARIO\n');
+      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
+      http.Response response = await http.get(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+
+      Map<String, dynamic> res =
+          jsonDecode(response.body) as Map<String, dynamic>;
+      print(res);
+      if (response.statusCode == 200) {
+        _eloBlitz = res['eloblitz'] as int;
+        _eloRapid = res['elorapid'] as int;
+        _eloBullet = res['elobullet'] as int;
+        _imagen = res['setpiezas'] as String;
+        notifyListeners();
+      }
+      else{
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
+  }
+
 }
 
 

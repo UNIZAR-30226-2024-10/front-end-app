@@ -6,6 +6,7 @@
 
 import 'package:ChessHub/local_game_sesion/tablero_widget.dart';
 import 'package:ChessHub/ranking/elegir_tipo_ranking.dart';
+import 'package:ChessHub/online_game_sesion/tablero_online_widget.dart';
 
 import 'ranking/ranking_screen_blitz.dart';
 import 'ranking/ranking_screen_bullet.dart';
@@ -153,6 +154,18 @@ final router = GoRouter(
           path: 'chess/blitz',
           builder: (context, state) => TableroAjedrez(modoJuego: Modos.BLITZ),
         ),
+        GoRoute(
+          path: 'chess/blitzOnline',
+          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.BLITZ),
+        ),
+        GoRoute(
+          path: 'chess/rapidOnline',
+          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.RAPID),
+        ),
+        GoRoute(
+          path: 'chess/bulletOnline',
+          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.BULLET),
+        )
       ],
     ),
   ],

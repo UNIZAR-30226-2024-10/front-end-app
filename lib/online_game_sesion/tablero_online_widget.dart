@@ -4,6 +4,7 @@
 //import 'dart:ffi';
 
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
+import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/local_game_sesion/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
@@ -18,19 +19,20 @@ import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/local_game_sesion/stats_game.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
 import 'dart:async';
+import 'package:provider/provider.dart';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
-class TableroAjedrez extends StatefulWidget {
+class TableroAjedrezOnline extends StatefulWidget {
   
   final Modos modoJuego;
-  const TableroAjedrez({Key? key, required this.modoJuego}) : super(key: key);
+  const TableroAjedrezOnline({Key? key, required this.modoJuego}) : super(key: key);
 
   @override
-  State<TableroAjedrez> createState() => _TableroAjedrezState();
+  State<TableroAjedrezOnline> createState() => _TableroAjedrezState();
 }
 
-class _TableroAjedrezState extends State<TableroAjedrez> {
+class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   //VARIABLES
 
@@ -80,6 +82,8 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
 
   bool tiempoAgotado = false;
 
+  bool comienzaPartida = true;
+
   TipoPieza tipoPiezaCoronada = TipoPieza.peon;
 
   late Timer _timer;
@@ -91,8 +95,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     super.initState();
     _tratamientoMododeJuego();
     _cargarTableroInicial();
-    _inicializarTablero();
-    _timer = Timer.periodic(Duration(milliseconds: 50), _decrementTimer);
+    _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
   }
 
   void _tratamientoMododeJuego() async{
@@ -314,7 +317,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   }
   
   //OBSERVAR SI SE HA AGOTADO EL TIEMPO
-  void _decrementTimer(Timer timer) {
+  void _checkTimer(Timer timer) {
     if(player1.tiempoAgotado() || player2.tiempoAgotado()){
       tiempoAgotado = true;
       _timer.cancel();
@@ -342,104 +345,7 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
     return movimientosValidosInt;
   }
   
-  //INICIALIZAR TABLERO
-  void _inicializarTablero() {
-    List<List<PiezaAjedrez?>> nuevoTablero =
-        List.generate(8, (index) => List.generate(8, (index) => null));
-
-    //Place pawn
-    for (int i = 0; i < 8; i++) {
-      nuevoTablero[1][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peon,
-          esBlanca: false,
-          nombreImagen: 'assets/images/pawn-b.svg');
-
-      nuevoTablero[6][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peon,
-          esBlanca: true,
-          nombreImagen: 'assets/images/pawn-w.svg');
-    }
-
-    //Place rooks
-    nuevoTablero[0][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg',
-        ladoIzquierdo: true);
-    nuevoTablero[0][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg',
-        ladoIzquierdo: false);
-    nuevoTablero[7][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg',
-        ladoIzquierdo: true);
-    nuevoTablero[7][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg',
-         ladoIzquierdo: false);
-
-    //Place knights
-    nuevoTablero[0][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: false,
-        nombreImagen: 'assets/images/knight-b.svg');
-    nuevoTablero[0][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: false,
-        nombreImagen: 'assets/images/knight-b.svg');
-    nuevoTablero[7][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: true,
-        nombreImagen: 'assets/images/knight-w.svg');
-    nuevoTablero[7][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: true,
-        nombreImagen: 'assets/images/knight-w.svg');
-
-    //Place bishops
-    nuevoTablero[0][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: false,
-        nombreImagen: 'assets/images/bishop-b.svg');
-    nuevoTablero[0][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: false,
-        nombreImagen: 'assets/images/bishop-b.svg');
-    nuevoTablero[7][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: true,
-        nombreImagen: 'assets/images/bishop-w.svg');
-    nuevoTablero[7][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: true,
-        nombreImagen: 'assets/images/bishop-w.svg');
-
-    //Place queens
-    nuevoTablero[0][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.dama,
-        esBlanca: false,
-        nombreImagen: 'assets/images/queen-b.svg');
-    nuevoTablero[7][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.dama,
-        esBlanca: true,
-        nombreImagen: 'assets/images/queen-w.svg');
-    //Place kings
-    nuevoTablero[0][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.rey,
-        esBlanca: false,
-        nombreImagen: 'assets/images/king-b.svg');
-    nuevoTablero[7][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.rey,
-        esBlanca: true,
-        nombreImagen: 'assets/images/king-w.svg');
-
-    tablero = nuevoTablero;
-  }
-  
+  //REALIZAR MOVIMIENTO
   Future<void> _realizarMovimiento(int fila, int columna) async {
     if (esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0) {
       print('CORONAR PEON BLANCO\n');
@@ -754,237 +660,250 @@ class _TableroAjedrezState extends State<TableroAjedrez> {
   //CONSTRUIR WIDGET
 @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    body: Container(
-      color: Color.fromRGBO(49, 45, 45, 1),
-      child: Column(
-        children: [
-          // MODO DE JUEGO
-          Container(
-            margin: EdgeInsets.only(top: 10),
-            padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            decoration: BoxDecoration(
-              color: Colors.orange,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              modoDeJuego,
-              style: GoogleFonts.play(
-                fontSize: 25,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+  return Consumer<LoginState>(
+    builder:(context,value,child) => Scaffold(
+      body: Container(
+        color: Color.fromRGBO(49, 45, 45, 1),
+        child: Column(
+          children: [
+            // MODO DE JUEGO
+            Container(
+              margin: EdgeInsets.only(top: 10),
+              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+              decoration: BoxDecoration(
+                color: Colors.orange,
+                borderRadius: BorderRadius.circular(10),
               ),
-              textAlign: TextAlign.center,
+              child: Text(
+                modoDeJuego,
+                style: GoogleFonts.play(
+                  fontSize: 25,
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
             ),
-          ),
-          SizedBox(height: 20),
-          // PlayRow de Jugador 1
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7.0),
-            child: player1,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-          // TABLERO
-          Expanded(
-            flex: 4, // Ajusta este valor según tus necesidades
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10.0),
-              child: finPartida && (hayJaqueMate || hayTablas || tiempoAgotado)
-                  ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate, esAhogado: hayTablas, tiempoAgotado: tiempoAgotado)
-                  : GridView.builder(
-                      itemCount: 8 * 8,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 8,
-                      ),
-                      itemBuilder: (context, index) {
-                        int fila = index ~/ 8;
-                        int columna = index % 8;
-
-                        bool seleccionada = filaSeleccionada == fila && columnaSeleccionada == columna;
-
-                        bool esValido = movimientosValidos.any((position) => position[0] == fila && position[1] == columna);
-
-                        return CasillaAjedrez(
-                          seleccionada: seleccionada,
-                          esBlanca: esBlanca(index),
-                          pieza: tablero[fila][columna],
-                          esValido: esValido,
-                          onTap: () => seleccionadaPieza(fila, columna),
-                        );
-                      },
-                    ),
+            SizedBox(height: 20),
+            // PlayRow de Jugador 1
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.0),
+              child: player1,
             ),
-          ),
-          //SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-          // PlayRow de Jugador 2
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 7.0),
-            child: player2,
-          ),
-          SizedBox(height: MediaQuery.of(context).size.height * 0.07),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Se muestra si la partida ha finalizado
-              finPartida
-                  ? Text(
-                      'PARTIDA FINALIZADA',
-                      style: GoogleFonts.play(
-                        fontSize: 25,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    )
-                  : SizedBox(), // Espacio vacío si la partida no ha finalizado
-              // Se muestra si es posible rendirse
-              !finPartida && posibleRendicion
-                  ? Container(
-                      // Contenedor con pregunta y botones de sí y no
-                      child: Column(
-                        children: [
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Text(
-                              '¿Estás seguro de que quieres rendirte?',
-                              style: GoogleFonts.play(
-                                fontSize: 15,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  GoRouter.of(context).go('/chess');
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(
-                                    Colors.red,
-                                  ),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  'Sí',
-                                  style: GoogleFonts.play(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(width: 20),
-                              ElevatedButton(
-                                onPressed: () {
-                                  setState(() {
-                                    posibleRendicion = false; // Cambia el estado de posibleRendicion
-                                  });
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(
-                                    Colors.grey,
-                                  ),
-                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4),
-                                    ),
-                                  ),
-                                ),
-                                child: Text(
-                                  'No',
-                                  style: GoogleFonts.play(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    )
-                  : ElevatedButton(
-                      // Botón de rendirse
-                      onPressed: () {
-                        // Realiza la lógica para rendirse o continuar la partida
-                        setState(() {
-                          posibleRendicion = true; // Cambia el estado de posibleRendicion
-                        });
-                      },
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                          Color.fromRGBO(255, 136, 0, 1),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            // TABLERO
+            Expanded(
+              flex: 4, // Ajusta este valor según tus necesidades
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                child: finPartida && (hayJaqueMate || hayTablas || tiempoAgotado)
+                    ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate, esAhogado: hayTablas, tiempoAgotado: tiempoAgotado)
+                    : GridView.builder(
+                        itemCount: 8 * 8,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 8,
                         ),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
+                        itemBuilder: (context, index) {
+                          int fila = index ~/ 8;
+                          int columna = index % 8;
+    
+                          bool seleccionada = filaSeleccionada == fila && columnaSeleccionada == columna;
+    
+                          bool esValido = movimientosValidos.any((position) => position[0] == fila && position[1] == columna);
+
+
+                          if(comienzaPartida){
+                            final login = context.read<LoginState>();
+                            login.getInfo(value.id.toString());
+                            print('CANARIOOO');
+                            comienzaPartida = false;
+                            String nombrePieza = value.imagen;
+                            print(nombrePieza);
+                            tablero = inicializarTablero(nombrePieza);
+                          }
+    
+                          return CasillaAjedrez(
+                            seleccionada: seleccionada,
+                            esBlanca: esBlanca(index),
+                            pieza: tablero[fila][columna],
+                            esValido: esValido,
+                            onTap: () => seleccionadaPieza(fila, columna),
+                          );
+                        },
                       ),
-                      child: Text(
-                        'Rendirse',
+              ),
+            ),
+            //SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+            // PlayRow de Jugador 2
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 7.0),
+              child: player2,
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Se muestra si la partida ha finalizado
+                finPartida
+                    ? Text(
+                        'PARTIDA FINALIZADA',
                         style: GoogleFonts.play(
                           fontSize: 25,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                      ),
-                    ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                if (hayCoronacion)
-                      Column(
-                        children: [
-                          Row(
+                      )
+                    : SizedBox(), // Espacio vacío si la partida no ha finalizado
+                // Se muestra si es posible rendirse
+                !finPartida && posibleRendicion
+                    ? Container(
+                        // Contenedor con pregunta y botones de sí y no
+                        child: Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Text(
+                                '¿Estás seguro de que quieres rendirte?',
+                                style: GoogleFonts.play(
+                                  fontSize: 15,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                GestureDetector(
-                                  onTap: () {
-                                    // Acción a realizar cuando se toca la pieza dama
-                                    tipoPiezaCoronada = TipoPieza.dama;
-                                    terminadaCoronacion = true;
+                                ElevatedButton(
+                                  onPressed: () {
+                                    GoRouter.of(context).go('/chess');
                                   },
-                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                      Colors.red,
+                                    ),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'Sí',
+                                    style: GoogleFonts.play(
+                                      fontSize: 25,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Acción a realizar cuando se toca la pieza alfil
-                                    tipoPiezaCoronada = TipoPieza.alfil;
-                                    terminadaCoronacion = true;
+                                SizedBox(width: 20),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      posibleRendicion = false; // Cambia el estado de posibleRendicion
+                                    });
                                   },
-                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Acción a realizar cuando se toca la pieza caballo
-                                    tipoPiezaCoronada = TipoPieza.caballo;
-                                    terminadaCoronacion = true;
-                                  },
-                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo),
-                                ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Acción a realizar cuando se toca la pieza torre
-                                    tipoPiezaCoronada = TipoPieza.torre;
-                                    terminadaCoronacion = true;
-                                  },
-                                  child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre),
+                                  style: ButtonStyle(
+                                    backgroundColor: MaterialStateProperty.all<Color>(
+                                      Colors.grey,
+                                    ),
+                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                    ),
+                                  ),
+                                  child: Text(
+                                    'No',
+                                    style: GoogleFonts.play(
+                                      fontSize: 25,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                        ],
+                          ],
+                        ),
+                      )
+                    : ElevatedButton(
+                        // Botón de rendirse
+                        onPressed: () {
+                          // Realiza la lógica para rendirse o continuar la partida
+                          setState(() {
+                            posibleRendicion = true; // Cambia el estado de posibleRendicion
+                          });
+                        },
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromRGBO(255, 136, 0, 1),
+                          ),
+                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Rendirse',
+                          style: GoogleFonts.play(
+                            fontSize: 25,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-            ],
-          ),
-        ],
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                  if (hayCoronacion)
+                        Column(
+                          children: [
+                            Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Acción a realizar cuando se toca la pieza dama
+                                      tipoPiezaCoronada = TipoPieza.dama;
+                                      terminadaCoronacion = true;
+                                    },
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Acción a realizar cuando se toca la pieza alfil
+                                      tipoPiezaCoronada = TipoPieza.alfil;
+                                      terminadaCoronacion = true;
+                                    },
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Acción a realizar cuando se toca la pieza caballo
+                                      tipoPiezaCoronada = TipoPieza.caballo;
+                                      terminadaCoronacion = true;
+                                    },
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo),
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Acción a realizar cuando se toca la pieza torre
+                                      tipoPiezaCoronada = TipoPieza.torre;
+                                      terminadaCoronacion = true;
+                                    },
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.10),
+              ],
+            ),
+          ],
+        ),
       ),
     ),
   );
