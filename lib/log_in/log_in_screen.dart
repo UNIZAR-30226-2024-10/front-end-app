@@ -60,6 +60,8 @@ class LoginState extends ChangeNotifier {
   int _eloBlitz = 0;
   int _eloRapid = 0;
   int _eloBullet = 0;
+  String _arena = '';
+  int _puntosPase = 0;
 
   int get id => _id;
   bool get logueado => _logueado;
@@ -67,6 +69,8 @@ class LoginState extends ChangeNotifier {
   int get eloBlitz => _eloBlitz;
   int get eloRapid => _eloRapid;
   int get eloBullet => _eloBullet;
+  String get arena => _arena;
+  int get puntosPase => _puntosPase;
 
   void setId(int id) {
     _id = id;
@@ -81,6 +85,10 @@ class LoginState extends ChangeNotifier {
   String getImagenPieza() {
     getInfo(id.toString());
     return _imagen;
+  }
+
+  String getArena(){
+    return _arena;
   }
 
   String getId(){
@@ -123,6 +131,8 @@ class LoginState extends ChangeNotifier {
         _eloRapid = res['elorapid'] as int;
         _eloBullet = res['elobullet'] as int;
         _imagen = res['setpiezas'] as String;
+        _arena = res['arena'] as String;
+        _puntosPase = res['puntosPase'] as int;
       }
       else{
         throw Exception('Error en la solicitud GET: ${response.statusCode}');

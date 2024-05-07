@@ -123,7 +123,6 @@ List<bool> torreEnroque(List<int> coordenadasNuevasApi){
 
 String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
   String color = esBlanca ? 'w' : 'b';
-  print('EL USUARIO HA ELEGIDO EL TIPO PIEZA $nombrePieza');
   switch (tipoPieza) {
     case TipoPieza.alfil:
       return 'assets/images/images_pase/pieces/$nombrePieza/${color}B.svg';
@@ -142,32 +141,30 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
   }
 }
 
-List<Color> getColorCasilla(int elo) {
+List<Color> getColorCasilla(String arena) {
   List<Color> colorCasilla = [];
-  if( elo <=1000){
-    colorCasilla[0] = Color(0x8B4513); 
-    colorCasilla[1] = Color(0xD2B48C);
-    print("ARENA 1");
-  } else if (elo <= 1200){
-    colorCasilla[0] = Color(0xf5f5f5); 
-    colorCasilla[1] = Color(0xB8B8B8);
-    print("ARENA 2");
-  } else if (elo < 1400){
-    colorCasilla[0] = Color(0xFFEA70); 
-    colorCasilla[1] = Color(0xF5D000);
-    print("ARENA 3");
-  } else if (elo < 1600){
-    colorCasilla[0] = Color(0x50C878); 
-    colorCasilla[1] = Color(0x38A869);
-    print("ARENA 4");
-  } else if (elo < 1800){
-    colorCasilla[0] = Color(0xF0F0F0); 
-    colorCasilla[1] = Color(0xB0E0E6);
-    print("ARENA 5");
+  if( arena == "Madera"){
+    colorCasilla[0] = Color(0xFF8B4513); 
+    colorCasilla[1] = Color(0xFFD2B48C);
+    print(" ARENA Madera");
+  } else if (arena == "Marmol"){
+    colorCasilla[0] = Color(0xFFf5f5f5); 
+    colorCasilla[1] = Color(0xFFB8B8B8);
+    print("Marmol");
+
+  } else if (arena == "Oro"){
+    colorCasilla[0] = Color(0xFFFFEA70); 
+    colorCasilla[1] = Color(0xFFF5D000);
+  } else if (arena == "Esmeralda"){
+    colorCasilla[0] = Color(0xFF50C878); 
+    colorCasilla[1] = Color(0xFF38A869);
+  } else if (arena == "Diamante"){
+    colorCasilla[0] = Color(0xFFF0F0F0); 
+    colorCasilla[1] = Color(0xFFB0E0E6);
   }
   else{
-    colorCasilla[0] = Color(0xF0F0F0); 
-    colorCasilla[1] = Color(0xB0E0E6);
+    colorCasilla[0] = Color(0xFFF0F0F0); 
+    colorCasilla[1] = Color(0xFFB0E0E6);
   }
 
   return colorCasilla;
