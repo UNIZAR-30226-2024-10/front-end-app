@@ -132,7 +132,7 @@ class LoginState extends ChangeNotifier {
         _eloBullet = res['elobullet'] as int;
         _imagen = res['setpiezas'] as String;
         _arena = res['arena'] as String;
-        _puntosPase = res['puntosPase'] as int;
+        _puntosPase = res['puntospase'] as int;
       }
       else{
         throw Exception('Error en la solicitud GET: ${response.statusCode}');
