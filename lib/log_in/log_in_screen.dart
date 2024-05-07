@@ -125,14 +125,16 @@ class LoginState extends ChangeNotifier {
     print('OBTENEIENDO DATOS DE USUARIO');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
-      print(res);
+      
       if (response.statusCode == 200) {
+        print(res);
         _eloBlitz = res['eloblitz'] as int;
         _eloRapid = res['elorapid'] as int;
         _eloBullet = res['elobullet'] as int;
         _imagen = res['setpiezas'] as String;
         _arena = res['arena'] as String;
         _puntosPase = res['puntospase'] as int;
+        notifyListeners();
       }
       else{
         throw Exception('Error en la solicitud GET: ${response.statusCode}');
@@ -188,6 +190,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         logueado = true;
         loginState.setLogueado(logueado);
         settingsController.toggleLoggedIn();
+        loginState.getInfo(id.toString());
         GoRouter.of(context).go('/');
       } else {
         throw Exception('Error en la solicitud POST: ${response.statusCode}');

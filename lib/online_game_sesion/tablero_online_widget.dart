@@ -26,7 +26,9 @@ import 'package:provider/provider.dart';
 class TableroAjedrezOnline extends StatefulWidget {
   
   final Modos modoJuego;
-  const TableroAjedrezOnline({Key? key, required this.modoJuego}) : super(key: key);
+   List<Color> coloresTablero;
+   List<List<PiezaAjedrez?>> tablero;
+   TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero}) : super(key: key);
 
   @override
   State<TableroAjedrezOnline> createState() => _TableroAjedrezState();
@@ -36,7 +38,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   //VARIABLES
 
-  late List<List<PiezaAjedrez?>> tablero = List.generate(8, (i) => List.filled(8, null));
+  late List<List<PiezaAjedrez?>> tablero;
+
+  List<Color> coloresTablero = [];
 
   PiezaAjedrez? piezaSeleccionada;
 
@@ -88,14 +92,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late Timer _timer;
 
-  List<Color> coloresTablero = [Color(0xFFADF597),Color(0XFF2E960F)];
-
   //MÉTODOS
   @override
   //INICIAR EL ESTADO
   void initState() {
     super.initState();
-    _inicializarTablero();
+    tablero = widget.tablero;
+    coloresTablero = widget.coloresTablero;
     _tratamientoMododeJuego();
     _cargarTableroInicial();
     _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
@@ -204,62 +207,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
   }
   
-  //INICIALIZAR TABLERO
-  Future<void> _inicializarTablero() async {
-    final login = context.read<LoginState>();
-    String id = login.getId();
-    String imagen = '';
-    String arena = '';
-    print('OBTENIENDO INFORMACION DE USUARIO\n');
-    Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
-    http.Response response = await http.get(
-      uri,
-      headers: {
-        HttpHeaders.contentTypeHeader:
-            'application/json', // Especifica el tipo de contenido como JSON
-      },
-    );
-  Map<String, dynamic> res =
-      jsonDecode(response.body) as Map<String, dynamic>;
-    print(res);
-    if (response.statusCode == 200) {
-      imagen = res['setpiezas'] as String;
-      arena = res['arena'] as String;
-    }
-    else{
-      throw Exception('Error en la solicitud GET: ${response.statusCode}');
-    }
-    print('CANARIOOO');
-    print(imagen);
-    print(arena);
-
-  setState(() {
-    if( arena == "Madera"){
-      coloresTablero[0] = Color(0xFF8B4513); 
-      coloresTablero[1] = Color(0xFFD2B48C);
-    print(" ARENA Madera");
-    } else if (arena == "Marmol"){
-      coloresTablero[0] = Color(0xFFf5f5f5); 
-      coloresTablero[1] = Color(0xFFB8B8B8);
-      print("Marmol");
-    } else if (arena == "Oro"){
-      coloresTablero[0] = Color(0xFFFFEA70); 
-      coloresTablero[1] = Color(0xFFF5D000);
-    } else if (arena == "Esmeralda"){
-      coloresTablero[0] = Color(0xFF50C878); 
-      coloresTablero[1] = Color(0xFF38A869);
-    } else if (arena == "Diamante"){
-      coloresTablero[0] = Color(0xFFF0F0F0); 
-      coloresTablero[1] = Color(0xFFB0E0E6);
-    }
-    else{
-      coloresTablero[0] = Color(0xFFF0F0F0); 
-      coloresTablero[1] = Color(0xFFB0E0E6);
-    }
-    tablero = inicializarTablero(imagen);
-  });
-  }
-
   //CALULAR MOVIMIENTOS DE REY EN JAQUE
   List<String> obtenerMovimientosReyJaque(){
     print('MOVIMIENTOS REY EN JAQUE\n');
@@ -827,7 +774,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    GoRouter.of(context).go('/chess');
+                                    Navigator.of(context).pop();
                                   },
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(

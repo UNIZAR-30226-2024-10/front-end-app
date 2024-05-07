@@ -32,6 +32,32 @@ String nombrePieza(PiezaAjedrez? tipoPieza) {
   return pieza;
 }
 
+List<Color> getColorCasilla(String arena) {
+    List<Color> colorCasilla = [];
+    if( arena == "Madera"){
+      colorCasilla.add(Color(0xFF8B4513)); 
+      colorCasilla.add(Color(0xFFD2B48C));
+    } else if (arena == "Marmol"){
+      colorCasilla.add(Color(0xFFf5f5f5)); 
+      colorCasilla.add(Color(0xFFB8B8B8));
+    } else if (arena == "Oro"){
+      colorCasilla.add(Color(0xFFFFEA70)); 
+      colorCasilla.add(Color(0xFFF5D000));
+    } else if (arena == "Esmeralda"){
+      colorCasilla.add(Color(0xFF50C878)); 
+      colorCasilla.add(Color(0xFF38A869));
+    } else if (arena == "Diamante"){
+      colorCasilla.add(Color(0xFFF0F0F0)); 
+      colorCasilla.add(Color(0xFFB0E0E6));
+    }
+    else{
+      colorCasilla.add(Color(0xFFF0F0F0)); 
+      colorCasilla.add(Color(0xFFB0E0E6));
+    }
+
+    return colorCasilla;
+  }
+
 String nombrePiezaTipo(TipoPieza tipoPieza){
   String pieza = '';
 
@@ -125,50 +151,23 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
   String color = esBlanca ? 'w' : 'b';
   switch (tipoPieza) {
     case TipoPieza.alfil:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}B.svg';
+      return '/assets/images/images_pase/pieces/${nombrePieza}/${color}B.svg';
     case TipoPieza.caballo:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}N.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}N.svg';
     case TipoPieza.torre:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}R.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}R.svg';
     case TipoPieza.dama:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}Q.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}Q.svg';
     case TipoPieza.rey:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}K.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}K.svg';
     case TipoPieza.peon:
-      return 'assets/images/images_pase/pieces/$nombrePieza/${color}P.svg';
+      return 'assets/images/images_pase/pieces/${nombrePieza}/${color}P.svg';
     default:
       throw 'No existe imagen de pieza buscada'; // Si el tipo de pieza no coincide con ninguno conocido, devuelve una imagen predeterminada
   }
 }
 
-List<Color> getColorCasilla(String arena) {
-  List<Color> colorCasilla = [];
-  if( arena == "Madera"){
-    colorCasilla[0] = Color(0xFF8B4513); 
-    colorCasilla[1] = Color(0xFFD2B48C);
-    print(" ARENA Madera");
-  } else if (arena == "Marmol"){
-    colorCasilla[0] = Color(0xFFf5f5f5); 
-    colorCasilla[1] = Color(0xFFB8B8B8);
-    print("Marmol");
 
-  } else if (arena == "Oro"){
-    colorCasilla[0] = Color(0xFFFFEA70); 
-    colorCasilla[1] = Color(0xFFF5D000);
-  } else if (arena == "Esmeralda"){
-    colorCasilla[0] = Color(0xFF50C878); 
-    colorCasilla[1] = Color(0xFF38A869);
-  } else if (arena == "Diamante"){
-    colorCasilla[0] = Color(0xFFF0F0F0); 
-    colorCasilla[1] = Color(0xFFB0E0E6);
-  }
-  else{
-    colorCasilla[0] = Color(0xFFF0F0F0); 
-    colorCasilla[1] = Color(0xFFB0E0E6);
-  }
-
-  return colorCasilla;
-}
 
  List<List<PiezaAjedrez?>> inicializarTablero(String nombre) {
     List<List<PiezaAjedrez?>> nuevoTablero =

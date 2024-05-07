@@ -34,6 +34,7 @@ import 'arenas/arenas_screen.dart';
 import 'register/register_screen.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 
+
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
 final router = GoRouter(
@@ -154,18 +155,6 @@ final router = GoRouter(
           path: 'chess/blitz',
           builder: (context, state) => TableroAjedrez(modoJuego: Modos.BLITZ),
         ),
-        GoRoute(
-          path: 'chess/blitzOnline',
-          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.BLITZ),
-        ),
-        GoRoute(
-          path: 'chess/rapidOnline',
-          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.RAPID),
-        ),
-        GoRoute(
-          path: 'chess/bulletOnline',
-          builder: (context, state) => TableroAjedrezOnline(modoJuego: Modos.BULLET),
-        )
       ],
     ),
   ],
