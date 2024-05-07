@@ -106,6 +106,17 @@ String obtenerRutaImagen(TipoPieza tipoPieza, bool esBlanca) {
   return 'assets/images/$pieceName-$colorPrefix.svg';
 }
 
+String obtenerModo(Modos modo) {
+  switch (modo) {
+    case Modos.BLITZ:
+      return 'Blitz';
+    case Modos.RAPID:
+      return 'Rapid';
+    case Modos.BULLET:
+      return 'Bullet';
+  }
+}
+
 
 // Función para convertir coordenadas de la aplicación a las de la API
 List<int> convertirAppToApi(int fila, int columna) {
@@ -167,8 +178,6 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
       throw 'No existe imagen de pieza buscada'; // Si el tipo de pieza no coincide con ninguno conocido, devuelve una imagen predeterminada
   }
 }
-
-
 
  List<List<PiezaAjedrez?>> inicializarTablero(String nombre) {
     List<List<PiezaAjedrez?>> nuevoTablero =
