@@ -227,7 +227,7 @@ class _BattlePassState extends State<BattlePass> {
                                     print('Recompensa reclamada');
                                     user.rewardsClaimed++;
                                     Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/${value.id}');
-                                    final response = await http.put(url, body: {"nivelpase": user.rewardsClaimed.toString()});
+                                    final response = await http.put(url, body: {"recompensamasalta": user.rewardsClaimed.toString()});
                                     if (response.statusCode == 500) {
                                       print('No se ha podido actualizar las recompenas reclamadas');
                                     }
