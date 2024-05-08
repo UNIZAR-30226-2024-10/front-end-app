@@ -42,7 +42,7 @@ class ElegirTipoRanking extends StatelessWidget {
                   textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
                 ),
                 child: Text('BLITZ',
-                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1), fontFamily: 'Oswald')),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -61,7 +61,7 @@ class ElegirTipoRanking extends StatelessWidget {
                   textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
                 ),
                 child: Text('RAPID',
-                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1), fontFamily: 'Oswald')),
               ),
               SizedBox(height: 20),
               ElevatedButton(
@@ -80,7 +80,7 @@ class ElegirTipoRanking extends StatelessWidget {
                   textStyle: MaterialStateProperty.all(TextStyle(fontSize: 18)),
                 ),
                 child: Text('BULLET',
-                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1), fontFamily: 'Oswald')),
               ),
             ],
           ),

@@ -108,10 +108,6 @@ final router = GoRouter(
           builder: (context, state) => LoginScreen(),
         ),
         GoRoute(
-          path: 'personalizacion',
-          builder: (context, state) => Personalizacion(),
-        ),
-        GoRoute(
           path: 'profile',
           builder: (context, state) => UserProfileScreen(),
         ),
