@@ -153,7 +153,7 @@ class _BattlePassState extends State<BattlePass> {
       user = user;
     });
     puntos = user.puntosexperiencia;//victorias.toInt()*4 + user.empates.toInt()*2 + user.derrotas.toInt();
-    print('PUNTOS: $puntos');
+    print('PUNTOS: $puntos, NIVEL DEL PASE: ${user.nivelpase}');
   }
 
   @override
@@ -189,13 +189,23 @@ class _BattlePassState extends State<BattlePass> {
                       onPressed: () async {
                         if(value.logueado){
                           int ultimoNivel = puntos~/10;
+                          print('NIVEL DEL PASE estimado: $ultimoNivel');
                           if(ultimoNivel > user.nivelpase){
                             Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/$id');
-                            final response = await http.put(url, body: {"nivelpase": ultimoNivel.toString()});
+                            print(ultimoNivel.toString());
+                            Map<String, dynamic> bodyData = {
+                              'nivelPase': ultimoNivel.toString(),
+                            };
+                            String jsonData = jsonEncode(bodyData);
+                            final response = await http.post(url, body: jsonData, headers: {'Content-Type': 'application/json'});
+                            print('enviado');
                             if(response.statusCode == 500){
                               print('No se ha podido actualizar el nivel del pase');
                             }else if(response.statusCode == 200){
                               print('Nivel del pase actualizado');
+                            }
+                            else if(response.statusCode == 400){
+                              print('No proporcionados');
                             }
                           }
                         }
@@ -282,7 +292,7 @@ class _BattlePassState extends State<BattlePass> {
                                             width: 30,
                                             height: 30,
                                           )
-                                        : tier.level >= puntos~/10 ?
+                                        : tier.level > puntos~/10 ?
                                           Image.asset(
                                             'assets/images/lock.png',
                                             width: 30,
