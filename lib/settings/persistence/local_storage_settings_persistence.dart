@@ -43,6 +43,12 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   }
 
   @override
+  Future<int> getSession({required int defaultValue}) async {
+    final prefs = await instanceFuture;
+    return prefs.getInt('session') ?? 0;
+  }
+
+  @override
   Future<void> saveAudioOn(bool value) async {
     final prefs = await instanceFuture;
     await prefs.setBool('audioOn', value);
@@ -70,5 +76,11 @@ class LocalStorageSettingsPersistence extends SettingsPersistence {
   Future<void> saveLoggedIn(bool value) async {
     final prefs = await instanceFuture;
     await prefs.setBool('loggedIn', value);
+  }
+
+  @override
+  Future<void> saveSession(int id) async {
+    final prefs = await instanceFuture;
+    await prefs.setInt('session', id);
   }
 }
