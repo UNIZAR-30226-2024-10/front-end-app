@@ -1,4 +1,5 @@
 import 'package:ChessHub/constantes/constantes.dart';
+import 'package:ChessHub/online_game_sesion/esperando_partida.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -143,20 +144,11 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               SizedBox(height: 30),
                               GestureDetector(
                                 onTap: () async{
-                                  bool partidaEncontrada = false;
-                                  login.enviarPeticiondeJuego(Modos.RAPID);
-                                  login.socket.on('match_found', (data) {
-                                    partidaEncontrada = true;
-                                  });
-                                  while (!partidaEncontrada) {
-                                    await Future.delayed(Duration(seconds: 1));
-                                  }
-                                  print("Partida encontrada: $partidaEncontrada");
-                                 
+                                  //TableroAjedrezOnline(modoJuego: Modos.RAPID,coloresTablero: coloresTablero, tablero: tablero)
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TableroAjedrezOnline(modoJuego: Modos.RAPID,coloresTablero: coloresTablero, tablero: tablero)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.RAPID, socket: value.socket, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },
@@ -171,17 +163,11 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 20),
                               GestureDetector(
-                                onTap: () {
-                                  final login = context.read<LoginState>();
-                                  login.getInfo(login.getId());
-                                  List<List<PiezaAjedrez?>> tablero;
-                                  List<Color> coloresTablero;
-                                  tablero = inicializarTablero(login.imagen);
-                                  coloresTablero = getColorCasilla(login.arena);
+                                onTap: () async{
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TableroAjedrezOnline(modoJuego: Modos.BULLET,coloresTablero: coloresTablero, tablero: tablero)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BULLET, socket: value.socket, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },
@@ -196,17 +182,11 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 20),
                               GestureDetector(
-                                onTap: () {
-                                  final login = context.read<LoginState>();
-                                  login.getInfo(login.getId());
-                                  List<List<PiezaAjedrez?>> tablero;
-                                  List<Color> coloresTablero;
-                                  tablero = inicializarTablero(login.imagen);
-                                  coloresTablero = getColorCasilla(login.arena);
+                                onTap: () async{
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => TableroAjedrezOnline(modoJuego: Modos.BLITZ,coloresTablero: coloresTablero, tablero: tablero)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BLITZ, socket: value.socket, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },

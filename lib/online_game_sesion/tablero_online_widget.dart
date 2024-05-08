@@ -8,6 +8,7 @@ import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ChessHub/local_game_sesion/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert'; // Para manejar la codificación y decodificación JSON
@@ -20,16 +21,24 @@ import 'package:ChessHub/local_game_sesion/stats_game.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
 class TableroAjedrezOnline extends StatefulWidget {
   
   final Modos modoJuego;
-   List<Color> coloresTablero;
-   List<List<PiezaAjedrez?>> tablero;
-   TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero}) : super(key: key);
+  IO.Socket socket;
+  List<Color> coloresTablero;
+  List<List<PiezaAjedrez?>> tablero;
+  int roomId;
+  String idOponente;
+  String myColor;
+  String nombreOponente;
+  String nombreUsuario;
+  String nombrePieza;
 
+  TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero, required this.idOponente, required this.myColor, required this.roomId, required this.socket, required this.nombreOponente, required this.nombreUsuario, required this.nombrePieza}) : super(key: key);
   @override
   State<TableroAjedrezOnline> createState() => _TableroAjedrezState();
 }
@@ -42,13 +51,21 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   List<Color> coloresTablero = [];
 
+  late int roomId;
+
+  late String idOponente;
+
+  late String myColor;
+
+  late IO.Socket socket;
+
   PiezaAjedrez? piezaSeleccionada;
 
   int filaSeleccionada = -1;
 
   int columnaSeleccionada = -1;
 
-  String jsonString = '';
+  String tableroEnviar = '';
 
   List<List<int>> movimientosValidos = [];
 
@@ -62,9 +79,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   Duration duracionPartida = Duration(minutes: 10);
 
-  PlayerRow player1 = PlayerRow(playerName: 'NEGRAS', esBlanca: false);
+  late PlayerRow player1;
 
-  PlayerRow player2 = PlayerRow(playerName: 'BLANCAS', esBlanca: true);
+  late PlayerRow player2;
 
   bool esTurnoBlancas = true;
 
@@ -92,6 +109,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late Timer _timer;
 
+  late String tipoPiezaImagen; 
+  bool meToca = false;
+
   //MÉTODOS
   @override
   //INICIAR EL ESTADO
@@ -99,21 +119,40 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     super.initState();
     tablero = widget.tablero;
     coloresTablero = widget.coloresTablero;
+    roomId = widget.roomId;
+    idOponente = widget.idOponente;
+    myColor = widget.myColor;
+    socket = widget.socket;
+    tipoPiezaImagen = widget.nombrePieza;
+
+    if(myColor == 'black'){
+      print("SOY NEGRASSSSS!");
+      player2 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
+      meToca = false;
+      player1 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
+
+    }
+    else{
+      print("SOY BLANCASSSS!");
+      player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: true);
+      meToca = true;
+      player2 = PlayerRow(playerName:  widget.nombreOponente, esBlanca: false);
+    }
     _tratamientoMododeJuego();
     _cargarTableroInicial();
-    _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
+    _escucharServidor();
   }
 
   void _tratamientoMododeJuego() async{
     if(widget.modoJuego == Modos.BLITZ){
       modoDeJuego = 'BLITZ';
-      player1.changeTimer(Duration(minutes: 3));
-      player2.changeTimer(Duration(minutes: 3));
+      player1.changeTimer(Duration(minutes: 10));
+      player2.changeTimer(Duration(minutes: 10));
     }
     else if(widget.modoJuego == Modos.RAPID){
       modoDeJuego = 'RAPID';
-      player1.changeTimer(Duration(minutes: 10));
-      player2.changeTimer(Duration(minutes: 10));
+      player1.changeTimer(Duration(minutes: 3));
+      player2.changeTimer(Duration(minutes: 3));
     }
     else{
       modoDeJuego = 'BULLET';
@@ -125,11 +164,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //CARGAR TABLERO INICIAL
   void _cargarTableroInicial() async {
     // Cargar el tablero inicial
-    jsonString = await rootBundle.loadString('assets/json/tableroInicial.json');
-    jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
+    tableroEnviar = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
+    jsonMapTablero = jsonDecode(tableroEnviar) as Map<String, dynamic>;
     print('TABLERO INICIAL\n');
     print(jsonMapTablero);
     _postTablero();
+    _escucharServidor();
   }
 
   //ENVIAR TABLERO A BACKEND
@@ -140,7 +180,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     http.Response response = await http.post(
       uri,
       body:
-          jsonString, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
+          tableroEnviar, // Utiliza el contenido del archivo JSON como el cuerpo de la solicitud
       headers: {
         HttpHeaders.contentTypeHeader:
             'application/json', // Especifica el tipo de contenido como JSON
@@ -374,7 +414,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   void seleccionadaPieza (int fila, int columna){
     setState(() {
       if (piezaSeleccionada == null && tablero[fila][columna] != null) {
-        if(tablero[fila][columna]!.esBlanca == esTurnoBlancas){
+        if(tablero[fila][columna]!.esBlanca == meToca){
           piezaSeleccionada = tablero[fila][columna];
           filaSeleccionada = fila;
           columnaSeleccionada = columna;
@@ -416,10 +456,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     List<int> coordenadasNuevasApi = convertirAppToApi(filaNueva, columnaNueva);
 
     print('TABLERO ANTES DE MOVER LA PIEZA\n');
-    print(jsonString);
+    print(tableroEnviar);
 
     Map<String, dynamic> jsonMapTableroAntiguo =
-        jsonDecode(jsonString) as Map<String, dynamic>;
+        jsonDecode(tableroEnviar) as Map<String, dynamic>;
 
     if(tablero[filaNueva][columnaNueva] != null){
       if(tablero[filaNueva][columnaNueva]!.esBlanca){
@@ -613,18 +653,18 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     hayCoronacion = false;
 
-    jsonString = jsonEncode(jsonMapTablero);
+    tableroEnviar = jsonEncode(jsonMapTablero);
 
     //Enviamos el tablero con la posible jugada
     bool jugadaValida = await _postTablero();
 
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
-    print(jsonString);
+    print(tableroEnviar);
 
     if (!jugadaValida) {
       print('Jugada no valida');
       //devolvemos el string a su estado original
-      jsonString = jsonEncode(jsonMapTableroAntiguo);
+      tableroEnviar = jsonEncode(jsonMapTableroAntiguo);
       jsonMapTablero = jsonMapTableroAntiguo;
       //PONER VARIABLES DE CONTROL A FALSE
       hayJaque = false;
@@ -633,7 +673,15 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       return;
     }
 
+    Map <String, dynamic> tableroEnviarl = jsonMapTablero;
+    print('ENVIANDO JUGADA AL SERVIDOR\n');
+    print(roomId);
+    socket.emit("move", {tableroEnviar as dynamic, roomId});
+    meToca = !meToca;
+    
+
     //PARAR CRONOMETRO Y CAMBIAR DE TURNO
+    /*
     if(jsonMapTableroAntiguo['turno'] == 'blancas'){
       player2.pauseTimer();
       player1.resumeTimer();
@@ -642,6 +690,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       player2.resumeTimer();
       player1.pauseTimer();
     }
+    */
 
     print('Jugada valida');
     tablero[filaNueva][columnaNueva] = piezaSeleccionada;
@@ -660,6 +709,55 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       filaSeleccionada = -1;
       columnaSeleccionada = -1;
       movimientosValidos = [];
+    });
+  }
+
+  //CASOS ESPECIALES
+  void _escucharServidor(){
+    socket.on("player_disconnected", (_){
+      print("El jugador se ha desconectado");
+      socket.off("player_disconnected");
+      socket.off("movido");
+      Navigator.pop(context);
+    });
+
+    socket.on("oponent_surrendered", (_){
+      print("El jugador se ha rendido");
+      socket.off("oponent_surrendered");
+      socket.off("movido");
+      Navigator.pop(context);
+    });
+
+    socket.on("has_perdido", (_){
+      print("La partida ha finalizado");
+      socket.off("has_perdido");
+      socket.off("movido");
+      Navigator.pop(context);
+    });
+
+    socket.on("has_empatado", (_){
+      print("La partida ha empatado");
+      socket.off("has_empatado");
+      socket.off("movido");
+      Navigator.pop(context);
+    });
+
+    socket.on("movido", (data){
+      print("TABLERO ENVIADO POR CONTRINCANTE\n");
+      List<List<PiezaAjedrez?>> tableroContrincante = List.generate(8, (i) => List.generate(8, (j) => null));
+      print(data);
+      tableroEnviar = json.encode(data);
+      print(tableroEnviar);
+      Map<String, dynamic> movs = jsonDecode(tableroEnviar) as Map<String, dynamic>;
+      tableroContrincante = inicializarTableroDesdeJson(movs,tipoPiezaImagen);
+      setState(() {
+        tablero = tableroContrincante;
+      });
+    });
+
+    socket.on("value_timers",(data) => {
+      player1.changeTimer(Duration(minutes: data['minutos'] as int, seconds: data['segundos'] as int)),
+      player2.changeTimer(Duration(minutes: data['minutos'] as int, seconds: data['segundos'] as int)),
     });
   }
 
@@ -774,7 +872,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).pop();
+                                    socket.emit("I_surrender", {roomId}); 
+                                    Navigator.pop(context);
                                   },
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(

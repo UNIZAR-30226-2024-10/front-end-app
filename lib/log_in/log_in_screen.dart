@@ -70,6 +70,7 @@ class LoginState extends ChangeNotifier {
   int _eloBullet = 0;
   String _arena = '';
   int _puntosPase = 0;
+  String _nombre = '';
 
   int get id => _id;
   bool get logueado => _logueado;
@@ -79,6 +80,7 @@ class LoginState extends ChangeNotifier {
   int get eloBullet => _eloBullet;
   String get arena => _arena;
   int get puntosPase => _puntosPase;
+  String get nombre => _nombre;
 
   bool conectarseServidor() {
     bool conectado = false;
@@ -90,10 +92,9 @@ class LoginState extends ChangeNotifier {
     print(socket.connected);
     return conectado;
   }
-
-  void enviarPeticiondeJuego(Modos modo){
-    //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
-    socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
+  
+  String getNombre(){
+    return _nombre;
   }
 
   void setId(int id) {
@@ -117,6 +118,10 @@ class LoginState extends ChangeNotifier {
 
   String getId(){
     return _id.toString();
+  }
+
+  int getIdInt(){
+    return _id;
   }
 
   int getEloBlitzUsuario() {
@@ -158,6 +163,7 @@ class LoginState extends ChangeNotifier {
         _imagen = res['setpiezas'] as String;
         _arena = res['arena'] as String;
         _puntosPase = res['puntospase'] as int;
+        _nombre = res['nombre'] as String;
         notifyListeners();
       }
       else{

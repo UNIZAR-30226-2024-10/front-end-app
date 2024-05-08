@@ -1,8 +1,13 @@
 //Nombre: funciones.dart
 //Descripción: Contiene las funciones necesarias para el juego de ajedrez.
+import 'dart:io';
+
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 
 bool esBlanca(int index) {
   int x = index ~/ 8;
@@ -275,6 +280,143 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
 
     return  nuevoTablero;
   }
+
+  Future<String> getNombre(String id) async {
+      // Construye la URL y realiza la solicitud POST
+      String nombre = '';
+      //http://192.168.1.97:3001/play/
+      print('OBTENIENDO INFORMACION DE USUARIO\n');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+      http.Response response = await http.get(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+    print('OBTENEIENDO DATOS DE USUARIO');
+    Map<String, dynamic> res =
+        jsonDecode(response.body) as Map<String, dynamic>;
+      
+      if (response.statusCode == 200) {
+        print(res);
+        nombre = res['nombre'] as String;
+      }
+      else{
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
+
+      return nombre;
+  }
+
+  // Función para inicializar el tablero a partir de un JSON
+// Función para inicializar el tablero a partir de un JSON
+List<List<PiezaAjedrez?>> inicializarTableroDesdeJson(Map<String, dynamic> jsonData, String tipoPiezaImagen) {
+  List<List<PiezaAjedrez?>> nuevoTablero =
+      List.generate(TAMANYO_TABLERO, (index) => List.generate(TAMANYO_TABLERO, (index) => null));
+
+  // Colocar peones
+  List<dynamic> peones = jsonData['peon'] as List<dynamic>;
+  peones.forEach((peon) {
+    int x = peon['x'] as int;
+    int y = peon['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = peon['color'] as String;
+    bool esBlanca = color == 'blancas';
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.peon,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.peon),
+    );
+  });
+
+  // Colocar alfiles
+  List<dynamic> alfiles = jsonData['alfil'] as List<dynamic>;
+  alfiles.forEach((alfil) {
+    int x = alfil['x'] as int;
+    int y = alfil['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = alfil['color'] as String;
+    bool esBlanca = color == 'blancas';
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.alfil,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.alfil),
+    );
+  });
+
+  // Colocar caballos
+  List<dynamic> caballos = jsonData['caballo'] as List<dynamic>;
+  caballos.forEach((caballo) {
+    int x = caballo['x'] as int;
+    int y = caballo['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = caballo['color'] as String;
+    bool esBlanca = color == 'blancas';
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.caballo,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.caballo),
+    );
+  });
+
+  // Colocar torres
+  List<dynamic> torres = jsonData['torre'] as List<dynamic>;
+  torres.forEach((torre) {
+    int x = torre['x'] as int;
+    int y = torre['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = torre['color'] as String;
+    bool esBlanca = color == 'blancas';
+    bool ladoIzquierdo = false;
+    if(coordenadas[0] == 0 && coordenadas[1] == 0){
+      ladoIzquierdo = true;
+    }
+    else if(coordenadas[0] == 7 && coordenadas[1] == 0){
+      ladoIzquierdo = true;
+    }
+    
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.torre,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.torre),
+      ladoIzquierdo: ladoIzquierdo,
+    );
+  });
+
+  // Colocar damas
+  List<dynamic> damas = jsonData['dama'] as List<dynamic>;
+  damas.forEach((dama) {
+    int x = dama['x'] as int;
+    int y = dama['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = dama['color'] as String;
+    bool esBlanca = color == 'blancas';
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.dama,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.dama),
+    );
+  });
+
+  // Colocar reyes
+  List<dynamic> reyes = jsonData['rey'] as List<dynamic>;
+  reyes.forEach((rey) {
+    int x = rey['x'] as int;
+    int y = rey['y'] as int;
+    List<int> coordenadas = convertirApiToApp(x, y);
+    String color = rey['color'] as String;
+    bool esBlanca = color == 'blancas';
+    nuevoTablero[coordenadas[0]][coordenadas[1]] = PiezaAjedrez(
+      tipoPieza: TipoPieza.rey,
+      esBlanca: esBlanca,
+      nombreImagen: getImagePath(tipoPiezaImagen, esBlanca, TipoPieza.rey),
+    );
+  });
+
+  return nuevoTablero;
+}
+
 
 
 
