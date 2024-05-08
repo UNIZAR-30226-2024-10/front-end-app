@@ -1,7 +1,11 @@
+
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../style/my_button.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import '../log_in/log_in_screen.dart';
+import 'package:provider/provider.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Set {
   final String name;
@@ -54,14 +58,64 @@ final List<Emote> emotes = [
   Emote(emoji: '😎️', level: 23),
   Emote(emoji: '😡️', level: 25),
   Emote(emoji: '😈️', level: 27),
-  Emote(emoji: '👻️', level:29),
+  Emote(emoji: '👻️', level: 29),
 ];
 
-class Personalizacion extends StatelessWidget {
-  bool _isSwitched = false;
+class NivelPase {
+  final int nivel;
+  NivelPase({
+    required this.nivel,
+  });
+  NivelPase.fromJson(Map<String, dynamic> json)
+      : nivel = json['nivelpase'] as int;
+}
+
+class Personalizacion extends StatefulWidget {
+  int id = 0;
+  Personalizacion({Key? key, required this.id}) : super(key: key);
+  
+  @override
+  _PersonalizacionState createState() => _PersonalizacionState();
+}
+
+Future<NivelPase> leerDatosUsuario(int id) async {
+  // Aquí puedes programar la lógica para obtener los datos del usuario
+  // Por ejemplo, puedes obtener los datos del usuario desde una base de datos, una API, etc.
+  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final response = await http.get(url);
+  if (response.statusCode == 200) {
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+    NivelPase nivelPase = NivelPase.fromJson(data);
+    return nivelPase;
+    
+  } else {
+    throw Exception('Error al leer los datos del usuario');
+  }
+}
+
+class _PersonalizacionState extends State<Personalizacion> {
+  NivelPase nivelPase = NivelPase(nivel: 0);
+  int id = 0;
+  @override
+  void initState() {
+    id = widget.id;
+    _establecerDatosUsuario();
+    super.initState();
+  }
+
+  Future<void> _establecerDatosUsuario() async {
+    // Aquí puedes programar la lógica para obtener los datos del usuario
+    // Por ejemplo, puedes obtener los datos del usuario desde una base de datos, una API, etc.
+    nivelPase = await leerDatosUsuario(id);
+    setState((){
+      nivelPase = nivelPase;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
+    return Consumer<LoginState>(
+      builder: (context, value, child) => Stack(children: [
       Container(
         decoration: BoxDecoration(
           image: DecorationImage(
@@ -137,13 +191,35 @@ class Personalizacion extends StatelessWidget {
                             ),
                             SizedBox(height: 16),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   // Aquí puedes programar la lógica para el botón de este componente
                                   // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
+                                  if(value.logueado == true && nivelPase.nivel >= set.level){
+                                    //Aqui se activa el set
+                                    Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
+                                    print(set.name.toString());
+                                    Map<String, dynamic> bodyData = {
+                                      'setPiezas': set.name,
+                                    };
+                                    String jsonData = jsonEncode(bodyData);
+                                    final response = await http.post(url,body : jsonData, headers: {'Content-Type': 'application/json'});
+                                    if (response.statusCode == 200) {
+                                      print('Set ${set.name} activado');
+                                    } 
+                                    else if(response.statusCode == 400){
+                                      print('Error al proporcionar set');
+                                    }
+                                    else if(response.statusCode == 500){
+                                      print('Error al actualizar');
+                                    }
+                                    else {
+                                      print('Error al activar set');
+                                    }
+
+                                  }
                                 },
-                                child: Text('Activar', style: TextStyle(color: Color.fromARGB(255, 112, 112, 112))),
-                            ),
-                          ],
+                                child:  value.logueado == true && nivelPase.nivel >= set.level ? Text('Activar', style: TextStyle(color: Colors.green, fontFamily: 'Oswald'),) : Text('Nivel insuficiente', style: TextStyle(color: Colors.red, fontFamily: 'Oswald'),),),
+                        ],
                         ),
                       ),
                     );
@@ -176,12 +252,34 @@ class Personalizacion extends StatelessWidget {
                             ),
                             SizedBox(height: 16),
                             ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   // Aquí puedes programar la lógica para el botón de este componente
                                   // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
+                                  if(value.logueado == true && nivelPase.nivel >= emote.level){
+                                    //Aqui se activa el set
+                                    Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_emoticonos/$id');
+                                    print(emote.emoji.toString());
+                                    Map<String, dynamic> bodyData = {
+                                      'emoticonos': emote.emoji,
+                                    };
+                                    String jsonData = jsonEncode(bodyData);
+                                    final response = await http.post(url,body : jsonData, headers: {'Content-Type': 'application/json'});
+                                    if (response.statusCode == 200) {
+                                      print('Set ${emote.emoji} activado');
+                                    } 
+                                    else if(response.statusCode == 400){
+                                      print('Error al proporcionar set');
+                                    }
+                                    else if(response.statusCode == 500){
+                                      print('Error al actualizar');
+                                    }
+                                    else {
+                                      print('Error al activar set');
+                                    }
+
+                                  }
                                 },
-                                child: Text('Activar', style: TextStyle(color: Color.fromARGB(255, 112, 112, 112))),
-                            ),
+                                child:  value.logueado == true && nivelPase.nivel >= emote.level ? Text('Activar', style: TextStyle(color: Colors.green, fontFamily: 'Oswald')) : Text('Nivel insuficiente', style: TextStyle(color: Colors.red, fontFamily: 'Oswald'),),),
                           ],
                         ),
                       ),
@@ -193,6 +291,6 @@ class Personalizacion extends StatelessWidget {
           ),
         ),
       ),
-    ]);
+    ]));
   }
 }

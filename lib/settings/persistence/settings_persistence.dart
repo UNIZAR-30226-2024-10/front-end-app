@@ -17,6 +17,8 @@ abstract class SettingsPersistence {
 
   Future<bool> getLoggedIn({required bool defaultValue});
 
+  Future<int> getSession({required int defaultValue});
+
   Future<void> saveAudioOn(bool value);
 
   Future<void> saveMusicOn(bool value);
@@ -26,4 +28,6 @@ abstract class SettingsPersistence {
   Future<void> saveSoundsOn(bool value);
 
   Future<void> saveLoggedIn(bool value);
+
+  Future<void> saveSession(int id);
 }

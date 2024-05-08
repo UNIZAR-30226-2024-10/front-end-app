@@ -10,7 +10,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class BattlePass extends StatefulWidget {
-  int puntos = 0;
   int id = 0;
   BattlePass({Key? key, required this.id}) : super(key: key);
   @override
@@ -212,7 +211,7 @@ class _BattlePassState extends State<BattlePass> {
                       },
                       child: Text(
                         'RECLAMAR TODAS RECOMPENSAS',
-                        style: TextStyle(color: Colors.green),
+                        style: TextStyle(color: Colors.green, fontFamily: 'Oswald'),
                       ),
                     ),
                   ),
@@ -236,7 +235,7 @@ class _BattlePassState extends State<BattlePass> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                    color: Colors.white, fontFamily: 'Oswald',
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -245,7 +244,7 @@ class _BattlePassState extends State<BattlePass> {
                                     Text(
                                       'Puntos requeridos: ${tier.requiredPoints}',
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.orange),
+                                          fontSize: 14, color: Colors.orange, fontFamily: 'Oswald'),
                                     ),
                                   ],
                                 ),
@@ -254,7 +253,7 @@ class _BattlePassState extends State<BattlePass> {
                                     Text(
                                       'Tipo de recompensa: ${tier.rewardType}',
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.orange),
+                                          fontSize: 14, color: Colors.orange, fontFamily: 'Oswald'),
                                     )
                                   ],
                                 ),

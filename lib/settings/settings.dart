@@ -37,6 +37,8 @@ class SettingsController {
 
   ValueNotifier<bool> loggedIn = ValueNotifier(true);
 
+  ValueNotifier<int> session = ValueNotifier(0);
+
   /// Creates a new instance of [SettingsController] backed by [store].
   ///
   /// By default, settings are persisted using [LocalStorageSettingsPersistence]
@@ -72,6 +74,11 @@ class SettingsController {
     _store.saveLoggedIn(loggedIn.value);
   }
 
+  void setSessionId(int id) {
+    session.value = id;
+    _store.saveSession(session.value);
+  }
+
   /// Asynchronously loads values from the injected persistence store.
   Future<void> _loadStateFromPersistence() async {
     final loadedValues = await Future.wait([
@@ -87,6 +94,7 @@ class SettingsController {
       _store
           .getLoggedIn(defaultValue: false)
           .then((value) => loggedIn.value = value),
+      _store.getSession(defaultValue: 0).then((value) => session.value = value),
       _store
           .getSoundsOn(defaultValue: true)
           .then((value) => soundsOn.value = value),

@@ -57,7 +57,8 @@ class LoginScreen extends StatelessWidget {
 
 class LoginState extends ChangeNotifier {
   // Dart client
-  IO.Socket socket = IO.io("https://chesshub-api-ffvrx5sara-ew.a.run.app", <String, dynamic>{
+  IO.Socket socket =
+      IO.io("https://chesshub-api-ffvrx5sara-ew.a.run.app", <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
   });
@@ -112,11 +113,11 @@ class LoginState extends ChangeNotifier {
     return _imagen;
   }
 
-  String getArena(){
+  String getArena() {
     return _arena;
   }
 
-  String getId(){
+  String getId() {
     return _id.toString();
   }
 
@@ -140,17 +141,18 @@ class LoginState extends ChangeNotifier {
   }
 
   void getInfo(String id) async {
-      // Construye la URL y realiza la solicitud POST
-      //http://192.168.1.97:3001/play/
-      print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
-      http.Response response = await http.get(
-        uri,
-        headers: {
-          HttpHeaders.contentTypeHeader:
-              'application/json', // Especifica el tipo de contenido como JSON
-        },
-      );
+    // Construye la URL y realiza la solicitud POST
+    //http://192.168.1.97:3001/play/
+    print('OBTENIENDO INFORMACION DE USUARIO\n');
+    Uri uri =
+        Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+    http.Response response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader:
+            'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
     print('OBTENEIENDO DATOS DE USUARIO');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
@@ -163,7 +165,6 @@ class LoginState extends ChangeNotifier {
         _imagen = res['setpiezas'] as String;
         _arena = res['arena'] as String;
         _puntosPase = res['puntospase'] as int;
-        _nombre = res['nombre'] as String;
         notifyListeners();
       }
       else{
@@ -195,7 +196,8 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
-      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
+      Uri uri =
+          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
       http.Response response = await http.post(
         uri,
         body:
@@ -217,6 +219,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         print(res['message']);
         id = res['userId'] as int;
         loginState.setId(id);
+        settingsController.setSessionId(id);
         logueado = true;
         loginState.setLogueado(logueado);
         settingsController.toggleLoggedIn();
