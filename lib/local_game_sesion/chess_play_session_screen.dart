@@ -10,6 +10,8 @@ import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
+import 'dart:async';
+
 
 class ChessPlaySessionScreen extends StatelessWidget {
   const ChessPlaySessionScreen({Key? key}) : super(key: key);
@@ -140,7 +142,17 @@ class ChessPlaySessionScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 30),
                               GestureDetector(
-                                onTap: () {
+                                onTap: () async{
+                                  bool partidaEncontrada = false;
+                                  login.enviarPeticiondeJuego(Modos.RAPID);
+                                  login.socket.on('match_found', (data) {
+                                    partidaEncontrada = true;
+                                  });
+                                  while (!partidaEncontrada) {
+                                    await Future.delayed(Duration(seconds: 1));
+                                  }
+                                  print("Partida encontrada: $partidaEncontrada");
+                                 
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(

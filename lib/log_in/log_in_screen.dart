@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:ChessHub/constantes/constantes.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 //import '../audio/audio_controller.dart';
+import 'package:ChessHub/game_internals/funciones.dart';
 //import '../audio/sounds.dart';
 import '../settings/settings.dart';
 //import '../style/my_button.dart';
@@ -54,6 +56,12 @@ class LoginScreen extends StatelessWidget {
 }
 
 class LoginState extends ChangeNotifier {
+  // Dart client
+  IO.Socket socket = IO.io("https://chesshub-api-ffvrx5sara-ew.a.run.app", <String, dynamic>{
+    'transports': ['websocket'],
+    'autoConnect': false,
+  });
+
   int _id = 0;
   bool _logueado = false;
   String _imagen = '';
@@ -71,6 +79,22 @@ class LoginState extends ChangeNotifier {
   int get eloBullet => _eloBullet;
   String get arena => _arena;
   int get puntosPase => _puntosPase;
+
+  bool conectarseServidor() {
+    bool conectado = false;
+    socket.connect();
+    socket.onConnect((data) {
+      print('Conectado al servidor');
+      conectado = true; // Actualiza el estado de conectado a true
+    });
+    print(socket.connected);
+    return conectado;
+  }
+
+  void enviarPeticiondeJuego(Modos modo){
+    //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
+    socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
+  }
 
   void setId(int id) {
     _id = id;
@@ -191,6 +215,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         loginState.setLogueado(logueado);
         settingsController.toggleLoggedIn();
         loginState.getInfo(id.toString());
+        await loginState.conectarseServidor();
         GoRouter.of(context).go('/');
       } else {
         throw Exception('Error en la solicitud POST: ${response.statusCode}');

@@ -199,3 +199,14 @@
 
 # Lanzar la aplicación en ventana #
 start ms-settings:developers
+
+# Jugamos con IA poner campo IA: "color que lleva la IA" en json, cuando le toque a la IA recibimos el movimiento que ha hecho la IA sino recibiremos el json normal #
+# Recibimos el movimiento de la IA con un json pequeño asi:
+# {
+# "fromX": 6,
+# "fromY": 7,
+# "fromColor": "color con el que juega la ia"
+# "x": 3 
+# "y": 4 
+# } 
+#
