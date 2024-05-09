@@ -97,7 +97,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                     onPressed: () {
                       Navigator.push(context, MaterialPageRoute(builder: (context) => SeleccionarIdRival(id: value.id)));
                     },
-                    child: Text('Jugar Partida Asíncrona', style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),),
+                    child: Text('Crear Partida Asíncrona', style: TextStyle(color: Colors.green, fontFamily: 'Oswald'),),
                   ),
                 ),
                 Expanded(
@@ -132,7 +132,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                     int idRival = (id == ind.usuarioblancasid) ? ind.usuarionegrasid : ind.usuarioblancasid;
                                     String tablero = ind.tablero;
                                     Navigator.push(context, MaterialPageRoute(builder: (context) => PartidaAsincrona(idPartida: idPartida, idUsuario: idUsuario, idRival: idRival, tablero: tablero)));},
-                                  child: Text('Jugar Partida', style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),)
+                                  child: Text('Jugar Partida', style: TextStyle(color: Colors.black, fontFamily: 'Oswald'),)
                                 )
                             ],
                           ),
