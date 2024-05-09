@@ -13,6 +13,7 @@ import '../audio/audio_controller.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
 import '../audio/sounds.dart';
 import '../settings/settings.dart';
+import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 //import '../style/my_button.dart';
 //import '../style/palette.dart';
 //import '../style/responsive_screen.dart';
@@ -168,12 +169,17 @@ class MainMenuScreen extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: Text('Historial',
+                      title: Text('Partidas Asíncronas',
                           style:
                               TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
                       onTap: () {
                         audioController.playSfx(SfxType.buttonTap);
-                        GoRouter.of(context).push('/history');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => PartidasAsincronas(id:value.id)
+                          ),
+                        );
                       },
                     ),
                     ListTile(

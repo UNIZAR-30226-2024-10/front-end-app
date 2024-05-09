@@ -278,7 +278,7 @@ class _BattlePassState extends State<BattlePass> {
                                       Text(
                                         tier.reward,
                                         style: TextStyle(
-                                            fontSize: 46, color: Colors.white),
+                                            fontSize: 46),
                                       ),
                                   ],
                                 ),
