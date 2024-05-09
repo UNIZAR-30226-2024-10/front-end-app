@@ -12,10 +12,10 @@ import 'dart:convert';
 import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 
 
+
 class PartidaAsincrona extends StatefulWidget {
   int id = 0;
   PartidaAsincrona({Key? key, required this.id, required this.idUsuario, required this.idRival, required this.tablero}) : super(key: key);
-  
   @override
   PartidaAsincrona createState() => _PartidaAsincrona();
 }
@@ -26,11 +26,20 @@ class _PartidaAsincrona extends State<PartidaAsincrona>{
   int idRival = 0;
   String tablero = '';
 
+    
+  @override
   void initState() {
     id = widget.id;
     idUsuario = widget.idUsuario;
     idRival = widget.idRival;
     tablero = widget.tablero;
+    
     super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<LoginState>(
+      builder: (context, value, child) => Stack());
   }
 }

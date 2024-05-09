@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ChessHub/partidas_asincronas/seleccionar_id_rival.dart';
+import 'package:ChessHub/partidas_asincronas/pantalla_partida_asincrona.dart';
 
 class Partidas {
   int idPartida;
@@ -36,20 +37,6 @@ class PartidasAsincronas extends StatefulWidget {
   _PartidasAsincronas createState() => _PartidasAsincronas();
 }
 
-
-
-// Future <Partidas> leerPartidasUsuarios(int id, List<Partidas> partidas) async {
-//   final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/get_partidas_asincronas/$id');
-//   final response = await http.get(url);
-//   if(response.statusCode == 200) {
-//     print('Leidas correctamente');
-//     final userMap = jsonDecode(response.body) as List<dynamic>;
-//     userMap.forEach((userData){
-//       partidas.add(Partidas.fromJson(userData as Map<String, dynamic>));
-//     });
-//     return partidas;
-//   }
-// }
 
 
 class _PartidasAsincronas extends State<PartidasAsincronas> {
