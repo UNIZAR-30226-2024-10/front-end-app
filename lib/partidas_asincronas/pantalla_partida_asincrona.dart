@@ -13,33 +13,45 @@ import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 
 
 
+import 'package:flutter/material.dart';
+
 class PartidaAsincrona extends StatefulWidget {
-  int id = 0;
-  PartidaAsincrona({Key? key, required this.id, required this.idUsuario, required this.idRival, required this.tablero}) : super(key: key);
+  final int idPartida;
+  final int idUsuario;
+  final int idRival;
+  final String tablero;
+
+  PartidaAsincrona({
+    Key? key,
+    required this.idPartida,
+    required this.idUsuario,
+    required this.idRival,
+    required this.tablero,
+  }) : super(key: key);
+
   @override
-  PartidaAsincrona createState() => _PartidaAsincrona();
+  _PartidaAsincronaState createState() => _PartidaAsincronaState();
 }
 
-class _PartidaAsincrona extends State<PartidaAsincrona>{
+class _PartidaAsincronaState extends State<PartidaAsincrona> {
   int id = 0;
   int idUsuario = 0;
   int idRival = 0;
   String tablero = '';
 
-    
   @override
   void initState() {
-    id = widget.id;
+    id = widget.idPartida;
     idUsuario = widget.idUsuario;
     idRival = widget.idRival;
     tablero = widget.tablero;
-    
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginState>(
-      builder: (context, value, child) => Stack());
+      builder: (context, value, child) => Stack(),
+    );
   }
 }

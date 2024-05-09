@@ -125,7 +125,13 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                   ),
                                 ),
                                 ElevatedButton(
-                                  onPressed: (){ Navigator.push(context, MaterialPageRoute(builder: (context) => PartidaAsincrona(id: ind.idPartida, idUsuario: id, idRival: (id == ind.usuarioblancasid) ? ind.usuarionegrasid : ind.usuarioblancasid, tablero: ind.tablero)));},
+                                  
+                                  onPressed: (){ 
+                                    int idPartida = ind.idPartida;
+                                    int idUsuario = id;
+                                    int idRival = (id == ind.usuarioblancasid) ? ind.usuarionegrasid : ind.usuarioblancasid;
+                                    String tablero = ind.tablero;
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) => PartidaAsincrona(idPartida: idPartida, idUsuario: idUsuario, idRival: idRival, tablero: tablero)));},
                                   child: Text('Jugar Partida', style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),)
                                 )
                             ],
