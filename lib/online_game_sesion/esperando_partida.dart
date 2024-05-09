@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
@@ -29,7 +31,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   late int id;
   late int eloRapid;
   int countdown = 5; // Inicializamos el contador en 10 segundos
-  late int roomId = 0;
+  late int roomId;
   late String myColor = '';
   late String idOponente = '';
   bool infoObtenida = false;
@@ -76,9 +78,13 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
         setState(() {
           print('Datos de la partida: ');
           print(data);
+          print('IMPRIMIMENDO ROOM_ID: ');
+          print(data['roomId']);
           roomId = data['roomId'] as int;
+          print(roomId);
           myColor = data['color'] as String;
-          idOponente = data['opponent'] as String;
+          int idOponenteInt = data['opponent'] as int;
+          idOponente = idOponenteInt.toString();
         });
         socket.off('game_ready');
       }
@@ -122,13 +128,15 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     tablero = inicializarTablero(login.imagen);
     coloresTablero = getColorCasilla(login.arena);
     String nombreUsuario = login.getNombre();
-    String nombreOponente = 'kiko';
+    String nombreOponente = 'kamalmola';
+    /*
     Future<String> futureString = getNombre(idOponente);
     await futureString.then((value) {
       nombreOponente = value;
       print('Nombre del oponente: $nombreOponente');
       // Usa el valor de resultado aquí
     });
+    */
 
 
       Future.delayed(Duration.zero, () {

@@ -58,7 +58,7 @@ class LoginScreen extends StatelessWidget {
 class LoginState extends ChangeNotifier {
   // Dart client
   IO.Socket socket =
-      IO.io("https://chesshub-api-ffvrx5sara-ew.a.run.app", <String, dynamic>{
+      IO.io("http://192.168.1.97:3001", <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': false,
   });
@@ -89,6 +89,7 @@ class LoginState extends ChangeNotifier {
     socket.onConnect((data) {
       print('Conectado al servidor');
       conectado = true; // Actualiza el estado de conectado a true
+      //socket.emit('connection', 'Conectado al servidor');
     });
     print(socket.connected);
     return conectado;
@@ -145,7 +146,7 @@ class LoginState extends ChangeNotifier {
     //http://192.168.1.97:3001/play/
     print('OBTENIENDO INFORMACION DE USUARIO\n');
     Uri uri =
-        Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+        Uri.parse('http://192.168.1.97:3001/users/$id');
     http.Response response = await http.get(
       uri,
       headers: {
@@ -197,7 +198,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       Uri uri =
-          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
+          Uri.parse('http://192.168.1.97:3001/users/login');
       http.Response response = await http.post(
         uri,
         body:
