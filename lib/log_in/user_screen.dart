@@ -50,7 +50,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
       Uri uri =
-          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+          Uri.parse('http://192.168.1.97:3001/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
