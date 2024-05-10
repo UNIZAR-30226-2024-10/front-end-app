@@ -50,11 +50,11 @@ flutter:
     - assets/images/images_pase/pieces/fresca/
     - assets/images/images_pase/pieces/governor/
     - assets/images/images_pase/pieces/kosal/
-    - assets/images/images_pase/pieces/defecto/
     - assets/images/images_pase/pieces/leipzig/
     - assets/images/images_pase/pieces/maestro/
     - assets/images/images_pase/pieces/mpchess/
     - assets/images/images_pase/pieces/pixel/
+    - assets/images/images_pase/pieces/defecto/
     - assets/json/
     - assets/music/
     - assets/sfx/
