@@ -76,6 +76,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       }
     }
 
+    void _deleteAccount(int id) async {
+      // Construye la URL y realiza la solicitud POST
+      //http://192.168.1.97:3001/play/
+      print('OBTENIENDO INFORMACION DE USUARIO\n');
+      Uri uri = Uri.parse('http://localhost:3001/users/$id');
+      http.Response response = await http.delete(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+      print('BORRANDO USUARIO');
+      Map<String, dynamic> res =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200) {
+        settingsController.toggleLoggedIn();
+        settingsController.setSessionId(0);
+      } else {
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
+    }
+
     int id = settingsController.session.value;
     _getInfo(id);
 
@@ -152,6 +176,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _deleteAccount(id);
+                  GoRouter.of(context).go('/');
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromRGBO(255, 136, 0, 1)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                child: Text('Delete Account',
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+              )
             ],
           ),
         ),
