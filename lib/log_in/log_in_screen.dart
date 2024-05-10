@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
+
 //import '../audio/audio_controller.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 //import '../audio/sounds.dart';
@@ -57,11 +57,7 @@ class LoginScreen extends StatelessWidget {
 
 class LoginState extends ChangeNotifier {
   // Dart client
-  IO.Socket socket =
-      IO.io("http://192.168.1.97:3001", <String, dynamic>{
-    'transports': ['websocket'],
-    'autoConnect': true,
-  });
+  
 
   int _id = 0;
   bool _logueado = false;
@@ -83,17 +79,6 @@ class LoginState extends ChangeNotifier {
   int get puntosPase => _puntosPase;
   String get nombre => _nombre;
 
-  bool conectarseServidor() {
-    bool conectado = false;
-    socket.connect();
-    socket.onConnect((data) {
-      print('Conectado al servidor');
-      conectado = true; // Actualiza el estado de conectado a true
-      //socket.emit('connection', 'Conectado al servidor');
-    });
-    print(socket.connected);
-    return conectado;
-  }
   
   String getNombre(){
     return _nombre;

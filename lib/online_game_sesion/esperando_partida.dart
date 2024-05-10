@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
@@ -5,19 +6,18 @@ import 'package:ChessHub/constantes/constantes.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:go_router/go_router.dart';
 import 'dart:async';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:provider/provider.dart';
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/online_game_sesion/tablero_online_widget.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
-import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class EsperandoPartida extends StatefulWidget {
   final Modos modoJuego;
-  IO.Socket socket;
   final int userId;
   final int elo;
 
-  EsperandoPartida({required this.modoJuego, required this.socket, required this.userId, required this.elo});
+  EsperandoPartida({required this.modoJuego, required this.userId, required this.elo});
 
   @override
   _EsperandoPartidaState createState() => _EsperandoPartidaState();
@@ -27,20 +27,24 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   bool partidaEncontrada = false;
   bool partidaCancelada = false;
   late Modos modoJuego;
-  late IO.Socket socket;
   late int id;
   late int eloRapid;
   int countdown = 5; // Inicializamos el contador en 10 segundos
-  late int roomId;
+  late int _roomId = 0;
   late String myColor = '';
   late String idOponente = '';
   bool infoObtenida = false;
+
+  IO.Socket socket =
+      IO.io("http://192.168.1.97:3001", <String, dynamic>{
+    'transports': ['websocket'],
+    'autoConnect': true,
+  });
 
   @override
   void initState() {
     super.initState();
     modoJuego = widget.modoJuego;
-    socket = widget.socket;
     id = widget.userId;
     eloRapid = widget.elo;
     enviarPeticiondeJuego(modoJuego);
@@ -53,6 +57,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
     socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
+    print('Petición de juego enviada');
   }
 
   void _startCountdown() {
@@ -72,25 +77,23 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     });
   }
 
-  Future<void> _esperarPartida() async {
+  void _esperarPartida()  {
     socket.on('game_ready', (data) {
       if (mounted) {
         setState(() {
           print('Datos de la partida: ');
           print(data);
-          print('IMPRIMIMENDO ROOM_ID: ');
-          print(data['roomId']);
-          roomId = data['roomId'] as int;
-          print(roomId);
-          myColor = data['color'] as String;
-          int idOponenteInt = data['opponent'] as int;
+          _roomId = data[0]['roomId'] as int;
+          print(_roomId);
+          myColor = data[0]["color"] as String;
+          int idOponenteInt = data[0]["opponent"] as int;
           idOponente = idOponenteInt.toString();
         });
       }
     });
   }
 
-  Future<void> _partidaEncontrada() async {
+  void _partidaEncontrada()  {
     socket.on('match_found', (data) {
       if (mounted) {
         setState(() {
@@ -103,7 +106,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   }
 
   
-  Future<void> _cancelarBusqueda() async {
+  void _cancelarBusqueda()  {
     socket.on('match_canceled', (_) {
       if (mounted) {
         setState(() {
@@ -118,8 +121,8 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   }
   
 
-  void entrarEnPartida() async {
-      // Navegar a la pantalla del tablero cuando countdown es igual a 0
+  void entrarEnPartida()  {
+    // Navegar a la pantalla del tablero cuando countdown es igual a 0
     final login = context.read<LoginState>();
     login.getInfo(login.getId());
     List<List<PiezaAjedrez?>> tablero;
@@ -147,7 +150,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
               coloresTablero: coloresTablero,
               tablero: tablero,
               socket: socket,
-              roomId: roomId,
+              roomIdP: _roomId,
               myColor: myColor,
               idOponente: idOponente,
               nombreUsuario: nombreUsuario,

@@ -148,7 +148,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.RAPID, socket: value.socket, userId: value.id, elo: value.eloRapid)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.RAPID, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },
@@ -167,7 +167,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BULLET, socket: value.socket, userId: value.id, elo: value.eloRapid)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BULLET, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },
@@ -186,7 +186,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BLITZ, socket: value.socket, userId: value.id, elo: value.eloRapid)
+                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BLITZ, userId: value.id, elo: value.eloRapid)
                                     ),
                                   );
                                 },

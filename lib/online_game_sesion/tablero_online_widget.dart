@@ -33,14 +33,14 @@ class TableroAjedrezOnline extends StatefulWidget {
   IO.Socket socket;
   List<Color> coloresTablero;
   List<List<PiezaAjedrez?>> tablero;
-  int roomId;
+  int roomIdP;
   String idOponente;
   String myColor;
   String nombreOponente;
   String nombreUsuario;
   String nombrePieza;
 
-  TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero, required this.idOponente, required this.myColor, required this.roomId, required this.socket, required this.nombreOponente, required this.nombreUsuario, required this.nombrePieza}) : super(key: key);
+  TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero, required this.idOponente, required this.myColor, required this.roomIdP, required this.socket, required this.nombreOponente, required this.nombreUsuario, required this.nombrePieza}) : super(key: key);
   @override
   State<TableroAjedrezOnline> createState() => _TableroAjedrezState();
 }
@@ -53,7 +53,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   List<Color> coloresTablero = [];
 
-  late int roomId;
+  late int roomIdP;
 
   late String idOponente;
 
@@ -123,11 +123,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     super.initState();
     tablero = widget.tablero;
     coloresTablero = widget.coloresTablero;
-    roomId = widget.roomId;
+    roomIdP = widget.roomIdP;
     idOponente = widget.idOponente;
     myColor = widget.myColor;
     socket = widget.socket;
     tipoPiezaImagen = widget.nombrePieza;
+    print("ROOM ID QUE ME HAN ENVIADO");
+    print(roomIdP);
 
     if(myColor == 'black'){
       print("SOY NEGRASSSSS!");
@@ -143,6 +145,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     _cargarTableroInicial();
     _tratamientoMododeJuego();
+    _escucharServidor();
   }
 
   void _tratamientoMododeJuego() async{
@@ -169,7 +172,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
     jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
     _postTablero();
-    _escucharServidor();
   }
 
   //ENVIAR TABLERO A BACKEND
@@ -675,16 +677,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
 
     // Convertir el mapa en formato JSON
-     Map<String, dynamic> tableroEnviar = jsonMapTablero;
-    // Crear un mapa que contenga el tablero y el roomId
+    jsonString = jsonEncode(jsonMapTablero);
+    // Crear un mapa que contenga el tablero y el roomIdP
     Map<String, dynamic> data = {
-        'tableroEnviar': tableroEnviar,
-        'roomId': roomId
+        'tableroEnviar': jsonString,
+        'roomId': roomIdP.toString()
     };
-    print("ENVIANDO TABLERO NUEVO A SERVIDOR:\n");
     print(data);
     // Enviar el tablero al servidor
-    socket.emit("move", {data});
+    //socket.emit("move", {data});
+    socket.emit("move", data);
+    print("ENVIADO TABLERO NUEVO A SERVIDOR:\n");
 
 
 
@@ -722,15 +725,16 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   //CASOS ESPECIALES
   void _escucharServidor()  {
+    print("ESCUCHANDO SERVIDOR\n ");
     socket.on("movido", (data) async{
       print("RECIBIDO TABLERO DE CONTRINCANTE!!!!!!!!!!\n");
       print("--------------------------------------------\n");
       List<List<PiezaAjedrez?>> tableroContrincante = List.generate(8, (i) => List.generate(8, (j) => null));
-      Map<String, dynamic> tableroRecibido = jsonDecode(json.encode(data)) as Map<String, dynamic>;
-      jsonString = json.encode(data);
-      print(tableroRecibido);
+      print(data[0]);  
+      jsonMapTablero = jsonDecode(data[0].toString()) as Map<String, dynamic>;
+      jsonString = data[0].toString();
       await _postTablero();
-      tableroContrincante = inicializarTableroDesdeJson(tableroRecibido,tipoPiezaImagen);
+      tableroContrincante = inicializarTableroDesdeJson(jsonMapTablero,tipoPiezaImagen);
       setState(() {
         tablero = tableroContrincante;
         meToca = !meToca;
@@ -757,7 +761,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       });
       */
     });
-
+    print("ESCUCHANDO SERVIDOR\n ");
     socket.on("player_disconnected", (_){
       print("El jugador se ha desconectado");
       Navigator.pop(context);
@@ -782,7 +786,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //CONSTRUIR WIDGET
 @override
   Widget build(BuildContext context) {
-    _escucharServidor();
   return Consumer<LoginState>(
     builder:(context,value,child) => Scaffold(
       body: Container(
@@ -891,7 +894,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () {
-                                    socket.emit("I_surrender", {roomId}); 
+                                    socket.emit("I_surrender", {roomIdP}); 
                                     Navigator.pop(context);
                                   },
                                   style: ButtonStyle(
