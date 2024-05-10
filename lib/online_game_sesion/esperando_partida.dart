@@ -35,7 +35,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   bool infoObtenida = false;
 
   IO.Socket socket =
-      IO.io("http://192.168.1.97:3001", <String, dynamic>{
+      IO.io("https://chesshub-api-ffvrx5sara-ew.a.run.app", <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });

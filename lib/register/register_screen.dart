@@ -72,9 +72,9 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
 
     void _register(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
-      //http://192.168.1.97:3001/play/
+      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       Uri uri = Uri.parse(
-          'http://192.168.1.97:3001/users/register');
+          'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/register');
       http.Response response = await http.post(
         uri,
         body:

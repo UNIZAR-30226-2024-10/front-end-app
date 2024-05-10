@@ -447,7 +447,7 @@ class _BattlePassState extends State<BattlePass> {
 //                     value.logueado &&
 //                     tier.level > user.rewardsClaimed) {
 //                   Uri url = Uri.parse(
-//                       'http://192.168.1.97:3001/users/update_recompensa/${value.id}/${tier.level}');
+//                       'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
 //                   final response = await http.put(url, body: {});
 //                   if (response.statusCode == 500) {
 //                     print('No se ha podido reclamar');
@@ -455,7 +455,7 @@ class _BattlePassState extends State<BattlePass> {
 //                     print('Recompensa reclamada');
 //                     user.rewardsClaimed++;
 //                     Uri url = Uri.parse(
-//                         'http://192.168.1.97:3001/users/update_nivel_pase/${value.id}');
+//                         'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/${value.id}');
 //                     final response = await http.put(url,
 //                         body: {"recompensamasalta": user.rewardsClaimed.toString()});
 //                     if (response.statusCode == 500) {

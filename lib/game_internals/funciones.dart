@@ -284,9 +284,9 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
   Future<String> getNombre(String id) async {
       // Construye la URL y realiza la solicitud POST
       String nombre = '';
-      //http://192.168.1.97:3001/play/
+      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {

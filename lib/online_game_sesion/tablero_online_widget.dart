@@ -8,6 +8,7 @@
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer';
 import 'package:ChessHub/local_game_sesion/casilla_ajedrez.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:flutter/widgets.dart';
@@ -147,9 +148,18 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       soyBlancas = true;
       meToca = true;
     }
-    _cargarTableroInicial();
+    if (meToca) {
+      _cargarTableroInicial();
+    }
     _tratamientoMododeJuego();
     _escucharServidor();
+  }
+
+  @override
+  void dispose() {
+    // Cierra la conexión al servidor cuando el widget es eliminado
+    socket.off("movido"); // Cancela el evento "movido"
+    super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
 
   void _tratamientoMododeJuego() async{
@@ -170,19 +180,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
   }
 
-  //CARGAR TABLERO INICIAL
-  void _cargarTableroInicial() async {
-    // Cargar el tablero inicial
-    jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
-    jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
-    _postTablero();
-  }
-
   //ENVIAR TABLERO A BACKEND
   Future<bool> _postTablero() async {
     // Construye la URL y realiza la solicitud POST
     //http://:3001/play/
-    Uri uri = Uri.parse('http://192.168.1.97:3001/play/');
+    Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/play/');
     http.Response response = await http.post(
       uri,
       body:
@@ -250,6 +252,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     //Recorremos el mapa de movimientos válidos
     //print(jsonMapMovimientos['allMovements']['peon'][0][1]);
     //List<List<int>> movimientosValidos = calcularMovimientosValidos(0, 2, PiezaAjedrez(tipoPieza: TipoPieza.peon, esBlanca: true, nombreImagen: 'assets/images/pawn-w.svg'));
+  }
+
+  //CARGAR TABLERO INICIAL
+  void _cargarTableroInicial() async {
+    // Cargar el tablero inicial
+    jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
+    jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
+    await _postTablero();
   }
   
   //CALULAR MOVIMIENTOS DE REY EN JAQUE
@@ -526,12 +536,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
     }
     
-    if (esTurnoBlancas) {
+    if (meToca && soyBlancas) {
+      print("CAMBIANDO DE TURNO BLANCAS - NEGRAS");
       jsonMapTablero['turno'] = 'negras';
-      esTurnoBlancas = false;
     } else {
+      print("CAMBIANDO DE TURNO NEGRAS - BLANCAS");
       jsonMapTablero['turno'] = 'blancas';
-      esTurnoBlancas = true;
     }
     
 
@@ -679,6 +689,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
     print(jsonString);
 
+    
     bool jugadaValida = await _postTablero();
 
     
@@ -693,6 +704,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       hayTablas = false;
       return;
     }
+    
     
 
 
@@ -749,8 +761,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     socket.on("movido", (data) async{
       print("RECIBIDO TABLERO DE CONTRINCANTE!!!!!!!!!!\n");
       print("--------------------------------------------\n");
+      print("TABLERO RECIBIDO\n");
+      print("--------------------------------------------\n");
+      print(data[0]);
       List<List<PiezaAjedrez?>> tableroContrincante = List.generate(8, (i) => List.generate(8, (j) => null));
-      print(data[0]);  
       jsonMapTablero = jsonDecode(data[0].toString()) as Map<String, dynamic>;
       jsonString = data[0].toString();
       await _postTablero();
@@ -761,19 +775,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       else{
         meToca = true;
       }
-      setState(() {
-        tablero = tableroContrincante;
-        /*
-        print("CAMBIO DE TURNO, EL CONTRINCANTE HA MOVIDO\n");
-        if(esTurnoBlancas == true){
-          esTurnoBlancas = false;
-        }
-        else{
-          esTurnoBlancas = true;
-        }
-        print("TURNO DE BLANCAS: " + esTurnoBlancas.toString() + "\n");
-        */
-      });
+      if (mounted) {
+        setState(() {
+          tablero = tableroContrincante;
+        });
+    }
       /*
       setState(() {
         if (esTurnoBlancas) {
@@ -837,10 +843,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
             ),
             SizedBox(height: 20),
             // PlayRow de Jugador 1
+            /*
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 7.0),
               child: player1,
             ),
+            */
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             // TABLERO
             Expanded(
@@ -878,10 +886,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
             ),
             //SizedBox(height: MediaQuery.of(context).size.height * 0.05),
             // PlayRow de Jugador 2
+            /*
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 7.0),
               child: player2,
             ),
+            */
             SizedBox(height: MediaQuery.of(context).size.height * 0.07),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,

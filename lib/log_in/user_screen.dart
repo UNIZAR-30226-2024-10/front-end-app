@@ -47,9 +47,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     void _getInfo(int id) async {
       // Construye la URL y realiza la solicitud POST
-      //http://192.168.1.97:3001/play/
+      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
@@ -78,9 +78,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
     void _deleteAccount(int id) async {
       // Construye la URL y realiza la solicitud POST
-      //http://192.168.1.97:3001/play/
+      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
       http.Response response = await http.delete(
         uri,
         headers: {
