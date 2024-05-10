@@ -294,7 +294,7 @@ String getImagePath(String nombrePieza, bool esBlanca, TipoPieza tipoPieza) {
               'application/json', // Especifica el tipo de contenido como JSON
         },
       );
-    print('OBTENEIENDO DATOS DE USUARIO');
+    print('OBTENEIENDO DATOS DE USUARIO CONTRARIO EN PARTIDA AAAAAr');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
       

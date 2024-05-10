@@ -120,40 +120,41 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   void entrarEnPartida() async {
       // Navegar a la pantalla del tablero cuando countdown es igual a 0
     final login = context.read<LoginState>();
-    login.getInfo(login.getId());
     List<List<PiezaAjedrez?>> tablero;
     List<Color> coloresTablero;
+    print('Imagen de la pieza: ${login.getImagenPieza()}');
+    print('Imagen del tablero: ${login.arena}');
     tablero = inicializarTablero(login.imagen);
     coloresTablero = getColorCasilla(login.arena);
     String nombreUsuario = login.nombre;
-    String nombreOponente = 'kamalmola';
-    /*
+    print('Nombre del usuario: $nombreUsuario');
+    late String nombreOponente;
+    
     Future<String> futureString = getNombre(idOponente);
     await futureString.then((value) {
       nombreOponente = value;
       print('Nombre del oponente: $nombreOponente');
       // Usa el valor de resultado aquí
     });
-    */
 
-      Future.delayed(Duration.zero, () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => TableroAjedrezOnline(
-              modoJuego: Modos.BULLET,
-              coloresTablero: coloresTablero,
-              tablero: tablero,
-              socket: socket,
-              roomIdP: _roomId,
-              myColor: myColor,
-              idOponente: idOponente,
-              nombreUsuario: nombreUsuario,
-              nombreOponente: nombreOponente,
-              nombrePieza: login.getImagenPieza(),
-            ),
+    Future.delayed(Duration.zero, () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => TableroAjedrezOnline(
+            modoJuego: Modos.BULLET,
+            coloresTablero: coloresTablero,
+            tablero: tablero,
+            socket: socket,
+            roomIdP: _roomId,
+            myColor: myColor,
+            idOponente: idOponente,
+            nombreUsuario: nombreUsuario,
+            nombreOponente: nombreOponente,
+            nombrePieza: login.getImagenPieza(),
           ),
-        );
+        ),
+      );
     });
   }
 

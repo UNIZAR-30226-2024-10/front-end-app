@@ -115,6 +115,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late String tipoPiezaImagen; 
 
+  late bool meToca;
+
 
   //MÉTODOS
   @override
@@ -136,12 +138,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       player2 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
       player1 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
       soyBlancas = false;
+      meToca = false;
     }
     else{
       print("SOY BLANCASSSS!");
       player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: true);
       player2 = PlayerRow(playerName:  widget.nombreOponente, esBlanca: false);
       soyBlancas = true;
+      meToca = true;
     }
     _cargarTableroInicial();
     _tratamientoMododeJuego();
@@ -414,43 +418,46 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //SELECCIONAR PIEZA
   void seleccionadaPieza (int fila, int columna){
       setState(() {
-        if (piezaSeleccionada == null && tablero[fila][columna] != null) {
-          print("SELECCIONANDO PIEZA\n");
-          if (tablero[fila][columna]!.esBlanca == soyBlancas) {
+        if(meToca){
+          if (piezaSeleccionada == null && tablero[fila][columna] != null) {
+            print("SELECCIONANDO PIEZA\n");
+            if (tablero[fila][columna]!.esBlanca == soyBlancas) {
+              piezaSeleccionada = tablero[fila][columna];
+              filaSeleccionada = fila;
+              columnaSeleccionada = columna;
+            }
+            
+          } 
+          else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
             piezaSeleccionada = tablero[fila][columna];
             filaSeleccionada = fila;
             columnaSeleccionada = columna;
           }
-          
-        } 
-        else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
-          piezaSeleccionada = tablero[fila][columna];
-          filaSeleccionada = fila;
-          columnaSeleccionada = columna;
-        }
-        else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
-          if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
-            hayCoronacion = true;
+          else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
+            if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
+              hayCoronacion = true;
+            }
+            else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
+              hayCoronacion = true;
+            } 
+            print("REALIZANDO MOVIMIENTO\n");
+            _realizarMovimiento(fila, columna);
           }
-          else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
-            hayCoronacion = true;
-          } 
-          print("REALIZANDO MOVIMIENTO\n");
-          _realizarMovimiento(fila, columna);
+        
+          print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
+          if(!hayJaque){
+            movimientosValidos = calcularMovimientos(
+              obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
+          }
+          else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
+            movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
+          }
+          else{
+            movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
+          }
         }
-      
-        print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
-        if(!hayJaque){
-          movimientosValidos = calcularMovimientos(
-            obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
-        }
-        else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
-          movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
-        }
-        else{
-          movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
-        }
-      });
+      }
+    );
     
   }
   
@@ -658,6 +665,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     hayCoronacion = false;
 
+    if(meToca){
+      meToca = false;
+    }
+    else{
+      meToca = true;
+    }
+
 
     //Enviamos el tablero con la posible jugada
     //bool jugadaValida = await _postTablero();
@@ -741,9 +755,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       jsonString = data[0].toString();
       await _postTablero();
       tableroContrincante = inicializarTableroDesdeJson(jsonMapTablero,tipoPiezaImagen);
+      if(meToca){
+      meToca = false;
+      }
+      else{
+        meToca = true;
+      }
       setState(() {
         tablero = tableroContrincante;
-        
         /*
         print("CAMBIO DE TURNO, EL CONTRINCANTE HA MOVIDO\n");
         if(esTurnoBlancas == true){

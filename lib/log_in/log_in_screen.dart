@@ -150,6 +150,7 @@ class LoginState extends ChangeNotifier {
       _imagen = res['setpiezas'] as String;
       _arena = res['arena'] as String;
       _puntosPase = res['puntospase'] as int;
+      _nombre = res['nombre'] as String;
       notifyListeners();
     } else {
       throw Exception('Error en la solicitud GET: ${response.statusCode}');
