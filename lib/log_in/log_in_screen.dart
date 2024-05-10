@@ -60,7 +60,7 @@ class LoginState extends ChangeNotifier {
   IO.Socket socket =
       IO.io("http://192.168.1.97:3001", <String, dynamic>{
     'transports': ['websocket'],
-    'autoConnect': false,
+    'autoConnect': true,
   });
 
   int _id = 0;
@@ -225,7 +225,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
         loginState.setLogueado(logueado);
         settingsController.toggleLoggedIn();
         loginState.getInfo(id.toString());
-        await loginState.conectarseServidor();
+        //await loginState.conectarseServidor();
         GoRouter.of(context).go('/');
       } else {
         throw Exception('Error en la solicitud POST: ${response.statusCode}');

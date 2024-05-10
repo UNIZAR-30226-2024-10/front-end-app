@@ -43,13 +43,14 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     socket = widget.socket;
     id = widget.userId;
     eloRapid = widget.elo;
+    enviarPeticiondeJuego(modoJuego);
     _esperarPartida();
     _partidaEncontrada();
     _cancelarBusqueda();
   }
 
   
-  void enviarPeticiondeJuego(Modos modo){
+  void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
     socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
   }
@@ -72,7 +73,6 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   }
 
   Future<void> _esperarPartida() async {
-    enviarPeticiondeJuego(modoJuego);
     socket.on('game_ready', (data) {
       if (mounted) {
         setState(() {
@@ -86,7 +86,6 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
           int idOponenteInt = data['opponent'] as int;
           idOponente = idOponenteInt.toString();
         });
-        socket.off('game_ready');
       }
     });
   }
@@ -127,7 +126,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     List<Color> coloresTablero;
     tablero = inicializarTablero(login.imagen);
     coloresTablero = getColorCasilla(login.arena);
-    String nombreUsuario = login.getNombre();
+    String nombreUsuario = login.nombre;
     String nombreOponente = 'kamalmola';
     /*
     Future<String> futureString = getNombre(idOponente);

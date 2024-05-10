@@ -80,7 +80,7 @@ class Personalizacion extends StatefulWidget {
 }
 
 Future<NivelPase> leerDatosUsuario(int id) async {
-  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final url = Uri.parse('http://192.168.1.97:3001/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -288,7 +288,7 @@ class _PersonalizacionState extends State<Personalizacion> {
   }
 
   void _activateItem(String itemName, int id) {
-    Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_${itemName.length < 5 ? 'emoticonos' : 'set_piezas'}/$id');
+    Uri url = Uri.parse('http://192.168.1.97:3001/users/update_${itemName.length < 5 ? 'emoticonos' : 'set_piezas'}/$id');
     Map<String, dynamic> bodyData = {
       itemName.length < 5 ? 'emoticonos' : 'setPiezas': itemName,
     };
@@ -411,7 +411,7 @@ class _PersonalizacionState extends State<Personalizacion> {
 // Future<NivelPase> leerDatosUsuario(int id) async {
 //   // Aquí puedes programar la lógica para obtener los datos del usuario
 //   // Por ejemplo, puedes obtener los datos del usuario desde una base de datos, una API, etc.
-//   final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+//   final url = Uri.parse('http://192.168.1.97:3001/users/$id');
 //   final response = await http.get(url);
 //   if (response.statusCode == 200) {
 //     final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -527,7 +527,7 @@ class _PersonalizacionState extends State<Personalizacion> {
 //                                   // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
 //                                   if(value.logueado == true && nivelPase.nivel >= set.level){
 //                                     //Aqui se activa el set
-//                                     Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
+//                                     Uri url = Uri.parse('http://192.168.1.97:3001/users/update_set_piezas/$id');
 //                                     print(set.name.toString());
 //                                     Map<String, dynamic> bodyData = {
 //                                       'setPiezas': set.name,
@@ -588,7 +588,7 @@ class _PersonalizacionState extends State<Personalizacion> {
 //                                   // Por ejemplo, puedes navegar a otra pantalla, realizar una acción, etc.
 //                                   if(value.logueado == true && nivelPase.nivel >= emote.level){
 //                                     //Aqui se activa el set
-//                                     Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_emoticonos/$id');
+//                                     Uri url = Uri.parse('http://192.168.1.97:3001/users/update_emoticonos/$id');
 //                                     print(emote.emoji.toString());
 //                                     Map<String, dynamic> bodyData = {
 //                                       'emoticonos': emote.emoji,

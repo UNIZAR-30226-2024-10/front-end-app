@@ -85,7 +85,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late PlayerRow player2;
 
-  late bool esTurnoBlancas;
+  late bool esTurnoBlancas = true;
 
   bool hayJaque = false;
 
@@ -111,6 +111,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late Timer _timer;
 
+  late bool soyBlancas;
+
   late String tipoPiezaImagen; 
   bool meToca = false;
 
@@ -130,18 +132,16 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     if(myColor == 'black'){
       print("SOY NEGRASSSSS!");
       player2 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
-      esTurnoBlancas = false;
       player1 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
-
+      soyBlancas = false;
     }
     else{
       print("SOY BLANCASSSS!");
       player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: true);
-      esTurnoBlancas = true;
       player2 = PlayerRow(playerName:  widget.nombreOponente, esBlanca: false);
+      soyBlancas = true;
     }
     _cargarTableroInicial();
-    _escucharServidor();
     _tratamientoMododeJuego();
   }
 
@@ -168,8 +168,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     // Cargar el tablero inicial
     jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
     jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
-    print('TABLERO INICIAL\n');
-    print(jsonMapTablero);
     _postTablero();
     _escucharServidor();
   }
@@ -191,7 +189,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     // Verifica el estado de la respuesta
     if (response.statusCode == 200) {
-      print('ENVIO DE TABLERO A BACKEND EXITOSO\n');
+      print('ENVIO DE TABLERO A BACKEND PARA OBTENER MOVIMIENTOS POSIBLESEXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -205,7 +203,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         else{
           hayJaque = false;
         }
-        print('MOVIMIENTOS VÁLIDOS\n');
+        print('MOVIMIENTOS VÁLIDOS OBTENIDOS\n');
         print(jsonMapMovimientos);
       }
       //Comprobamos si hay jaque mate
@@ -219,8 +217,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         print('TABLAS\n');
         hayTablas = jsonMapMovimientos['tablas'] as bool;
         return true;
-      }
-      
+      }      
       //Finalmente devolvemos si la jugada es legal o no
       return jsonMapMovimientos['jugadaLegal'] as bool;
     } else {
@@ -410,45 +407,47 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     terminadaCoronacion = false;
     moverPieza(fila, columna);
-  }
+}
 
   //SELECCIONAR PIEZA
   void seleccionadaPieza (int fila, int columna){
-    setState(() {
-      if (piezaSeleccionada == null && tablero[fila][columna] != null) {
-        if(tablero[fila][columna]!.esBlanca == esTurnoBlancas){
+      setState(() {
+        if (piezaSeleccionada == null && tablero[fila][columna] != null) {
+          print("SELECCIONANDO PIEZA\n");
+          piezaSeleccionada = tablero[fila][columna];
+          filaSeleccionada = fila;
+          columnaSeleccionada = columna;
+          
+        } 
+        else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
           piezaSeleccionada = tablero[fila][columna];
           filaSeleccionada = fila;
           columnaSeleccionada = columna;
         }
-      } 
-      else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
-        piezaSeleccionada = tablero[fila][columna];
-        filaSeleccionada = fila;
-        columnaSeleccionada = columna;
-      }
-      else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
-        if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
-          hayCoronacion = true;
+        else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
+          if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
+            hayCoronacion = true;
+          }
+          else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
+            hayCoronacion = true;
+          } 
+          print("REALIZANDO MOVIMIENTO\n");
+          _realizarMovimiento(fila, columna);
         }
-        else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
-          hayCoronacion = true;
-        } 
-        _realizarMovimiento(fila, columna);
-      }
-
-      print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
-      if(!hayJaque){
-        movimientosValidos = calcularMovimientos(
-          obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
-      }
-      else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
-        movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
-      }
-      else{
-        movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
-      }
-    });
+      
+        print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
+        if(!hayJaque){
+          movimientosValidos = calcularMovimientos(
+            obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
+        }
+        else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
+          movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
+        }
+        else{
+          movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
+        }
+      });
+    
   }
   
   //MOVER PIEZA
@@ -515,14 +514,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       jsonMapTablero['piezaCoronada'] = nombrePiezaTipo(tipoPiezaCoronada);
       piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
     }
-
+    
     if (esTurnoBlancas) {
       jsonMapTablero['turno'] = 'negras';
-      esTurnoBlancas = false;
     } else {
       jsonMapTablero['turno'] = 'blancas';
-      esTurnoBlancas = true;
     }
+    
 
     //Marcamos que la pieza torre ha sido movida para que el backend no permita enrocar
     if(piezaSeleccionada!.tipoPieza == TipoPieza.torre){
@@ -599,7 +597,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       }
 
       if(hayEnroque){
-
         tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
         tablero[filaAntigua][columnaAntigua] = null;
 
@@ -655,14 +652,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     hayCoronacion = false;
 
-    jsonString = jsonEncode(jsonMapTablero);
 
     //Enviamos el tablero con la posible jugada
-    bool jugadaValida = await _postTablero();
+    //bool jugadaValida = await _postTablero();
 
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
     print(jsonString);
 
+    /*
     if (!jugadaValida) {
       print('Jugada no valida');
       //devolvemos el string a su estado original
@@ -674,23 +671,22 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       hayTablas = false;
       return;
     }
+    */
 
 
-    print('ENVIANDO JUGADA AL SERVIDOR\n');
-    print(roomId);
-    print(jsonMapTablero);
     // Convertir el mapa en formato JSON
      Map<String, dynamic> tableroEnviar = jsonMapTablero;
     // Crear un mapa que contenga el tablero y el roomId
     Map<String, dynamic> data = {
-      'tableroEnviar': tableroEnviar,
-      'roomId': roomId
+        'tableroEnviar': tableroEnviar,
+        'roomId': roomId
     };
+    print("ENVIANDO TABLERO NUEVO A SERVIDOR:\n");
     print(data);
     // Enviar el tablero al servidor
     socket.emit("move", {data});
-    esTurnoBlancas = !esTurnoBlancas;
-    
+
+
 
     //PARAR CRONOMETRO Y CAMBIAR DE TURNO
     /*
@@ -725,21 +721,31 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   }
 
   //CASOS ESPECIALES
-  void _escucharServidor(){
-
-    socket.on("movido", (data){
+  void _escucharServidor()  {
+    socket.on("movido", (data) async{
       print("RECIBIDO TABLERO DE CONTRINCANTE!!!!!!!!!!\n");
       print("--------------------------------------------\n");
-      print("ESPAÑA");
       List<List<PiezaAjedrez?>> tableroContrincante = List.generate(8, (i) => List.generate(8, (j) => null));
-      print(data);
-      Map<String, dynamic> movs = jsonDecode(json.encode(data)) as Map<String, dynamic>;
-      print(movs);
-      tableroContrincante = inicializarTableroDesdeJson(movs,tipoPiezaImagen);
+      Map<String, dynamic> tableroRecibido = jsonDecode(json.encode(data)) as Map<String, dynamic>;
+      jsonString = json.encode(data);
+      print(tableroRecibido);
+      await _postTablero();
+      tableroContrincante = inicializarTableroDesdeJson(tableroRecibido,tipoPiezaImagen);
       setState(() {
         tablero = tableroContrincante;
+        meToca = !meToca;
+        /*
+        print("CAMBIO DE TURNO, EL CONTRINCANTE HA MOVIDO\n");
+        if(esTurnoBlancas == true){
+          esTurnoBlancas = false;
+        }
+        else{
+          esTurnoBlancas = true;
+        }
+        print("TURNO DE BLANCAS: " + esTurnoBlancas.toString() + "\n");
+        */
       });
-      
+      /*
       setState(() {
         if (esTurnoBlancas) {
           player1.pauseTimer();
@@ -749,6 +755,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           player1.resumeTimer();
         }
       });
+      */
     });
 
     socket.on("player_disconnected", (_){
@@ -775,6 +782,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //CONSTRUIR WIDGET
 @override
   Widget build(BuildContext context) {
+    _escucharServidor();
   return Consumer<LoginState>(
     builder:(context,value,child) => Scaffold(
       body: Container(
@@ -832,7 +840,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             esBlanca: esBlanca(index),
                             pieza: tablero[fila][columna],
                             esValido: esValido,
-                            onTap: () => seleccionadaPieza(fila, columna),
+                            onTap: () =>  seleccionadaPieza(fila, columna),
                             colorCasillaBlanca: coloresTablero[0],
                             colorCasillaNegra:  coloresTablero[1],
                           );

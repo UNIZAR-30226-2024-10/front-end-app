@@ -121,7 +121,7 @@ final List<Tier> tiers = [
 
 
 Future<UserBattlePass> leerDatosUsuario(int id) async {
-  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final url = Uri.parse('http://192.168.1.97:3001/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final userMap = jsonDecode(response.body) as Map<String, dynamic>;
@@ -190,7 +190,7 @@ class _BattlePassState extends State<BattlePass> {
                           int ultimoNivel = puntos~/10;
                           print('NIVEL DEL PASE estimado: $ultimoNivel');
                           if(ultimoNivel > user.nivelpase){
-                            Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/$id');
+                            Uri url = Uri.parse('http://192.168.1.97:3001/users/update_nivel_pase/$id');
                             print(ultimoNivel.toString());
                             Map<String, dynamic> bodyData = {
                               'nivelPase': ultimoNivel.toString(),
@@ -447,7 +447,7 @@ class _BattlePassState extends State<BattlePass> {
 //                     value.logueado &&
 //                     tier.level > user.rewardsClaimed) {
 //                   Uri url = Uri.parse(
-//                       'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_recompensa/${value.id}/${tier.level}');
+//                       'http://192.168.1.97:3001/users/update_recompensa/${value.id}/${tier.level}');
 //                   final response = await http.put(url, body: {});
 //                   if (response.statusCode == 500) {
 //                     print('No se ha podido reclamar');
@@ -455,7 +455,7 @@ class _BattlePassState extends State<BattlePass> {
 //                     print('Recompensa reclamada');
 //                     user.rewardsClaimed++;
 //                     Uri url = Uri.parse(
-//                         'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/${value.id}');
+//                         'http://192.168.1.97:3001/users/update_nivel_pase/${value.id}');
 //                     final response = await http.put(url,
 //                         body: {"recompensamasalta": user.rewardsClaimed.toString()});
 //                     if (response.statusCode == 500) {
