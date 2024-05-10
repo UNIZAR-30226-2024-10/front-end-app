@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../log_in/log_in_screen.dart';
+import 'package:ChessHub/router.dart';
+import 'package:go_router/go_router.dart';
 
 class SeleccionarIdRival extends StatefulWidget {
   final int id;
@@ -17,7 +19,7 @@ class SeleccionarIdRival extends StatefulWidget {
 class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
   int id = 0;
   late TextEditingController _idController;
-
+  int? idRival = 0;
   @override
   void initState() {
     id = widget.id;
@@ -46,6 +48,12 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
                 'Seleccionar ID del Rival',
                 style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
               ),
+              leading: IconButton(
+                icon: Icon(Icons.arrow_back),
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id)));
+                },
+              ),
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),
@@ -60,13 +68,17 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
                       labelText: 'ID del Rival',
                       border: OutlineInputBorder(),
                     ),
+                    onChanged: (value) {
+                      setState(() {
+                        idRival = int.tryParse(value);
+                      });
+                    },
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
                     onPressed: () {
                       if(_idController.text.isNotEmpty){
-                        int rivalId = int.parse(_idController.text);
-                        _handleLogic(id,rivalId);
+                        _handleLogic(id,idRival);
                       }
                       
                     },
@@ -81,32 +93,37 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
     );
   }
 
-  void _handleLogic(int id, int idRival) async {
-      // Ejemplo de solicitud HTTP
-      Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/register_partida_asincrona');
-      Map<String, dynamic> requestData = {
-        'idUsuarioBlancas':id,
-        'idUsuarioNegras':idRival,
-        // Otras propiedades necesarias para la solicitud
-      };
-      String jsonData = jsonEncode(requestData);
-      try {
-        final response = await http.post(url, body: jsonData, headers: {'Content-Type': 'application/json'});
-        if (response.statusCode == 200) {
-          // Lógica para manejar la respuesta exitosa
-          print('Solicitud exitosa');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Partida creada correctamente')));
-          Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id)));
-        } else if (response.statusCode == 500) {
-          // Lógica para manejar otros códigos de estado de respuesta
-          print('Error en la solicitud: ${response.statusCode}');
-        }
-      } catch (e) {
-        // Lógica para manejar errores de red
-        print('Error de red: $e');
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error de red: $e')));
-      }
+  void _handleLogic(int id, int? idRival) async {
+      if(id != 0 && idRival != 0){
+        // Ejemplo de solicitud HTTP
+        Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/register_partida_asincrona');
+        Map<String, dynamic> requestData = {
+          'usuarioBlancas':id,
+          'usuarioNegras':idRival,
 
+          // Otras propiedades necesarias para la solicitud
+        };
+        String jsonData = jsonEncode(requestData);
+        print(jsonData);
+        try {
+          final response = await http.post(url, body: jsonData, headers: {'Content-Type': 'application/json'});
+          if (response.statusCode == 200) {
+            // Lógica para manejar la respuesta exitosa
+            print('Solicitud exitosa');
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Partida creada correctamente')));
+          } else if (response.statusCode == 500) {
+            // Lógica para manejar otros códigos de estado de respuesta
+            print('Error en la solicitud: ${response.statusCode}');
+          }
+        } catch (e) {
+          // Lógica para manejar errores de red
+          print('Error de red: $e');
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error de red: $e')));
+        }
+      }
+      else{
+        context.go('/login');
+      }
   }
  
 }
