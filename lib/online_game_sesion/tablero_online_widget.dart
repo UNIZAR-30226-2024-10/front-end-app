@@ -114,7 +114,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   late bool soyBlancas;
 
   late String tipoPiezaImagen; 
-  bool meToca = false;
+
 
   //MÉTODOS
   @override
@@ -416,9 +416,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       setState(() {
         if (piezaSeleccionada == null && tablero[fila][columna] != null) {
           print("SELECCIONANDO PIEZA\n");
-          piezaSeleccionada = tablero[fila][columna];
-          filaSeleccionada = fila;
-          columnaSeleccionada = columna;
+          if (tablero[fila][columna]!.esBlanca == soyBlancas) {
+            piezaSeleccionada = tablero[fila][columna];
+            filaSeleccionada = fila;
+            columnaSeleccionada = columna;
+          }
           
         } 
         else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
@@ -519,8 +521,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     
     if (esTurnoBlancas) {
       jsonMapTablero['turno'] = 'negras';
+      esTurnoBlancas = false;
     } else {
       jsonMapTablero['turno'] = 'blancas';
+      esTurnoBlancas = true;
     }
     
 
@@ -661,7 +665,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
     print(jsonString);
 
-    /*
+    bool jugadaValida = await _postTablero();
+
+    
     if (!jugadaValida) {
       print('Jugada no valida');
       //devolvemos el string a su estado original
@@ -673,7 +679,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       hayTablas = false;
       return;
     }
-    */
+    
 
 
     // Convertir el mapa en formato JSON
@@ -737,7 +743,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       tableroContrincante = inicializarTableroDesdeJson(jsonMapTablero,tipoPiezaImagen);
       setState(() {
         tablero = tableroContrincante;
-        meToca = !meToca;
+        
         /*
         print("CAMBIO DE TURNO, EL CONTRINCANTE HA MOVIDO\n");
         if(esTurnoBlancas == true){

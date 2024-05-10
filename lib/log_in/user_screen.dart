@@ -49,7 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://localhost:3001/users/$id');
+      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
@@ -80,7 +80,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('http://localhost:3001/users/$id');
+      Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
       http.Response response = await http.delete(
         uri,
         headers: {

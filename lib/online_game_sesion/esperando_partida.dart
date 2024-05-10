@@ -16,7 +16,7 @@ class EsperandoPartida extends StatefulWidget {
   final int userId;
   final int elo;
 
-  EsperandoPartida({required this.modoJuego, required this.socket, required this.userId, required this.elo});
+  EsperandoPartida({required this.modoJuego, required this.userId, required this.elo});
 
   @override
   _EsperandoPartidaState createState() => _EsperandoPartidaState();
@@ -145,7 +145,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
               coloresTablero: coloresTablero,
               tablero: tablero,
               socket: socket,
-              roomId: roomId,
+              roomIdP: _roomId,
               myColor: myColor,
               idOponente: idOponente,
               nombreUsuario: nombreUsuario,
