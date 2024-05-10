@@ -49,8 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri =
-          Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('http://localhost:3001/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
@@ -72,6 +71,30 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _victorias = res['victorias'] as int;
         _derrotas = res['derrotas'] as int;
         _empates = res['empates'] as int;
+      } else {
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
+    }
+
+    void _deleteAccount(int id) async {
+      // Construye la URL y realiza la solicitud POST
+      //http://192.168.1.97:3001/play/
+      print('OBTENIENDO INFORMACION DE USUARIO\n');
+      Uri uri = Uri.parse('http://localhost:3001/users/$id');
+      http.Response response = await http.delete(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+      print('BORRANDO USUARIO');
+      Map<String, dynamic> res =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200) {
+        settingsController.toggleLoggedIn();
+        settingsController.setSessionId(0);
       } else {
         throw Exception('Error en la solicitud GET: ${response.statusCode}');
       }
@@ -106,19 +129,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 elevation: 3,
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 color: Color.fromRGBO(49, 45, 45, 1),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/Logo.png'),
-                  ),
-                  SizedBox(width: 16),
-                  Text(
-                    "$_username\n$_mail",
-                    style: TextStyle(
-                        fontSize: 16, color: Color.fromRGBO(255, 136, 0, 1)),
-                  ),
-                ]),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage('assets/images/Logo.png'),
+                        ),
+                        SizedBox(width: 16),
+                        Text(
+                          "$_username\nid:$id",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromRGBO(255, 136, 0, 1)),
+                        ),
+                      ]),
+                ),
               ),
               SizedBox(height: 16),
               Card(
@@ -148,6 +176,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   ),
                 ),
               ),
+              SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  _deleteAccount(id);
+                  GoRouter.of(context).go('/');
+                },
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all<Color>(
+                      Color.fromRGBO(255, 136, 0, 1)),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ),
+                child: Text('Delete Account',
+                    style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
+              )
             ],
           ),
         ),

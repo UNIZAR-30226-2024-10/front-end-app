@@ -121,7 +121,7 @@ final List<Tier> tiers = [
 
 
 Future<UserBattlePass> leerDatosUsuario(int id) async {
-  final url = Uri.parse('http://192.168.1.97:3001/users/$id');
+  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final userMap = jsonDecode(response.body) as Map<String, dynamic>;
@@ -190,7 +190,7 @@ class _BattlePassState extends State<BattlePass> {
                           int ultimoNivel = puntos~/10;
                           print('NIVEL DEL PASE estimado: $ultimoNivel');
                           if(ultimoNivel > user.nivelpase){
-                            Uri url = Uri.parse('http://192.168.1.97:3001/users/update_nivel_pase/$id');
+                            Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/$id');
                             print(ultimoNivel.toString());
                             Map<String, dynamic> bodyData = {
                               'nivelPase': ultimoNivel.toString(),
@@ -278,7 +278,7 @@ class _BattlePassState extends State<BattlePass> {
                                       Text(
                                         tier.reward,
                                         style: TextStyle(
-                                            fontSize: 46),
+                                            fontSize: 46, color: Colors.white),
                                       ),
                                   ],
                                 ),

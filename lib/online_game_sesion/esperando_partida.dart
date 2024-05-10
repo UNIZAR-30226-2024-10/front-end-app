@@ -1,5 +1,4 @@
-import 'dart:convert';
-import 'dart:ffi';
+//import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:ChessHub/constantes/constantes.dart';
@@ -17,7 +16,7 @@ class EsperandoPartida extends StatefulWidget {
   final int userId;
   final int elo;
 
-  EsperandoPartida({required this.modoJuego, required this.userId, required this.elo});
+  EsperandoPartida({required this.modoJuego, required this.socket, required this.userId, required this.elo});
 
   @override
   _EsperandoPartidaState createState() => _EsperandoPartidaState();
@@ -53,11 +52,9 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     _cancelarBusqueda();
   }
 
-  
   void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
     socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
-    print('Petición de juego enviada');
   }
 
   void _startCountdown() {
@@ -66,7 +63,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
       if (mounted) {
         setState(() {
           if (countdown < 1) {
-            timer.cancel(); 
+            timer.cancel();
             entrarEnPartida();
             // Detenemos el temporizador cuando el contador llega a cero
           } else {
@@ -106,7 +103,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   }
 
   
-  void _cancelarBusqueda()  {
+  Future<void> _cancelarBusqueda() async {
     socket.on('match_canceled', (_) {
       if (mounted) {
         setState(() {
@@ -119,10 +116,9 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
       });
     });
   }
-  
 
-  void entrarEnPartida()  {
-    // Navegar a la pantalla del tablero cuando countdown es igual a 0
+  void entrarEnPartida() async {
+      // Navegar a la pantalla del tablero cuando countdown es igual a 0
     final login = context.read<LoginState>();
     login.getInfo(login.getId());
     List<List<PiezaAjedrez?>> tablero;
@@ -140,7 +136,6 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     });
     */
 
-
       Future.delayed(Duration.zero, () {
         Navigator.push(
           context,
@@ -150,7 +145,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
               coloresTablero: coloresTablero,
               tablero: tablero,
               socket: socket,
-              roomIdP: _roomId,
+              roomId: roomId,
               myColor: myColor,
               idOponente: idOponente,
               nombreUsuario: nombreUsuario,
@@ -161,44 +156,44 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
         );
     });
   }
-      
+
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginState>(
-    builder:(context,value,child) => Scaffold(
+      builder: (context, value, child) => Scaffold(
         appBar: AppBar(
           title: Text('Esperando partida'),
         ),
         body: Container(
           alignment: Alignment.center,
-          child: 
-              Column(
-                children: [
-                if (partidaEncontrada)
-                  if (partidaCancelada)
-                    Text('La partida ha sido cancelada, redirigiendo a la pantalla anterior...')
-                  else if (countdown > 0)
-                    Text('Partida encontrada, comenzará en: $countdown segundos')
-                  else
-                    Text('Cargando la partida...')
-                else
-                  CircularProgressIndicator(),
+          child: Column(
+            children: [
+              if (partidaEncontrada)
                 if (partidaCancelada)
-                  Text('En unos instantes volverás a la pantalla anterior')
+                  Text(
+                      'La partida ha sido cancelada, redirigiendo a la pantalla anterior...')
+                else if (countdown > 0)
+                  Text('Partida encontrada, comenzará en: $countdown segundos')
                 else
-                  ElevatedButton(
-                    onPressed: () {
-                      //ESTO NO VA
-                      socket.emit('cancel_match');
-                      socket.emit('cancel_search', {"mode": obtenerModo(modoJuego)});
-                      socket.off('match_canceled');
-                      Navigator.pop(context);
-                    },
-                    child: Text('Cancelar búsqueda'),
-                  ),
-              ],
-              ),
-
+                  Text('Cargando la partida...')
+              else
+                CircularProgressIndicator(),
+              if (partidaCancelada)
+                Text('En unos instantes volverás a la pantalla anterior')
+              else
+                ElevatedButton(
+                  onPressed: () {
+                    //ESTO NO VA
+                    socket.emit('cancel_match');
+                    socket.emit(
+                        'cancel_search', {"mode": obtenerModo(modoJuego)});
+                    socket.off('match_canceled');
+                    Navigator.pop(context);
+                  },
+                  child: Text('Cancelar búsqueda'),
+                ),
+            ],
+          ),
         ),
       ),
     );
