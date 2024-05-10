@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import '../log_in/log_in_screen.dart';
+import '../settings/settings.dart';
 
 class User {
   final int id;
   final String nombre;
   final int elo;
-  
 
   User({required this.id, required this.nombre, required this.elo});
 
   // Constructor factory para crear un objeto User desde un mapa JSON
-  User.fromJson(Map<String, dynamic> json) : 
-      id = json['id'] as int,
-      nombre = json['nombre'] as String,
-      elo = json['elo'] as int;
+  User.fromJson(Map<String, dynamic> json)
+      : id = json['id'] as int,
+        nombre = json['nombre'] as String,
+        elo = json['elo'] as int;
 }
 
 class RankingScreenBullet extends StatefulWidget {
@@ -34,9 +34,9 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
   }
 
   Future<void> fetchLeaderBoard() async {
-    final url = Uri.parse('http://192.168.1.97:3001/users/ranking/bullet');
+    final url = Uri.parse('http://localhost:3001/users/ranking/bullet');
     final response = await http.get(url);
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final userMap = jsonDecode(response.body) as List<dynamic>;
       List<User> userList = [];
       userMap.forEach((userData) {
@@ -52,46 +52,52 @@ class _RankingScreenStateBullet extends State<RankingScreenBullet> {
     }
   }
 
-@override
-Widget build(BuildContext context) {
-  return Consumer<LoginState> (builder:(context,value,child) => Scaffold(
-    appBar: AppBar(
-      title: Text(
-        'Ranking BULLET',
-        style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
-      ),
-      backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-    ),
-    backgroundColor: Colors.black,
-    body: Container(
-      color: Color.fromRGBO(49, 45, 45, 1),
-      child: ListView.builder(
-        itemCount: users.length,
-        itemBuilder: (context, index) {
-          User user = users[index];
-          // Define el color de fondo de la caja
-          Color tileColor = Colors.transparent;
-          if (user.id == value.id) {
-            tileColor = Colors.orange[200]!;
-          }
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: Card(
-              elevation: 3,
-              child: ListTile(
-                title: Text(
-                  '${index + 1}.\t ${user.nombre}.\t${user.elo} pts',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16), 
-                ),
-                // Establece el color de fondo de la caja
-                tileColor: tileColor,
-              ),
-            ),
-          );
-        },
-      ),
-    ),
-  ));
-}
+  @override
+  Widget build(BuildContext context) {
+    final settingsController = context.watch<SettingsController>();
 
+    int id = settingsController.session.value;
+
+    return Consumer<LoginState>(
+        builder: (context, value, child) => Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  'Ranking BULLET',
+                  style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
+                ),
+                backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+              ),
+              backgroundColor: Colors.black,
+              body: Container(
+                color: Color.fromRGBO(49, 45, 45, 1),
+                child: ListView.builder(
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    User user = users[index];
+                    // Define el color de fondo de la caja
+                    Color tileColor = Colors.transparent;
+                    if (user.id == id) {
+                      tileColor = Colors.orange[200]!;
+                    }
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: Card(
+                        elevation: 3,
+                        child: ListTile(
+                          title: Text(
+                            '${index + 1}.\t ${user.nombre}.\t${user.elo} pts',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          // Establece el color de fondo de la caja
+                          tileColor: tileColor,
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ));
+  }
 }

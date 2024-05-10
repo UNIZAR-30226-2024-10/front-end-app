@@ -57,8 +57,7 @@ class LoginScreen extends StatelessWidget {
 
 class LoginState extends ChangeNotifier {
   // Dart client
-  IO.Socket socket =
-      IO.io("http://192.168.1.97:3001", <String, dynamic>{
+  IO.Socket socket = IO.io("http://192.168.1.97:3001", <String, dynamic>{
     'transports': ['websocket'],
     'autoConnect': true,
   });
@@ -94,8 +93,8 @@ class LoginState extends ChangeNotifier {
     print(socket.connected);
     return conectado;
   }
-  
-  String getNombre(){
+
+  String getNombre() {
     return _nombre;
   }
 
@@ -122,7 +121,7 @@ class LoginState extends ChangeNotifier {
     return _id.toString();
   }
 
-  int getIdInt(){
+  int getIdInt() {
     return _id;
   }
 
@@ -145,8 +144,7 @@ class LoginState extends ChangeNotifier {
     // Construye la URL y realiza la solicitud POST
     //http://192.168.1.97:3001/play/
     print('OBTENIENDO INFORMACION DE USUARIO\n');
-    Uri uri =
-        Uri.parse('http://192.168.1.97:3001/users/$id');
+    Uri uri = Uri.parse('http://192.168.1.97:3001/users/$id');
     http.Response response = await http.get(
       uri,
       headers: {
@@ -157,20 +155,19 @@ class LoginState extends ChangeNotifier {
     print('OBTENEIENDO DATOS DE USUARIO');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
-      
-      if (response.statusCode == 200) {
-        print(res);
-        _eloBlitz = res['eloblitz'] as int;
-        _eloRapid = res['elorapid'] as int;
-        _eloBullet = res['elobullet'] as int;
-        _imagen = res['setpiezas'] as String;
-        _arena = res['arena'] as String;
-        _puntosPase = res['puntospase'] as int;
-        notifyListeners();
-      }
-      else{
-        throw Exception('Error en la solicitud GET: ${response.statusCode}');
-      }
+
+    if (response.statusCode == 200) {
+      print(res);
+      _eloBlitz = res['eloblitz'] as int;
+      _eloRapid = res['elorapid'] as int;
+      _eloBullet = res['elobullet'] as int;
+      _imagen = res['setpiezas'] as String;
+      _arena = res['arena'] as String;
+      _puntosPase = res['puntospase'] as int;
+      notifyListeners();
+    } else {
+      throw Exception('Error en la solicitud GET: ${response.statusCode}');
+    }
   }
 }
 
@@ -197,8 +194,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
-      Uri uri =
-          Uri.parse('http://192.168.1.97:3001/users/login');
+      Uri uri = Uri.parse('http://localhost:3001/users/login');
       http.Response response = await http.post(
         uri,
         body:

@@ -49,8 +49,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // Construye la URL y realiza la solicitud POST
       //http://192.168.1.97:3001/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri =
-          Uri.parse('http://192.168.1.97:3001/users/$id');
+      Uri uri = Uri.parse('http://localhost:3001/users/$id');
       http.Response response = await http.get(
         uri,
         headers: {
@@ -106,19 +105,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 elevation: 3,
                 margin: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                 color: Color.fromRGBO(49, 45, 45, 1),
-                child:
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/Logo.png'),
-                  ),
-                  SizedBox(width: 16),
-                  Text(
-                    "$_username\n$_mail",
-                    style: TextStyle(
-                        fontSize: 16, color: Color.fromRGBO(255, 136, 0, 1)),
-                  ),
-                ]),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircleAvatar(
+                          radius: 50,
+                          backgroundImage: AssetImage('assets/images/Logo.png'),
+                        ),
+                        SizedBox(width: 16),
+                        Text(
+                          "$_username\nid:$id",
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: Color.fromRGBO(255, 136, 0, 1)),
+                        ),
+                      ]),
+                ),
               ),
               SizedBox(height: 16),
               Card(
