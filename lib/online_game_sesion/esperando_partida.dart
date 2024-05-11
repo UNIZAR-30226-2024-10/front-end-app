@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
-import 'package:go_router/go_router.dart';
+import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
 import 'dart:async';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:provider/provider.dart';
@@ -189,7 +189,12 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
                     socket.emit(
                         'cancel_search', {"mode": obtenerModo(modoJuego)});
                     socket.off('match_canceled');
-                    Navigator.pop(context);
+                    Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChessPlaySessionScreen(),
+                    ),
+                  );
                   },
                   child: Text('Cancelar búsqueda'),
                 ),
