@@ -110,6 +110,7 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
           if (response.statusCode == 200) {
             // Lógica para manejar la respuesta exitosa
             print('Solicitud exitosa');
+            Uri url2 = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_partida_asincrona');
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Partida creada correctamente')));
           } else if (response.statusCode == 500) {
             // Lógica para manejar otros códigos de estado de respuesta
