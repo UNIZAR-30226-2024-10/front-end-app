@@ -30,8 +30,7 @@ class Tier {
   });
 }
 
-class UserBattlePass{
-  
+class UserBattlePass {
   int nivelpase;
 
   final int derrotas;
@@ -48,8 +47,7 @@ class UserBattlePass{
   });
 
   UserBattlePass.fromJson(Map<String, dynamic> json)
-      : 
-        nivelpase = json['nivelpase'] as int,
+      : nivelpase = json['nivelpase'] as int,
         derrotas = json['derrotas'] as int,
         victorias = json['victorias'] as int,
         empates = json['empates'] as int,
@@ -119,9 +117,9 @@ final List<Tier> tiers = [
       requiredPoints: '300'),
 ];
 
-
 Future<UserBattlePass> leerDatosUsuario(int id) async {
-  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final url =
+      Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final userMap = jsonDecode(response.body) as Map<String, dynamic>;
@@ -132,12 +130,16 @@ Future<UserBattlePass> leerDatosUsuario(int id) async {
   }
 }
 
-
 class _BattlePassState extends State<BattlePass> {
   int puntos = 0;
   int id = 0;
-  UserBattlePass user = UserBattlePass(nivelpase: 0,derrotas: 0, victorias: 0, empates: 0, puntosexperiencia: 0);
-  
+  UserBattlePass user = UserBattlePass(
+      nivelpase: 0,
+      derrotas: 0,
+      victorias: 0,
+      empates: 0,
+      puntosexperiencia: 0);
+
   @override
   void initState() {
     id = widget.id;
@@ -151,7 +153,8 @@ class _BattlePassState extends State<BattlePass> {
     setState(() {
       user = user;
     });
-    puntos = user.puntosexperiencia;//victorias.toInt()*4 + user.empates.toInt()*2 + user.derrotas.toInt();
+    puntos = user
+        .puntosexperiencia; //victorias.toInt()*4 + user.empates.toInt()*2 + user.derrotas.toInt();
     print('PUNTOS: $puntos, NIVEL DEL PASE: ${user.nivelpase}');
   }
 
@@ -185,25 +188,38 @@ class _BattlePassState extends State<BattlePass> {
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Color.fromRGBO(255, 136, 0, 1)),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                      ),
                       onPressed: () async {
-                        if(value.logueado){
-                          int ultimoNivel = puntos~/10;
+                        if (value.logueado) {
+                          int ultimoNivel = puntos ~/ 10;
                           print('NIVEL DEL PASE estimado: $ultimoNivel');
-                          if(ultimoNivel > user.nivelpase){
-                            Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/$id');
+                          if (ultimoNivel > user.nivelpase) {
+                            Uri url = Uri.parse(
+                                'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_nivel_pase/$id');
                             print(ultimoNivel.toString());
                             Map<String, dynamic> bodyData = {
                               'nivelPase': ultimoNivel.toString(),
                             };
                             String jsonData = jsonEncode(bodyData);
-                            final response = await http.post(url, body: jsonData, headers: {'Content-Type': 'application/json'});
+                            final response = await http.post(url,
+                                body: jsonData,
+                                headers: {'Content-Type': 'application/json'});
                             print('enviado');
-                            if(response.statusCode == 500){
-                              print('No se ha podido actualizar el nivel del pase');
-                            }else if(response.statusCode == 200){
+                            if (response.statusCode == 500) {
+                              print(
+                                  'No se ha podido actualizar el nivel del pase');
+                            } else if (response.statusCode == 200) {
                               print('Nivel del pase actualizado');
-                            }
-                            else if(response.statusCode == 400){
+                            } else if (response.statusCode == 400) {
                               print('No proporcionados');
                             }
                           }
@@ -211,7 +227,9 @@ class _BattlePassState extends State<BattlePass> {
                       },
                       child: Text(
                         'RECLAMAR TODAS RECOMPENSAS',
-                        style: TextStyle(color: Colors.green, fontFamily: 'Oswald'),
+                        style: TextStyle(
+                            color: Color.fromRGBO(49, 45, 45, 1),
+                            fontFamily: 'Oswald'),
                       ),
                     ),
                   ),
@@ -222,8 +240,8 @@ class _BattlePassState extends State<BattlePass> {
                         final tier = tiers[index];
                         return Card(
                           elevation: 3,
-                          margin: EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 16),
+                          margin:
+                              EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                           color: Color.fromRGBO(49, 45, 45, 1),
                           child: Padding(
                             padding: const EdgeInsets.all(16.0),
@@ -235,7 +253,8 @@ class _BattlePassState extends State<BattlePass> {
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
-                                    color: Colors.white, fontFamily: 'Oswald',
+                                    color: Colors.white,
+                                    fontFamily: 'Oswald',
                                   ),
                                 ),
                                 SizedBox(height: 8),
@@ -244,7 +263,9 @@ class _BattlePassState extends State<BattlePass> {
                                     Text(
                                       'Puntos requeridos: ${tier.requiredPoints}',
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.orange, fontFamily: 'Oswald'),
+                                          fontSize: 14,
+                                          color: Colors.orange,
+                                          fontFamily: 'Oswald'),
                                     ),
                                   ],
                                 ),
@@ -253,13 +274,14 @@ class _BattlePassState extends State<BattlePass> {
                                     Text(
                                       'Tipo de recompensa: ${tier.rewardType}',
                                       style: TextStyle(
-                                          fontSize: 14, color: Colors.orange, fontFamily: 'Oswald'),
+                                          fontSize: 14,
+                                          color: Colors.orange,
+                                          fontFamily: 'Oswald'),
                                     )
                                   ],
                                 ),
                                 Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     if (tier.rewardType == 'pieza') ...[
                                       SvgPicture.asset(
@@ -291,18 +313,19 @@ class _BattlePassState extends State<BattlePass> {
                                             width: 30,
                                             height: 30,
                                           )
-                                        : tier.level > puntos~/10 ?
-                                          Image.asset(
-                                            'assets/images/lock.png',
-                                            width: 30,
-                                            height: 30,
-                                          ) : Image.asset(
-                                            'assets/images/unlock.png',
-                                            width: 30,
-                                            height: 30,
-                                          ),
+                                        : tier.level > puntos ~/ 10
+                                            ? Image.asset(
+                                                'assets/images/lock.png',
+                                                width: 30,
+                                                height: 30,
+                                              )
+                                            : Image.asset(
+                                                'assets/images/unlock.png',
+                                                width: 30,
+                                                height: 30,
+                                              ),
                                   ],
-                                  ),
+                                ),
                               ],
                             ),
                           ),

@@ -51,7 +51,10 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
               leading: IconButton(
                 icon: Icon(Icons.arrow_back),
                 onPressed: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id)));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PartidasAsincronas(id: id)));
                 },
               ),
             ),
@@ -76,13 +79,22 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
                   ),
                   SizedBox(height: 20),
                   ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Color.fromRGBO(255, 136, 0, 1)),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
                     onPressed: () {
-                      if(_idController.text.isNotEmpty){
-                        _handleLogic(id,idRival);
+                      if (_idController.text.isNotEmpty) {
+                        _handleLogic(id, idRival);
                       }
-                      
                     },
-                    child: Text('Crear Partida'),
+                    child: Text('Crear Partida',
+                        style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                   ),
                 ],
               ),
@@ -94,38 +106,40 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
   }
 
   void _handleLogic(int id, int? idRival) async {
-      if(id != 0 && idRival != 0){
-        // Ejemplo de solicitud HTTP
-        Uri url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/register_partida_asincrona');
-        Map<String, dynamic> requestData = {
-          'usuarioBlancas':id,
-          'usuarioNegras':idRival,
+    if (id != 0 && idRival != 0) {
+      // Ejemplo de solicitud HTTP
+      Uri url = Uri.parse(
+          'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/register_partida_asincrona');
+      Map<String, dynamic> requestData = {
+        'usuarioBlancas': id,
+        'usuarioNegras': idRival,
 
-          // Otras propiedades necesarias para la solicitud
-        };
-        String jsonData = jsonEncode(requestData);
-        print(jsonData);
-        try {
-          final response = await http.post(url, body: jsonData, headers: {'Content-Type': 'application/json'});
-          if (response.statusCode == 200) {
-            // Lógica para manejar la respuesta exitosa
-            print('Solicitud exitosa');
-            Uri url2 = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_partida_asincrona');
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Partida creada correctamente')));
-          } else if (response.statusCode == 500) {
-            // Lógica para manejar otros códigos de estado de respuesta
-            print('Error en la solicitud: ${response.statusCode}');
-          }
-        } catch (e) {
-          // Lógica para manejar errores de red
-          print('Error de red: $e');
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error de red: $e')));
+        // Otras propiedades necesarias para la solicitud
+      };
+      String jsonData = jsonEncode(requestData);
+      print(jsonData);
+      try {
+        final response = await http.post(url,
+            body: jsonData, headers: {'Content-Type': 'application/json'});
+        if (response.statusCode == 200) {
+          // Lógica para manejar la respuesta exitosa
+          print('Solicitud exitosa');
+          Uri url2 = Uri.parse(
+              'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_partida_asincrona');
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Partida creada correctamente')));
+        } else if (response.statusCode == 500) {
+          // Lógica para manejar otros códigos de estado de respuesta
+          print('Error en la solicitud: ${response.statusCode}');
         }
+      } catch (e) {
+        // Lógica para manejar errores de red
+        print('Error de red: $e');
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Error de red: $e')));
       }
-      else{
-        context.go('/login');
-      }
+    } else {
+      context.go('/login');
+    }
   }
- 
 }
-

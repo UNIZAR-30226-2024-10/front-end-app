@@ -16,7 +16,8 @@ class EsperandoPartida extends StatefulWidget {
   final int userId;
   final int elo;
 
-  EsperandoPartida({required this.modoJuego, required this.userId, required this.elo});
+  EsperandoPartida(
+      {required this.modoJuego, required this.userId, required this.elo});
 
   @override
   _EsperandoPartidaState createState() => _EsperandoPartidaState();
@@ -54,7 +55,8 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
 
   void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
-    socket.emit('join_room', {"mode": obtenerModo(modo) , "userId": id , "elo": eloRapid});
+    socket.emit('join_room',
+        {"mode": obtenerModo(modo), "userId": id, "elo": eloRapid});
   }
 
   void _startCountdown() {
@@ -74,7 +76,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     });
   }
 
-  void _esperarPartida()  {
+  void _esperarPartida() {
     socket.on('game_ready', (data) {
       if (mounted) {
         setState(() {
@@ -90,7 +92,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     });
   }
 
-  void _partidaEncontrada()  {
+  void _partidaEncontrada() {
     socket.on('match_found', (data) {
       if (mounted) {
         setState(() {
@@ -102,7 +104,6 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     });
   }
 
-  
   Future<void> _cancelarBusqueda() async {
     socket.on('match_canceled', (_) {
       if (mounted) {
@@ -118,7 +119,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   }
 
   void entrarEnPartida() async {
-      // Navegar a la pantalla del tablero cuando countdown es igual a 0
+    // Navegar a la pantalla del tablero cuando countdown es igual a 0
     final login = context.read<LoginState>();
     List<List<PiezaAjedrez?>> tablero;
     List<Color> coloresTablero;
@@ -129,7 +130,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     String nombreUsuario = login.nombre;
     print('Nombre del usuario: $nombreUsuario');
     late String nombreOponente;
-    
+
     Future<String> futureString = getNombre(idOponente);
     await futureString.then((value) {
       nombreOponente = value;
@@ -183,6 +184,15 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
                 Text('En unos instantes volverás a la pantalla anterior')
               else
                 ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(
+                        Color.fromRGBO(255, 136, 0, 1)),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                    ),
+                  ),
                   onPressed: () {
                     //ESTO NO VA
                     socket.emit('cancel_match');
@@ -190,13 +200,14 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
                         'cancel_search', {"mode": obtenerModo(modoJuego)});
                     socket.off('match_canceled');
                     Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChessPlaySessionScreen(),
-                    ),
-                  );
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ChessPlaySessionScreen(),
+                      ),
+                    );
                   },
-                  child: Text('Cancelar búsqueda'),
+                  child: Text('Cancelar búsqueda',
+                      style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                 ),
             ],
           ),
