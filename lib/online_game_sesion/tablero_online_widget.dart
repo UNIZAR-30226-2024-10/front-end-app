@@ -121,9 +121,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late String motivoFinPartida;
 
-  late bool jugadorDesconectado;
+  late bool jugadorDesconectado = false;
 
-  late bool jugadorRendido;
+  late bool jugadorRendido = false;
+
+  String idGanador = '';
+
+  String idPerdedor = '';
 
   //MÉTODOS
   @override
@@ -213,9 +217,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       print('ENVIO DE TABLERO A BACKEND PARA OBTENER MOVIMIENTOS POSIBLESEXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
-
+      final login = context.read<LoginState>();
       if(jsonMapMovimientos['allMovements'] != null){
-        
         if (jsonMapMovimientos['jaque'] as bool) {
           print('JAQUE\n');
           print(jsonMapMovimientos);
@@ -234,6 +237,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
           motivoFinPartida = 'has_ganado';
           finPartida = true;
+          idPerdedor = idOponente;
+          idGanador = login.getId();
+          idPerdedor = idOponente;
         });
         Map<String, dynamic> data = {
           'roomId': roomIdP.toString(),
@@ -250,6 +256,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           hayTablas = jsonMapMovimientos['tablas'] as bool;
           motivoFinPartida = 'has_empatado';
           finPartida = true;
+          idGanador = login.getId();
+          idPerdedor = idOponente;
         });
         Map<String, dynamic> data = {
           'roomId': roomIdP.toString(),
@@ -412,6 +420,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //OBSERVAR SI SE HA AGOTADO EL TIEMPO
   void _checkTimer(Timer timer) {
     if(player1.tiempoAgotado()){
+      final login = context.read<LoginState>();
       _timer.cancel();
       setState(() {
         finPartida = true;
@@ -419,9 +428,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         tiempoAgotado = true;
         player1.pauseTimer();
         player2.pauseTimer();
+        idGanador = idOponente;
+        
       });
     }
     else if(player2.tiempoAgotado()){
+      final login = context.read<LoginState>();
       _timer.cancel();
       setState(() {
         finPartida = true;
@@ -429,6 +441,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         tiempoAgotado = true;
         player1.pauseTimer();
         player2.pauseTimer();
+        idGanador = login.getId();
+        idPerdedor = idOponente;
+        
       });
     }
   }
@@ -795,6 +810,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //CASOS ESPECIALES
   void _escucharServidor()  {
     print("ESCUCHANDO SERVIDOR\n ");
+    final login = context.read<LoginState>();
     socket.on("movido", (data) async{
       print("RECIBIDO TABLERO DE CONTRINCANTE!!!!!!!!!!\n");
       print("--------------------------------------------\n");
@@ -828,6 +844,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           finPartida = true;
           jugadorRendido = true;
           motivoFinPartida = "player_disconnected";
+          idPerdedor = idOponente;
+          idGanador = login.getId();
         });
       }
     });
@@ -839,6 +857,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           finPartida = true;
           jugadorDesconectado = true;
           motivoFinPartida = "oponent_surrendered";
+          idPerdedor = idOponente;
+          idGanador = login.getId();
         });
       }
     });
@@ -850,6 +870,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           finPartida = true;
           hayJaqueMate = true;
           motivoFinPartida = "has_perdido";
+          idPerdedor =  login.getId();
+          idGanador = idOponente;
         });
       }
     });
@@ -861,6 +883,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           finPartida = true;
           hayTablas = true;
           motivoFinPartida = "has_empatado";
+          idPerdedor = idOponente;
+          idGanador = login.getId();
         });
       }
     });
@@ -901,7 +925,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
                 child: finPartida && (hayJaqueMate || hayTablas && int.parse(idOponente) < value.id || tiempoAgotado || jugadorDesconectado || jugadorRendido)
-                    ? FinPartidaOnline(razon: motivoFinPartida)
+                    ? FinPartidaOnline(razon: motivoFinPartida, idGanador: idGanador,idPerdedor: idPerdedor,esEmpate: hayTablas, modo: modoDeJuego)
                     : GridView.builder(
                         itemCount: 8 * 8,
                         physics: const NeverScrollableScrollPhysics(),

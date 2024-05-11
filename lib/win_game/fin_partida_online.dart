@@ -1,15 +1,47 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
-
+import 'package:http/http.dart' as http;
 class FinPartidaOnline extends StatelessWidget {
   final String razon;
+  final String idGanador;
+  final String idPerdedor;
+  final String modo;
+  final bool esEmpate;
 
   const FinPartidaOnline({
     Key? key,
     this.razon = '',
+    this.idGanador = '',
+    this.idPerdedor = '',
+    this.modo = '',
+    this.esEmpate = false,
   }) : super(key: key);
+
+
+Future<void> actualizarElo() async {
+  print('Actualizando elo');
+  print("idGanador: $idGanador");
+  print("idPerdedor: $idPerdedor");
+  print("esEmpate: $esEmpate");
+  print("modo: $modo");
+  Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_puntos/rapid/$idGanador/$idPerdedor/$esEmpate');
+    http.Response response = await http.post(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader:
+            'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
+    if (response.statusCode == 200) {
+      print('Elo actualizado');
+    } else {
+      print('Error al actualizar el elo');
+    }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +66,7 @@ class FinPartidaOnline extends StatelessWidget {
         break;
     }
     
+    actualizarElo();
 
     return Scaffold(
       backgroundColor: Color.fromRGBO(49, 45, 45, 1),
@@ -66,7 +99,7 @@ class FinPartidaOnline extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navegar a la ruta deseada al abandonar la partida
-                  Navigator.push(
+                  Navigator.pushReplacement(
                     context,
                     MaterialPageRoute(
                       builder: (context) => ChessPlaySessionScreen(),

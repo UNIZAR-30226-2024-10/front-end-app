@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:ChessHub/main.dart';
 class Header extends StatelessWidget implements PreferredSizeWidget {
   const Header({Key? key}) : super(key: key);
 
@@ -10,7 +10,12 @@ class Header extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Color.fromRGBO(49, 45, 45, 1),
       title: GestureDetector(
         onTap: () {
-          GoRouter.of(context).push('/');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MyApp(),
+            ),
+          );
         },
         child: Text(
           'ChessHub',
