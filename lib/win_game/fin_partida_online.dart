@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
 import 'package:http/http.dart' as http;
+
 class FinPartidaOnline extends StatelessWidget {
   final String razon;
   final String idGanador;
@@ -21,14 +22,14 @@ class FinPartidaOnline extends StatelessWidget {
     this.esEmpate = false,
   }) : super(key: key);
 
-
-Future<void> actualizarElo() async {
-  print('Actualizando elo');
-  print("idGanador: $idGanador");
-  print("idPerdedor: $idPerdedor");
-  print("esEmpate: $esEmpate");
-  print("modo: $modo");
-  Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_puntos/rapid/$idGanador/$idPerdedor/$esEmpate');
+  Future<void> actualizarElo() async {
+    print('Actualizando elo');
+    print("idGanador: $idGanador");
+    print("idPerdedor: $idPerdedor");
+    print("esEmpate: $esEmpate");
+    print("modo: $modo");
+    Uri uri = Uri.parse(
+        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_puntos/rapid/$idGanador/$idPerdedor/$esEmpate');
     http.Response response = await http.post(
       uri,
       headers: {
@@ -41,7 +42,7 @@ Future<void> actualizarElo() async {
     } else {
       print('Error al actualizar el elo');
     }
-}
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +66,7 @@ Future<void> actualizarElo() async {
         mensajeFinal = ' !Fin de la partida!';
         break;
     }
-    
+
     actualizarElo();
 
     return Scaffold(
@@ -99,12 +100,8 @@ Future<void> actualizarElo() async {
               ElevatedButton(
                 onPressed: () {
                   // Navegar a la ruta deseada al abandonar la partida
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChessPlaySessionScreen(),
-                    ),
-                  );
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey,
