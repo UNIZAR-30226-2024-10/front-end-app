@@ -41,11 +41,7 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final settingsController = context.watch<SettingsController>();
-
-    void _getInfo(int id) async {
+  void _getInfo(int id) async {
       // Construye la URL y realiza la solicitud POST
       //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
@@ -63,19 +59,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
       if (response.statusCode == 200) {
         print(res);
+        setState(() {
         _eloBlitz = res['eloblitz'] as int;
         _eloRapid = res['elorapid'] as int;
         _eloBullet = res['elobullet'] as int;
         _username = res['nombre'] as String;
-        _mail = res['correo'] as String;
+        _mail = res['correoelectronico'] as String;
         _victorias = res['victorias'] as int;
         _derrotas = res['derrotas'] as int;
         _empates = res['empates'] as int;
+      });
       } else {
         throw Exception('Error en la solicitud GET: ${response.statusCode}');
       }
     }
-
+    
+  @override
+  Widget build(BuildContext context) {
+    final settingsController = context.watch<SettingsController>();
     void _deleteAccount(int id) async {
       // Construye la URL y realiza la solicitud POST
       //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
