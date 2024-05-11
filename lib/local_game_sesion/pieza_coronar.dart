@@ -6,12 +6,19 @@ import 'package:ChessHub/game_internals/funciones.dart';
 class PiezaCoronar extends StatelessWidget {
   final bool esBlanca;
   final TipoPieza tipoPieza;
+  String imagenPieza;
 
-  PiezaCoronar({required this.esBlanca, required this.tipoPieza});
+  PiezaCoronar({required this.esBlanca, required this.tipoPieza, this.imagenPieza = ''});
 
   @override
   Widget build(BuildContext context) {
-    String imagePath = obtenerRutaImagen(tipoPieza, esBlanca);
+    String imagePath;
+    if(imagenPieza != ''){
+      imagePath = getImagePath(imagenPieza,esBlanca,tipoPieza);
+    }
+    else{
+      imagePath = obtenerRutaImagen(tipoPieza, esBlanca);
+    }
 
     return Container(
       width: 70,

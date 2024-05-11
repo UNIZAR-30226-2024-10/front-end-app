@@ -21,7 +21,7 @@ import 'package:go_router/go_router.dart';
 import 'package:ChessHub/local_game_sesion/pieza_coronar.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'package:ChessHub/local_game_sesion/stats_game.dart';
-import 'package:ChessHub/win_game/fin_partida.dart';
+import 'package:ChessHub/win_game/fin_partida_online.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -118,6 +118,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late bool meToca;
 
+  late String motivoFinPartida;
+
+  late bool jugadorDesconectado;
+
+  late bool jugadorRendido;
 
   //MÉTODOS
   @override
@@ -136,8 +141,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     if(myColor == 'black'){
       print("SOY NEGRASSSSS!");
-      player2 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
-      player1 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
+      player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
+      player2 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
       soyBlancas = false;
       meToca = false;
     }
@@ -153,25 +158,32 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     _tratamientoMododeJuego();
     _escucharServidor();
+    _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
   }
 
+  //ELIMINAR EL ESTADO
   @override
   void dispose() {
     // Cierra la conexión al servidor cuando el widget es eliminado
     socket.off("movido"); // Cancela el evento "movido"
+    socket.off("player_disconnected");
+    socket.off("oponent_surrendered");
+    socket.off("has_perdido");
+    socket.off("has_empatado");
+
     super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
 
   void _tratamientoMododeJuego() async{
     if(widget.modoJuego == Modos.BLITZ){
       modoDeJuego = 'BLITZ';
-      player1.changeTimer(Duration(minutes: 10));
-      player2.changeTimer(Duration(minutes: 10));
+      player1.changeTimer(Duration(minutes: 3));
+      player2.changeTimer(Duration(minutes: 3));
     }
     else if(widget.modoJuego == Modos.RAPID){
       modoDeJuego = 'RAPID';
-      player1.changeTimer(Duration(minutes: 3));
-      player2.changeTimer(Duration(minutes: 3));
+      player1.changeTimer(Duration(minutes: 10));
+      player2.changeTimer(Duration(minutes: 10));
     }
     else{
       modoDeJuego = 'BULLET';
@@ -217,13 +229,32 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       //Comprobamos si hay jaque mate
       else if(jsonMapMovimientos['Jaque mate'] as bool){
         print('JAQUE MATE\n');
-        hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
+        setState(() {
+          hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
+          motivoFinPartida = 'has_ganado';
+          finPartida = true;
+        });
+        Map<String, dynamic> data = {
+          'roomId': roomIdP.toString(),
+          'cause': 'jaque_mate'
+        };
+        print("He ganado la partida\n");
+        socket.emit("Gano_partida", {data}); 
         return true;
       }
       //Comprobamos si hay tablas
       else if(jsonMapMovimientos['tablas'] != null){
         print('TABLAS\n');
-        hayTablas = jsonMapMovimientos['tablas'] as bool;
+        setState(() {
+          hayTablas = jsonMapMovimientos['tablas'] as bool;
+          motivoFinPartida = 'has_empatado';
+          finPartida = true;
+        });
+        Map<String, dynamic> data = {
+          'roomId': roomIdP.toString(),
+          'cause': 'empate'
+        };
+        socket.emit("empato_partida", {data}); 
         return true;
       }      
       //Finalmente devolvemos si la jugada es legal o no
@@ -379,11 +410,21 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   
   //OBSERVAR SI SE HA AGOTADO EL TIEMPO
   void _checkTimer(Timer timer) {
-    if(player1.tiempoAgotado() || player2.tiempoAgotado()){
-      tiempoAgotado = true;
+    if(player1.tiempoAgotado()){
       _timer.cancel();
       setState(() {
         finPartida = true;
+        motivoFinPartida = 'has_perdido_timer';
+        tiempoAgotado = true;
+        player1.pauseTimer();
+        player2.pauseTimer();
+      });
+    }
+    else if(player2.tiempoAgotado()){
+      _timer.cancel();
+      setState(() {
+        finPartida = true;
+        motivoFinPartida = 'has_ganado_timer';
         tiempoAgotado = true;
         player1.pauseTimer();
         player2.pauseTimer();
@@ -507,12 +548,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     //Coronación
     if(hayCoronacion && esTurnoBlancas){
+      print("CORONANDO PEON BLANCO");
       String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
       //Coronamos peon blanco
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
           listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1] -1 );
         }
       });
       String color = "blancas";
@@ -521,12 +564,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
     }
     else if(hayCoronacion && !esTurnoBlancas){
+      print("CORONANDO PEON NEGRO");
       String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
       //Coronamos peon negro
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
           listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1] -1 );
         }
       });
 
@@ -543,7 +588,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       print("CAMBIANDO DE TURNO NEGRAS - BLANCAS");
       jsonMapTablero['turno'] = 'blancas';
     }
-    
 
     //Marcamos que la pieza torre ha sido movida para que el backend no permita enrocar
     if(piezaSeleccionada!.tipoPieza == TipoPieza.torre){
@@ -689,6 +733,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
     print(jsonString);
 
+    jsonString = jsonEncode(jsonMapTablero);
+
     
     bool jugadaValida = await _postTablero();
 
@@ -705,44 +751,34 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       return;
     }
     
-    
-
-
-    // Convertir el mapa en formato JSON
-    jsonString = jsonEncode(jsonMapTablero);
-    // Crear un mapa que contenga el tablero y el roomIdP
-    Map<String, dynamic> data = {
-        'tableroEnviar': jsonString,
-        'roomId': roomIdP.toString()
-    };
-    print(data);
-    // Enviar el tablero al servidor
-    //socket.emit("move", {data});
-    socket.emit("move", data);
-    print("ENVIADO TABLERO NUEVO A SERVIDOR:\n");
-
-
-
-    //PARAR CRONOMETRO Y CAMBIAR DE TURNO
-    /*
-    if(jsonMapTableroAntiguo['turno'] == 'blancas'){
-      player2.pauseTimer();
-      player1.resumeTimer();
-    }
-    else{
+    setState(() {
+      player1.pauseTimer();
       player2.resumeTimer();
-      player1.pauseTimer();
-    }
-    */
+    });
 
-    print('Jugada valida');
-    tablero[filaNueva][columnaNueva] = piezaSeleccionada;
-    tablero[filaSeleccionada][columnaSeleccionada] = null;
-
-    if(hayJaqueMate || hayTablas){
-      finPartida = true;
-      player1.pauseTimer();
-      player2.pauseTimer();
+    print("JAQUE MATE: " + hayJaqueMate.toString());
+    // Convertir el mapa en formato JSON
+    if (!finPartida) {
+      // Crear un mapa que contenga el tablero y el roomIdP
+      Map<String, dynamic> data = {
+          'tableroEnviar': jsonString,
+          'roomId': roomIdP.toString()
+      };
+      print(data);
+      // Enviar el tablero al servidor
+      //socket.emit("move", {data});
+      socket.emit("move", data);
+      print("ENVIADO TABLERO NUEVO A SERVIDOR:\n");  
+      
+      print('Jugada valida');
+      tablero[filaNueva][columnaNueva] = piezaSeleccionada;
+      tablero[filaSeleccionada][columnaSeleccionada] = null;
+      
+      if(hayJaqueMate || hayTablas){
+        finPartida = true;
+        player1.pauseTimer();
+        player2.pauseTimer();
+      }
     }
 
 
@@ -778,40 +814,56 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       if (mounted) {
         setState(() {
           tablero = tableroContrincante;
+          player1.resumeTimer();
+          player2.pauseTimer();
         });
     }
-      /*
-      setState(() {
-        if (esTurnoBlancas) {
-          player1.pauseTimer();
-          player2.resumeTimer();
-        } else {
-          player2.pauseTimer();
-          player1.resumeTimer();
-        }
-      });
-      */
     });
-    print("ESCUCHANDO SERVIDOR\n ");
+    
     socket.on("player_disconnected", (_){
       print("El jugador se ha desconectado");
-      Navigator.pop(context);
+      if (mounted) {
+        setState(() {
+          finPartida = true;
+          jugadorRendido = true;
+          motivoFinPartida = "player_disconnected";
+        });
+      }
     });
 
     socket.on("oponent_surrendered", (_){
       print("El jugador se ha rendido");
-      Navigator.pop(context);
+      if (mounted) {
+        setState(() {
+          finPartida = true;
+          jugadorDesconectado = true;
+          motivoFinPartida = "oponent_surrendered";
+        });
+      }
     });
 
     socket.on("has_perdido", (_){
       print("La partida ha finalizado");
-      Navigator.pop(context);
+      if (mounted) {
+        setState(() {
+          finPartida = true;
+          hayJaqueMate = true;
+          motivoFinPartida = "has_perdido";
+        });
+      }
     });
 
     socket.on("has_empatado", (_){
       print("La partida ha empatado");
-      Navigator.pop(context);
+      if (mounted) {
+        setState(() {
+          finPartida = true;
+          hayTablas = true;
+          motivoFinPartida = "has_empatado";
+        });
+      }
     });
+    
   }
 
   //CONSTRUIR WIDGET
@@ -841,22 +893,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                 textAlign: TextAlign.center,
               ),
             ),
-            SizedBox(height: 20),
-            // PlayRow de Jugador 1
-            /*
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 7.0),
-              child: player1,
-            ),
-            */
             SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             // TABLERO
             Expanded(
               flex: 4, // Ajusta este valor según tus necesidades
               child: Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: finPartida && (hayJaqueMate || hayTablas || tiempoAgotado)
-                    ? FinPartida(esColorBlanca: !esTurnoBlancas, esJaqueMate: hayJaqueMate, esAhogado: hayTablas, tiempoAgotado: tiempoAgotado)
+                child: finPartida && (hayJaqueMate || hayTablas && int.parse(idOponente) < value.id || tiempoAgotado || jugadorDesconectado || jugadorRendido)
+                    ? FinPartidaOnline(razon: motivoFinPartida)
                     : GridView.builder(
                         itemCount: 8 * 8,
                         physics: const NeverScrollableScrollPhysics(),
@@ -884,15 +928,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       ),
               ),
             ),
-            //SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-            // PlayRow de Jugador 2
-            /*
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 7.0),
-              child: player2,
-            ),
-            */
-            SizedBox(height: MediaQuery.of(context).size.height * 0.07),
+            //SizedBox(height: 10),
+            player1,
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+            player2,
+            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -916,7 +956,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: Text(
-                                '¿Estás seguro de que quieres rendirte?',
+                                '¿Estás seguro de que quieres rendirte?\nSi te rindes, perderás la partida.',
                                 style: GoogleFonts.play(
                                   fontSize: 15,
                                   color: Colors.white,
@@ -1022,7 +1062,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.dama;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama),
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama, imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1030,7 +1070,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.alfil;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil),
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil, imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1038,7 +1078,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.caballo;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo),
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo, imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1046,7 +1086,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.torre;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre),
+                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre, imagenPieza: value.imagen),
                                   ),
                                 ],
                               ),

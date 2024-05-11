@@ -142,7 +142,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
         context,
         MaterialPageRoute(
           builder: (context) => TableroAjedrezOnline(
-            modoJuego: Modos.BULLET,
+            modoJuego: widget.modoJuego,
             coloresTablero: coloresTablero,
             tablero: tablero,
             socket: socket,
