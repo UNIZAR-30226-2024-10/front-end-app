@@ -170,20 +170,6 @@ class MainMenuScreen extends StatelessWidget {
                       },
                     ),
                     ListTile(
-                      title: Text('Partidas Asíncronas',
-                          style:
-                              TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
-                      onTap: () {
-                        audioController.playSfx(SfxType.buttonTap);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => PartidasAsincronas(id:value.id)
-                          ),
-                        );
-                      },
-                    ),
-                    ListTile(
                       title: Text('Ajustes',
                           style:
                               TextStyle(color: Color.fromRGBO(255, 255, 255, 1))),
