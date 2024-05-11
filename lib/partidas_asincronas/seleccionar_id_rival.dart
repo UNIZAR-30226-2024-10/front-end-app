@@ -48,15 +48,6 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
                 'Seleccionar ID del Rival',
                 style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
               ),
-              leading: IconButton(
-                icon: Icon(Icons.arrow_back),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => PartidasAsincronas(id: id)));
-                },
-              ),
             ),
             body: Padding(
               padding: const EdgeInsets.all(16.0),

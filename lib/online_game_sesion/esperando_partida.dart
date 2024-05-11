@@ -162,58 +162,85 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   @override
   Widget build(BuildContext context) {
     return Consumer<LoginState>(
-      builder: (context, value, child) => Scaffold(
-        appBar: AppBar(
-          title: Text('Esperando partida'),
-        ),
-        body: Container(
-          alignment: Alignment.center,
-          child: Column(
-            children: [
-              if (partidaEncontrada)
-                if (partidaCancelada)
-                  Text(
-                      'La partida ha sido cancelada, redirigiendo a la pantalla anterior...')
-                else if (countdown > 0)
-                  Text('Partida encontrada, comenzará en: $countdown segundos')
-                else
-                  Text('Cargando la partida...')
-              else
-                CircularProgressIndicator(),
-              if (partidaCancelada)
-                Text('En unos instantes volverás a la pantalla anterior')
-              else
-                ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(
-                        Color.fromRGBO(255, 136, 0, 1)),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                    ),
+        builder: (context, value, child) => Stack(children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/board2.jpg"),
+                    fit: BoxFit.fill,
                   ),
-                  onPressed: () {
-                    //ESTO NO VA
-                    socket.emit('cancel_match');
-                    socket.emit(
-                        'cancel_search', {"mode": obtenerModo(modoJuego)});
-                    socket.off('match_canceled');
-                    /*Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => ChessPlaySessionScreen(),
-                      ),
-                    );*/
-                    Navigator.of(context).pop();
-                  },
-                  child: Text('Cancelar búsqueda',
-                      style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                 ),
-            ],
-          ),
-        ),
-      ),
-    );
+              ),
+              Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+                  leading: Builder(
+                    builder: (BuildContext context) {
+                      return IconButton(
+                        icon: const Icon(Icons.arrow_back),
+                        onPressed: () {
+                          socket.emit('cancel_match');
+                          socket.emit('cancel_search',
+                              {"mode": obtenerModo(modoJuego)});
+                          socket.off('match_canceled');
+                          Navigator.of(context).pop();
+                        },
+                      );
+                    },
+                  ),
+                  title: Text('Esperando partida',
+                      style:
+                          TextStyle(color: Colors.white, fontFamily: 'Oswald')),
+                ),
+                body: Container(
+                  alignment: Alignment.center,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 50),
+                      if (partidaEncontrada)
+                        if (partidaCancelada)
+                          Text(
+                              'La partida ha sido cancelada, redirigiendo a la pantalla anterior...')
+                        else if (countdown > 0)
+                          Text(
+                              'Partida encontrada, comenzará en: $countdown segundos')
+                        else
+                          Text('Cargando la partida...')
+                      else
+                        CircularProgressIndicator(),
+                      if (partidaCancelada)
+                        Text(
+                            'En unos instantes volverás a la pantalla anterior')
+                      else
+                        SizedBox(height: 10),
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all<Color>(
+                              Color.fromRGBO(255, 136, 0, 1)),
+                          shape:
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                        ),
+                        onPressed: () {
+                          //ESTO NO VA
+                          socket.emit('cancel_match');
+                          socket.emit('cancel_search',
+                              {"mode": obtenerModo(modoJuego)});
+                          socket.off('match_canceled');
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancelar búsqueda',
+                            style: TextStyle(
+                                color: Color.fromRGBO(49, 45, 45, 1))),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ]));
   }
 }

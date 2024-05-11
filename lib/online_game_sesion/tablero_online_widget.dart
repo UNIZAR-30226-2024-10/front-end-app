@@ -228,7 +228,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
       final login = context.read<LoginState>();
-      if(jsonMapMovimientos['allMovements'] != null){
+      if (jsonMapMovimientos['allMovements'] != null) {
         if (jsonMapMovimientos['jaque'] as bool) {
           print('JAQUE\n');
           print(jsonMapMovimientos);
@@ -447,7 +447,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   //OBSERVAR SI SE HA AGOTADO EL TIEMPO
   void _checkTimer(Timer timer) {
-    if(player1.tiempoAgotado()){
+    if (player1.tiempoAgotado()) {
       final login = context.read<LoginState>();
       _timer.cancel();
       setState(() {
@@ -457,10 +457,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         player1.pauseTimer();
         player2.pauseTimer();
         idGanador = idOponente;
-        
       });
-    }
-    else if(player2.tiempoAgotado()){
+    } else if (player2.tiempoAgotado()) {
       final login = context.read<LoginState>();
       _timer.cancel();
       setState(() {
@@ -471,7 +469,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         player2.pauseTimer();
         idGanador = login.getId();
         idPerdedor = idOponente;
-        
       });
     }
   }
@@ -852,7 +849,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   void _escucharServidor() {
     print("ESCUCHANDO SERVIDOR\n ");
     final login = context.read<LoginState>();
-    socket.on("movido", (data) async{
+    socket.on("movido", (data) async {
       print("RECIBIDO TABLERO DE CONTRINCANTE!!!!!!!!!!\n");
       print("--------------------------------------------\n");
       print("TABLERO RECIBIDO\n");
@@ -912,7 +909,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           finPartida = true;
           hayJaqueMate = true;
           motivoFinPartida = "has_perdido";
-          idPerdedor =  login.getId();
+          idPerdedor = login.getId();
           idGanador = idOponente;
         });
       }
@@ -947,6 +944,20 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     return Consumer<LoginState>(
       builder: (context, value, child) => Scaffold(
         appBar: AppBar(
+          leading: Builder(
+            builder: (BuildContext context) {
+              return IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () {
+                  // Realiza la lógica para rendirse o continuar la partida
+                  setState(() {
+                    posibleRendicion =
+                        true; // Cambia el estado de posibleRendicion
+                  });
+                },
+              );
+            },
+          ),
           backgroundColor: Color.fromRGBO(49, 45, 45, 1),
           title: Text(''),
           actions: <Widget>[
@@ -1048,7 +1059,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                     tiempoAgotado ||
                                     jugadorDesconectado ||
                                     jugadorRendido)
-                            ? FinPartidaOnline(razon: motivoFinPartida, idGanador: idGanador,idPerdedor: idPerdedor,esEmpate: hayTablas, modo: modoDeJuego)
+                            ? FinPartidaOnline(
+                                razon: motivoFinPartida,
+                                idGanador: idGanador,
+                                idPerdedor: idPerdedor,
+                                esEmpate: hayTablas,
+                                modo: modoDeJuego)
                             : GridView.builder(
                                 itemCount: 8 * 8,
                                 physics: const NeverScrollableScrollPhysics(),
@@ -1127,13 +1143,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                           onPressed: () {
                                             socket
                                                 .emit("I_surrender", {roomIdP});
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ChessPlaySessionScreen(),
-                                              ),
-                                            );
+                                            Navigator.of(context).pop();
+                                            Navigator.of(context).pop();
                                           },
                                           style: ButtonStyle(
                                             backgroundColor:
