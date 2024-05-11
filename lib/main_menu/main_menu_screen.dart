@@ -64,6 +64,7 @@ class MainMenuScreen extends StatelessWidget {
                     valueListenable: settingsController.loggedIn,
                     builder: (context, loggedIn, child) {
                       if (!loggedIn) {
+                        loggedIn = true;
                         return IconButton(
                           tooltip: 'Log In',
                           onPressed: () => GoRouter.of(context).push('/login'),

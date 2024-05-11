@@ -35,7 +35,7 @@ class SettingsController {
   /// Whether or not the music is on.
   ValueNotifier<bool> musicOn = ValueNotifier(true);
 
-  ValueNotifier<bool> loggedIn = ValueNotifier(true);
+  ValueNotifier<bool> loggedIn = ValueNotifier(false);
 
   ValueNotifier<int> session = ValueNotifier(0);
 
