@@ -3,8 +3,6 @@
 
 //import 'dart:ffi';
 
-
-
 import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
@@ -30,7 +28,6 @@ import 'package:socket_io_client/socket_io_client.dart' as IO;
 //import 'package:provider/provider.dart';
 
 class TableroAjedrezOnline extends StatefulWidget {
-  
   final Modos modoJuego;
   IO.Socket socket;
   List<Color> coloresTablero;
@@ -42,13 +39,24 @@ class TableroAjedrezOnline extends StatefulWidget {
   String nombreUsuario;
   String nombrePieza;
 
-  TableroAjedrezOnline({Key? key, required this.modoJuego, required this.coloresTablero, required this.tablero, required this.idOponente, required this.myColor, required this.roomIdP, required this.socket, required this.nombreOponente, required this.nombreUsuario, required this.nombrePieza}) : super(key: key);
+  TableroAjedrezOnline(
+      {Key? key,
+      required this.modoJuego,
+      required this.coloresTablero,
+      required this.tablero,
+      required this.idOponente,
+      required this.myColor,
+      required this.roomIdP,
+      required this.socket,
+      required this.nombreOponente,
+      required this.nombreUsuario,
+      required this.nombrePieza})
+      : super(key: key);
   @override
   State<TableroAjedrezOnline> createState() => _TableroAjedrezState();
 }
 
 class _TableroAjedrezState extends State<TableroAjedrezOnline> {
-
   //VARIABLES
 
   late List<List<PiezaAjedrez?>> tablero;
@@ -115,7 +123,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   late bool soyBlancas;
 
-  late String tipoPiezaImagen; 
+  late String tipoPiezaImagen;
 
   late bool meToca;
 
@@ -128,6 +136,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   String idGanador = '';
 
   String idPerdedor = '';
+
+  List<String> _messages = ["prueba", "test", "hola", "adios", "bye"];
+
+  bool _isVisible = false;
 
   //MÉTODOS
   @override
@@ -144,17 +156,16 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     print("ROOM ID QUE ME HAN ENVIADO");
     print(roomIdP);
 
-    if(myColor == 'black'){
+    if (myColor == 'black') {
       print("SOY NEGRASSSSS!");
       player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: false);
       player2 = PlayerRow(playerName: widget.nombreOponente, esBlanca: true);
       soyBlancas = false;
       meToca = false;
-    }
-    else{
+    } else {
       print("SOY BLANCASSSS!");
       player1 = PlayerRow(playerName: widget.nombreUsuario, esBlanca: true);
-      player2 = PlayerRow(playerName:  widget.nombreOponente, esBlanca: false);
+      player2 = PlayerRow(playerName: widget.nombreOponente, esBlanca: false);
       soyBlancas = true;
       meToca = true;
     }
@@ -179,18 +190,16 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
 
-  void _tratamientoMododeJuego() async{
-    if(widget.modoJuego == Modos.BLITZ){
+  void _tratamientoMododeJuego() async {
+    if (widget.modoJuego == Modos.BLITZ) {
       modoDeJuego = 'BLITZ';
       player1.changeTimer(Duration(minutes: 3));
       player2.changeTimer(Duration(minutes: 3));
-    }
-    else if(widget.modoJuego == Modos.RAPID){
+    } else if (widget.modoJuego == Modos.RAPID) {
       modoDeJuego = 'RAPID';
       player1.changeTimer(Duration(minutes: 10));
       player2.changeTimer(Duration(minutes: 10));
-    }
-    else{
+    } else {
       modoDeJuego = 'BULLET';
       player1.changeTimer(Duration(minutes: 1));
       player2.changeTimer(Duration(minutes: 1));
@@ -214,7 +223,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     // Verifica el estado de la respuesta
     if (response.statusCode == 200) {
-      print('ENVIO DE TABLERO A BACKEND PARA OBTENER MOVIMIENTOS POSIBLESEXITOSO\n');
+      print(
+          'ENVIO DE TABLERO A BACKEND PARA OBTENER MOVIMIENTOS POSIBLESEXITOSO\n');
       //Decodifica la respuesta JSON
       jsonMapMovimientos = jsonDecode(response.body) as Map<String, dynamic>;
       final login = context.read<LoginState>();
@@ -223,15 +233,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           print('JAQUE\n');
           print(jsonMapMovimientos);
           hayJaque = true;
-        }
-        else{
+        } else {
           hayJaque = false;
         }
         print('MOVIMIENTOS VÁLIDOS OBTENIDOS\n');
         print(jsonMapMovimientos);
       }
       //Comprobamos si hay jaque mate
-      else if(jsonMapMovimientos['Jaque mate'] as bool){
+      else if (jsonMapMovimientos['Jaque mate'] as bool) {
         print('JAQUE MATE\n');
         setState(() {
           hayJaqueMate = jsonMapMovimientos['Jaque mate'] as bool;
@@ -246,11 +255,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           'cause': 'jaque_mate'
         };
         print("He ganado la partida\n");
-        socket.emit("Gano_partida", {data}); 
+        socket.emit("Gano_partida", {data});
         return true;
       }
       //Comprobamos si hay tablas
-      else if(jsonMapMovimientos['tablas'] != null){
+      else if (jsonMapMovimientos['tablas'] != null) {
         print('TABLAS\n');
         setState(() {
           hayTablas = jsonMapMovimientos['tablas'] as bool;
@@ -263,9 +272,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           'roomId': roomIdP.toString(),
           'cause': 'empate'
         };
-        socket.emit("empato_partida", {data}); 
+        socket.emit("empato_partida", {data});
         return true;
-      }      
+      }
       //Finalmente devolvemos si la jugada es legal o no
       return jsonMapMovimientos['jugadaLegal'] as bool;
     } else {
@@ -297,28 +306,29 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   //CARGAR TABLERO INICIAL
   void _cargarTableroInicial() async {
     // Cargar el tablero inicial
-    jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
+    jsonString =
+        await rootBundle.loadString('assets/json/tableroInicialOnline.json');
     jsonMapTablero = jsonDecode(jsonString) as Map<String, dynamic>;
     await _postTablero();
   }
-  
+
   //CALULAR MOVIMIENTOS DE REY EN JAQUE
-  List<String> obtenerMovimientosReyJaque(){
+  List<String> obtenerMovimientosReyJaque() {
     print('MOVIMIENTOS REY EN JAQUE\n');
     print(jsonMapMovimientos['allMovements']['rey'][0][1]);
     List<String> movimientosValidosString = [];
     int len = (jsonMapMovimientos['allMovements']['rey'][0].length as int);
-      for (int i = 1; i < len; i++) {
-        String mov =
-                jsonEncode(jsonMapMovimientos['allMovements']['rey'][0][i]);
-            print('Anyadiendo el siguiente movimiento: ');
-            print(mov);
-            movimientosValidosString.add(mov);
-      }
+    for (int i = 1; i < len; i++) {
+      String mov = jsonEncode(jsonMapMovimientos['allMovements']['rey'][0][i]);
+      print('Anyadiendo el siguiente movimiento: ');
+      print(mov);
+      movimientosValidosString.add(mov);
+    }
     return movimientosValidosString;
   }
-  
-  List<List<int>> obtenerMovimientosValidosJaque(int fila, int columna,PiezaAjedrez pieza){
+
+  List<List<int>> obtenerMovimientosValidosJaque(
+      int fila, int columna, PiezaAjedrez pieza) {
     List<List<int>> movimientosValidosInt = [];
     List<int> coordenadasApi = convertirAppToApi(fila, columna);
     bool blanca = pieza.esBlanca;
@@ -326,44 +336,62 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     print('COMER O BLOQUEAR\n');
 
-    
     print('MOVIMIENTOS BLOQUEAR\n');
-    if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza] != null){
+    if (jsonMapMovimientos['allMovements']['bloquear'][0][npieza] != null) {
       print('ENTRA EN BLOQUEAR\n');
-      if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza]  as List != []){
-        if(jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['fromX'] == coordenadasApi[0] && jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['fromY'] == coordenadasApi[1]){
+      if (jsonMapMovimientos['allMovements']['bloquear'][0][npieza] as List !=
+          []) {
+        if (jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]
+                    ['fromX'] ==
+                coordenadasApi[0] &&
+            jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]
+                    ['fromY'] ==
+                coordenadasApi[1]) {
           print('HAY MOVIMIENTOS PARA BLOQUEAR\n');
-          movimientosValidosInt.add(convertirApiToApp(jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['x'] as int, jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['y'] as int));
-        }
-        else{
+          movimientosValidosInt.add(convertirApiToApp(
+              jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['x']
+                  as int,
+              jsonMapMovimientos['allMovements']['bloquear'][0][npieza][0]['y']
+                  as int));
+        } else {
           print('NO HAY MOVIMIENTOS PARA BLOQUEAR\n');
         }
       }
     }
-    
+
     print('MOVIMIENTOS COMER\n');
-    if(jsonMapMovimientos['allMovements']['comer'][0][npieza] is List &&
-      (jsonMapMovimientos['allMovements']['comer'][0][npieza] as List).isNotEmpty) {
+    if (jsonMapMovimientos['allMovements']['comer'][0][npieza] is List &&
+        (jsonMapMovimientos['allMovements']['comer'][0][npieza] as List)
+            .isNotEmpty) {
       print('ENTRA EN COMER\n');
-      
-      if((jsonMapMovimientos['allMovements']['comer'][0][npieza][0] as Map<String, dynamic>?)?.isNotEmpty ?? false) {
-        if((jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromX'] as int?) == coordenadasApi[0] &&
-          (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromY'] as int?) == coordenadasApi[1]) {
+
+      if ((jsonMapMovimientos['allMovements']['comer'][0][npieza][0]
+                  as Map<String, dynamic>?)
+              ?.isNotEmpty ??
+          false) {
+        if ((jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromX']
+                    as int?) ==
+                coordenadasApi[0] &&
+            (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['fromY']
+                    as int?) ==
+                coordenadasApi[1]) {
           print('HAY MOVIMIENTOS PARA COMER\n');
           movimientosValidosInt.add(convertirApiToApp(
-            (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['x'] as int),
-            (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['y'] as int)
-          ));
+              (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['x']
+                  as int),
+              (jsonMapMovimientos['allMovements']['comer'][0][npieza][0]['y']
+                  as int)));
         } else {
           print('NO HAY MOVIMIENTOS PARA COMER\n');
         }
       }
-  }
+    }
     return movimientosValidosInt;
   }
 
   //CALCULAR MOVIMIENTOS POSIBLES SIN JAQUE
-  List<String> obtenerMovimientosValidos(int fila, int columna, PiezaAjedrez pieza) {
+  List<String> obtenerMovimientosValidos(
+      int fila, int columna, PiezaAjedrez pieza) {
     List<String> movimientosValidosString = [];
     // Transformar la fila y la columna en el formato de la API para que pueda ser leído
     List<int> coordenadasApi = convertirAppToApi(fila, columna);
@@ -402,7 +430,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     return movimientosValidosString;
   }
-  
+
   //OBTENER COORDENADAS DE STRING
   List<int> obtenerXYFromString(String coordenadaString) {
     // Parsear el string a un mapa
@@ -416,7 +444,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     // Devolver una lista con los valores de x e y
     return [x, y];
   }
-  
+
   //OBSERVAR SI SE HA AGOTADO EL TIEMPO
   void _checkTimer(Timer timer) {
     if(player1.tiempoAgotado()){
@@ -462,72 +490,76 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     return movimientosValidosInt;
   }
-  
+
   //REALIZAR MOVIMIENTO
   Future<void> _realizarMovimiento(int fila, int columna) async {
-    if (esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0) {
+    if (esTurnoBlancas &&
+        piezaSeleccionada?.tipoPieza == TipoPieza.peon &&
+        fila == 0) {
       print('CORONAR PEON BLANCO\n');
       hayCoronacion = true;
       while (!terminadaCoronacion) {
-        await Future.delayed(Duration(milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+        await Future.delayed(Duration(
+            milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
       }
       print('CORONACION TERMINADA\n');
     } else if (piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7) {
       hayCoronacion = true;
       while (!terminadaCoronacion) {
-        await Future.delayed(Duration(milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
+        await Future.delayed(Duration(
+            milliseconds: 1)); // Espera 1 segundo antes de verificar de nuevo
       }
     }
     terminadaCoronacion = false;
     moverPieza(fila, columna);
-}
+  }
 
   //SELECCIONAR PIEZA
-  void seleccionadaPieza (int fila, int columna){
-      setState(() {
-        if(meToca){
-          if (piezaSeleccionada == null && tablero[fila][columna] != null) {
-            print("SELECCIONANDO PIEZA\n");
-            if (tablero[fila][columna]!.esBlanca == soyBlancas) {
-              piezaSeleccionada = tablero[fila][columna];
-              filaSeleccionada = fila;
-              columnaSeleccionada = columna;
-            }
-            
-          } 
-          else if(tablero[fila][columna] != null && tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca){
+  void seleccionadaPieza(int fila, int columna) {
+    setState(() {
+      if (meToca) {
+        if (piezaSeleccionada == null && tablero[fila][columna] != null) {
+          print("SELECCIONANDO PIEZA\n");
+          if (tablero[fila][columna]!.esBlanca == soyBlancas) {
             piezaSeleccionada = tablero[fila][columna];
             filaSeleccionada = fila;
             columnaSeleccionada = columna;
           }
-          else if (piezaSeleccionada != null &&movimientosValidos.any((element) => element[0] == fila && element[1] == columna)) {
-            if(esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0){
-              hayCoronacion = true;
-            }
-            else if(piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 7){
-              hayCoronacion = true;
-            } 
-            print("REALIZANDO MOVIMIENTO\n");
-            _realizarMovimiento(fila, columna);
+        } else if (tablero[fila][columna] != null &&
+            tablero[fila][columna]!.esBlanca == piezaSeleccionada!.esBlanca) {
+          piezaSeleccionada = tablero[fila][columna];
+          filaSeleccionada = fila;
+          columnaSeleccionada = columna;
+        } else if (piezaSeleccionada != null &&
+            movimientosValidos.any(
+                (element) => element[0] == fila && element[1] == columna)) {
+          if (esTurnoBlancas &&
+              piezaSeleccionada?.tipoPieza == TipoPieza.peon &&
+              fila == 0) {
+            hayCoronacion = true;
+          } else if (piezaSeleccionada?.tipoPieza == TipoPieza.peon &&
+              fila == 7) {
+            hayCoronacion = true;
           }
-        
-          print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
-          if(!hayJaque){
-            movimientosValidos = calcularMovimientos(
+          print("REALIZANDO MOVIMIENTO\n");
+          _realizarMovimiento(fila, columna);
+        }
+
+        print('Fila: ' + fila.toString() + ' Columna: ' + columna.toString());
+        if (!hayJaque) {
+          movimientosValidos = calcularMovimientos(
               obtenerMovimientosValidos(fila, columna, piezaSeleccionada!));
-          }
-          else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey){
-            movimientosValidos = calcularMovimientos(obtenerMovimientosReyJaque());
-          }
-          else{
-            movimientosValidos = obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
-          }
+        } else if (piezaSeleccionada?.tipoPieza == TipoPieza.rey) {
+          movimientosValidos =
+              calcularMovimientos(obtenerMovimientosReyJaque());
+        } else {
+          movimientosValidos =
+              obtenerMovimientosValidosJaque(fila, columna, piezaSeleccionada!);
         }
       }
-    );
-    
+    });
   }
-  
+
   //MOVER PIEZA
   void moverPieza(int filaNueva, int columnaNueva) async {
     List<int> coordenadasAntiguasApi =
@@ -540,14 +572,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     Map<String, dynamic> jsonMapTableroAntiguo =
         jsonDecode(jsonString) as Map<String, dynamic>;
 
-    if(tablero[filaNueva][columnaNueva] != null){
-      if(tablero[filaNueva][columnaNueva]!.esBlanca){
+    if (tablero[filaNueva][columnaNueva] != null) {
+      if (tablero[filaNueva][columnaNueva]!.esBlanca) {
         piezasBlancasMuertas.add(tablero[filaNueva][columnaNueva]!);
         setState(() {
           player1.incrementPiecesCaptured();
         });
-      }
-      else{
+      } else {
         piezasNegrasMuertas.add(tablero[filaNueva][columnaNueva]!);
         setState(() {
           player2.incrementPiecesCaptured();
@@ -557,46 +588,65 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
-          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
+          listaPiezas.removeWhere((pieza) =>
+              pieza['x'] == coordenadasNuevasApi[0] &&
+              pieza['y'] == coordenadasNuevasApi[1]);
         }
       });
     }
 
     //Coronación
-    if(hayCoronacion && esTurnoBlancas){
+    if (hayCoronacion && esTurnoBlancas) {
       print("CORONANDO PEON BLANCO");
-      String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
+      String imagen = obtenerRutaImagen(tipoPiezaCoronada, esTurnoBlancas);
       //Coronamos peon blanco
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
-          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
-          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1] -1 );
+          listaPiezas.removeWhere((pieza) =>
+              pieza['x'] == coordenadasNuevasApi[0] &&
+              pieza['y'] == coordenadasNuevasApi[1]);
+          listaPiezas.removeWhere((pieza) =>
+              pieza['x'] == coordenadasNuevasApi[0] &&
+              pieza['y'] == coordenadasNuevasApi[1] - 1);
         }
       });
       String color = "blancas";
-      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({'x': coordenadasNuevasApi[0], 'y': coordenadasNuevasApi[1], 'color': color});
+      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({
+        'x': coordenadasNuevasApi[0],
+        'y': coordenadasNuevasApi[1],
+        'color': color
+      });
       jsonMapTablero['piezaCoronada'] = nombrePiezaTipo(tipoPiezaCoronada);
-      piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
-    }
-    else if(hayCoronacion && !esTurnoBlancas){
+      piezaSeleccionada =
+          piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada, imagen);
+    } else if (hayCoronacion && !esTurnoBlancas) {
       print("CORONANDO PEON NEGRO");
-      String imagen = obtenerRutaImagen(tipoPiezaCoronada,esTurnoBlancas);
+      String imagen = obtenerRutaImagen(tipoPiezaCoronada, esTurnoBlancas);
       //Coronamos peon negro
       jsonMapTablero.forEach((tipoPieza, listaPiezas) {
         if (listaPiezas is List) {
           // Filtra la lista de piezas para eliminar la pieza con las coordenadas dadas
-          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
-          listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1] -1 );
+          listaPiezas.removeWhere((pieza) =>
+              pieza['x'] == coordenadasNuevasApi[0] &&
+              pieza['y'] == coordenadasNuevasApi[1]);
+          listaPiezas.removeWhere((pieza) =>
+              pieza['x'] == coordenadasNuevasApi[0] &&
+              pieza['y'] == coordenadasNuevasApi[1] - 1);
         }
       });
 
       String color = "negras";
-      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({'x': coordenadasNuevasApi[0], 'y': coordenadasNuevasApi[1], 'color': color});
+      jsonMapTablero[nombrePiezaTipo(tipoPiezaCoronada)].add({
+        'x': coordenadasNuevasApi[0],
+        'y': coordenadasNuevasApi[1],
+        'color': color
+      });
       jsonMapTablero['piezaCoronada'] = nombrePiezaTipo(tipoPiezaCoronada);
-      piezaSeleccionada = piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada,imagen);
+      piezaSeleccionada =
+          piezaSeleccionada?.cambiarTipoPieza(tipoPiezaCoronada, imagen);
     }
-    
+
     if (meToca && soyBlancas) {
       print("CAMBIANDO DE TURNO BLANCAS - NEGRAS");
       jsonMapTablero['turno'] = 'negras';
@@ -606,36 +656,35 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
 
     //Marcamos que la pieza torre ha sido movida para que el backend no permita enrocar
-    if(piezaSeleccionada!.tipoPieza == TipoPieza.torre){
-      if(piezaSeleccionada!.esBlanca && piezaSeleccionada!.ladoIzquierdo){
+    if (piezaSeleccionada!.tipoPieza == TipoPieza.torre) {
+      if (piezaSeleccionada!.esBlanca && piezaSeleccionada!.ladoIzquierdo) {
         jsonMapTablero['ha_movido_torre_blanca_izqda'] = true;
-      }
-      else if(piezaSeleccionada!.esBlanca){
+      } else if (piezaSeleccionada!.esBlanca) {
         jsonMapTablero['ha_movido_torre_blanca_dcha'] = true;
-      }
-      else if(piezaSeleccionada!.ladoIzquierdo){
+      } else if (piezaSeleccionada!.ladoIzquierdo) {
         jsonMapTablero['ha_movido_torre_negra_izqda'] = true;
-      }
-      else{
+      } else {
         jsonMapTablero['ha_movido_torre_negra_dcha'] = true;
       }
     }
 
     //Revisamos si hay enroque y si existe hacemos los cambios correspondientes
-    if(piezaSeleccionada!.tipoPieza == TipoPieza.rey && (jsonMapTablero['ha_movido_rey_blanco'] == false && 
-      (jsonMapTablero['ha_movido_torre_blanca_izqda'] == false || jsonMapTablero['ha_movido_torre_blanca_dcha'] == false)
-     || jsonMapTablero['ha_movido_rey_negro'] == false &&
-      (jsonMapTablero['ha_movido_torre_negra_izqda'] == false || jsonMapTablero['ha_movido_torre_negra_dcha'] == false)) 
-      && hayEnroque(coordenadasAntiguasApi, coordenadasNuevasApi)){
-
+    if (piezaSeleccionada!.tipoPieza == TipoPieza.rey &&
+        (jsonMapTablero['ha_movido_rey_blanco'] == false &&
+                (jsonMapTablero['ha_movido_torre_blanca_izqda'] == false ||
+                    jsonMapTablero['ha_movido_torre_blanca_dcha'] == false) ||
+            jsonMapTablero['ha_movido_rey_negro'] == false &&
+                (jsonMapTablero['ha_movido_torre_negra_izqda'] == false ||
+                    jsonMapTablero['ha_movido_torre_negra_dcha'] == false)) &&
+        hayEnroque(coordenadasAntiguasApi, coordenadasNuevasApi)) {
       int filaNueva = 0, columnaNueva = 0, filaAntigua = 0, columnaAntigua = 0;
       bool hayEnroque = false;
 
       List<bool> torreEnrocar = torreEnroque(coordenadasNuevasApi);
-        
-      if(jsonMapTablero['ha_movido_rey_blanco'] == false){
+
+      if (jsonMapTablero['ha_movido_rey_blanco'] == false) {
         //Si se trata de un enroque con la torre blanca izquierda
-        if(torreEnrocar[0]){
+        if (torreEnrocar[0]) {
           print("ENROQUE BLANCA IZQUIERDA");
           filaNueva = filaSeleccionada;
           columnaNueva = columnaSeleccionada - 1;
@@ -644,8 +693,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
           jsonMapTablero['ha_movido_torre_blanca_izqda'] = true;
           hayEnroque = true;
-        }
-        else if(torreEnrocar[1]){
+        } else if (torreEnrocar[1]) {
           print("ENROQUE BLANCA DERECHA");
           filaNueva = filaSeleccionada;
           columnaNueva = columnaSeleccionada + 1;
@@ -655,9 +703,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           jsonMapTablero['ha_movido_torre_blanca_dcha'] = true;
           hayEnroque = true;
         }
-      }
-      else if(jsonMapTablero['ha_movido_rey_negro'] == false){
-        if(torreEnrocar[3]){
+      } else if (jsonMapTablero['ha_movido_rey_negro'] == false) {
+        if (torreEnrocar[3]) {
           print("ENROQUE NEGRA IZQUIERDA");
           filaNueva = filaSeleccionada;
           columnaNueva = columnaSeleccionada + 1;
@@ -666,8 +713,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
           jsonMapTablero['ha_movido_torre_negra_izqda'] = true;
           hayEnroque = true;
-        }
-        else if(torreEnrocar[2]){
+        } else if (torreEnrocar[2]) {
           print("ENROQUE NEGRA DERECHA");
           filaNueva = filaSeleccionada;
           columnaNueva = columnaSeleccionada - 1;
@@ -679,16 +725,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         }
       }
 
-      if(hayEnroque){
+      if (hayEnroque) {
         tablero[filaNueva][columnaNueva] = tablero[filaAntigua][columnaAntigua];
         tablero[filaAntigua][columnaAntigua] = null;
 
-        List<int> auxAntiguasApi = convertirAppToApi(filaAntigua, columnaAntigua);
+        List<int> auxAntiguasApi =
+            convertirAppToApi(filaAntigua, columnaAntigua);
         List<int> auxNuevasApi = convertirAppToApi(filaNueva, columnaNueva);
         //Esto se puede cambiar con asignación de variables pedazo de vago
         jsonMapTablero.forEach((tipoPieza, listaPiezas) {
-        if (listaPiezas is List) {
-          // Itera sobre cada pieza en la lista
+          if (listaPiezas is List) {
+            // Itera sobre cada pieza en la lista
             for (var pieza in listaPiezas) {
               // Verifica si las coordenadas coinciden con las coordenadas antiguas
               if (pieza['x'] == auxAntiguasApi[0] &&
@@ -705,11 +752,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
 
     //Marcamos que la pieza rey ha sido movida para que el backend no permita enrocar
-    if(piezaSeleccionada!.tipoPieza == TipoPieza.rey){
-      if(piezaSeleccionada!.esBlanca){
+    if (piezaSeleccionada!.tipoPieza == TipoPieza.rey) {
+      if (piezaSeleccionada!.esBlanca) {
         jsonMapTablero['ha_movido_rey_blanco'] = true;
-      }
-      else{
+      } else {
         jsonMapTablero['ha_movido_rey_negro'] = true;
       }
     }
@@ -735,13 +781,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
     hayCoronacion = false;
 
-    if(meToca){
+    if (meToca) {
       meToca = false;
-    }
-    else{
+    } else {
       meToca = true;
     }
-
 
     //Enviamos el tablero con la posible jugada
     //bool jugadaValida = await _postTablero();
@@ -751,10 +795,8 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
     jsonString = jsonEncode(jsonMapTablero);
 
-    
     bool jugadaValida = await _postTablero();
 
-    
     if (!jugadaValida) {
       print('Jugada no valida');
       //devolvemos el string a su estado original
@@ -766,7 +808,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       hayTablas = false;
       return;
     }
-    
+
     setState(() {
       player1.pauseTimer();
       player2.resumeTimer();
@@ -777,26 +819,25 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     if (!finPartida) {
       // Crear un mapa que contenga el tablero y el roomIdP
       Map<String, dynamic> data = {
-          'tableroEnviar': jsonString,
-          'roomId': roomIdP.toString()
+        'tableroEnviar': jsonString,
+        'roomId': roomIdP.toString()
       };
       print(data);
       // Enviar el tablero al servidor
       //socket.emit("move", {data});
       socket.emit("move", data);
-      print("ENVIADO TABLERO NUEVO A SERVIDOR:\n");  
-      
+      print("ENVIADO TABLERO NUEVO A SERVIDOR:\n");
+
       print('Jugada valida');
       tablero[filaNueva][columnaNueva] = piezaSeleccionada;
       tablero[filaSeleccionada][columnaSeleccionada] = null;
-      
-      if(hayJaqueMate || hayTablas){
+
+      if (hayJaqueMate || hayTablas) {
         finPartida = true;
         player1.pauseTimer();
         player2.pauseTimer();
       }
     }
-
 
     //limpiamos la selección
     setState(() {
@@ -808,7 +849,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
   }
 
   //CASOS ESPECIALES
-  void _escucharServidor()  {
+  void _escucharServidor() {
     print("ESCUCHANDO SERVIDOR\n ");
     final login = context.read<LoginState>();
     socket.on("movido", (data) async{
@@ -817,15 +858,16 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       print("TABLERO RECIBIDO\n");
       print("--------------------------------------------\n");
       print(data[0]);
-      List<List<PiezaAjedrez?>> tableroContrincante = List.generate(8, (i) => List.generate(8, (j) => null));
+      List<List<PiezaAjedrez?>> tableroContrincante =
+          List.generate(8, (i) => List.generate(8, (j) => null));
       jsonMapTablero = jsonDecode(data[0].toString()) as Map<String, dynamic>;
       jsonString = data[0].toString();
       await _postTablero();
-      tableroContrincante = inicializarTableroDesdeJson(jsonMapTablero,tipoPiezaImagen);
-      if(meToca){
-      meToca = false;
-      }
-      else{
+      tableroContrincante =
+          inicializarTableroDesdeJson(jsonMapTablero, tipoPiezaImagen);
+      if (meToca) {
+        meToca = false;
+      } else {
         meToca = true;
       }
       if (mounted) {
@@ -834,10 +876,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           player1.resumeTimer();
           player2.pauseTimer();
         });
-    }
+      }
     });
-    
-    socket.on("player_disconnected", (_){
+
+    socket.on("player_disconnected", (_) {
       print("El jugador se ha desconectado");
       if (mounted) {
         setState(() {
@@ -850,7 +892,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       }
     });
 
-    socket.on("oponent_surrendered", (_){
+    socket.on("oponent_surrendered", (_) {
       print("El jugador se ha rendido");
       if (mounted) {
         setState(() {
@@ -863,7 +905,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       }
     });
 
-    socket.on("has_perdido", (_){
+    socket.on("has_perdido", (_) {
       print("La partida ha finalizado");
       if (mounted) {
         setState(() {
@@ -876,7 +918,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
       }
     });
 
-    socket.on("has_empatado", (_){
+    socket.on("has_empatado", (_) {
       print("La partida ha empatado");
       if (mounted) {
         setState(() {
@@ -888,202 +930,306 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         });
       }
     });
-    
+
+    socket.on("chat_message", (data) {
+      print("Mensaje recibido: " + data.toString());
+      setState(() {
+        String msg = "oponente: " + data.toString();
+        _messages.add(msg);
+      });
+    });
   }
 
   //CONSTRUIR WIDGET
-@override
+  @override
   Widget build(BuildContext context) {
-  return Consumer<LoginState>(
-    builder:(context,value,child) => Scaffold(
-      body: Container(
-        color: Color.fromRGBO(49, 45, 45, 1),
-        child: Column(
-          children: [
-            // MODO DE JUEGO
-            Container(
-              margin: EdgeInsets.only(top: 10),
-              padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-              decoration: BoxDecoration(
-                color: Colors.orange,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Text(
-                modoDeJuego,
-                style: GoogleFonts.play(
-                  fontSize: 25,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-                textAlign: TextAlign.center,
-              ),
+    final messageController = TextEditingController();
+    return Consumer<LoginState>(
+      builder: (context, value, child) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+          title: Text(''),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(_isVisible ? Icons.close : Icons.email_outlined),
+              onPressed: () {
+                setState(() {
+                  _isVisible = !_isVisible;
+                });
+              },
             ),
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            // TABLERO
-            Expanded(
-              flex: 4, // Ajusta este valor según tus necesidades
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 10.0),
-                child: finPartida && (hayJaqueMate || hayTablas && int.parse(idOponente) < value.id || tiempoAgotado || jugadorDesconectado || jugadorRendido)
-                    ? FinPartidaOnline(razon: motivoFinPartida, idGanador: idGanador,idPerdedor: idPerdedor,esEmpate: hayTablas, modo: modoDeJuego)
-                    : GridView.builder(
-                        itemCount: 8 * 8,
-                        physics: const NeverScrollableScrollPhysics(),
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 8,
+          ],
+        ),
+        body: _isVisible
+            ? Column(children: <Widget>[
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(117, 255, 255, 255),
+                    ),
+                    child: ListView.builder(
+                      itemCount: _messages.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return ListTile(
+                          title: Text(_messages[index]),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: TextField(
+                          controller: messageController,
+                          decoration: InputDecoration(
+                            hintText: 'Envía tu mensaje...',
+                          ),
                         ),
-                        itemBuilder: (context, index) {
-                          int fila = index ~/ 8;
-                          int columna = index % 8;
-    
-                          bool seleccionada = filaSeleccionada == fila && columnaSeleccionada == columna;
-    
-                          bool esValido = movimientosValidos.any((position) => position[0] == fila && position[1] == columna);
-
-                          return CasillaAjedrez(
-                            seleccionada: seleccionada,
-                            esBlanca: esBlanca(index),
-                            pieza: tablero[fila][columna],
-                            esValido: esValido,
-                            onTap: () =>  seleccionadaPieza(fila, columna),
-                            colorCasillaBlanca: coloresTablero[0],
-                            colorCasillaNegra:  coloresTablero[1],
-                          );
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.send),
+                        color: Colors.white,
+                        onPressed: () {
+                          if (messageController.text.isNotEmpty) {
+                            setState(() {
+                              String msg = "yo: " + messageController.text;
+                              _messages.add(msg);
+                              messageController.clear();
+                              Map<String, dynamic> mensaje = {
+                                'message': messageController.text,
+                                'roomId': roomIdP.toString()
+                              };
+                              // Enviar el tablero al servidor
+                              socket.emit("chat_message", mensaje);
+                            });
+                          }
                         },
                       ),
-              ),
-            ),
-            //SizedBox(height: 10),
-            player1,
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            player2,
-            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                // Se muestra si la partida ha finalizado
-                finPartida
-                    ? Text(
-                        'PARTIDA FINALIZADA',
+                    ],
+                  ),
+                ),
+              ])
+            : Container(
+                color: Color.fromRGBO(49, 45, 45, 1),
+                child: Column(
+                  children: [
+                    // MODO DE JUEGO
+                    Container(
+                      margin: EdgeInsets.only(top: 10),
+                      padding:
+                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.orange,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text(
+                        modoDeJuego,
                         style: GoogleFonts.play(
                           fontSize: 25,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
-                      )
-                    : SizedBox(), // Espacio vacío si la partida no ha finalizado
-                // Se muestra si es posible rendirse
-                !finPartida && posibleRendicion
-                    ? Container(
-                        // Contenedor con pregunta y botones de sí y no
-                        child: Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.bottomCenter,
-                              child: Text(
-                                '¿Estás seguro de que quieres rendirte?\nSi te rindes, perderás la partida.',
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    // TABLERO
+                    Expanded(
+                      flex: 4, // Ajusta este valor según tus necesidades
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 10.0),
+                        child: finPartida &&
+                                (hayJaqueMate ||
+                                    hayTablas &&
+                                        int.parse(idOponente) < value.id ||
+                                    tiempoAgotado ||
+                                    jugadorDesconectado ||
+                                    jugadorRendido)
+                            ? FinPartidaOnline(razon: motivoFinPartida, idGanador: idGanador,idPerdedor: idPerdedor,esEmpate: hayTablas, modo: modoDeJuego)
+                            : GridView.builder(
+                                itemCount: 8 * 8,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 8,
+                                ),
+                                itemBuilder: (context, index) {
+                                  int fila = index ~/ 8;
+                                  int columna = index % 8;
+
+                                  bool seleccionada =
+                                      filaSeleccionada == fila &&
+                                          columnaSeleccionada == columna;
+
+                                  bool esValido = movimientosValidos.any(
+                                      (position) =>
+                                          position[0] == fila &&
+                                          position[1] == columna);
+
+                                  return CasillaAjedrez(
+                                    seleccionada: seleccionada,
+                                    esBlanca: esBlanca(index),
+                                    pieza: tablero[fila][columna],
+                                    esValido: esValido,
+                                    onTap: () =>
+                                        seleccionadaPieza(fila, columna),
+                                    colorCasillaBlanca: coloresTablero[0],
+                                    colorCasillaNegra: coloresTablero[1],
+                                  );
+                                },
+                              ),
+                      ),
+                    ),
+                    //SizedBox(height: 10),
+                    player1,
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    player2,
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Se muestra si la partida ha finalizado
+                        finPartida
+                            ? Text(
+                                'PARTIDA FINALIZADA',
                                 style: GoogleFonts.play(
-                                  fontSize: 15,
+                                  fontSize: 25,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
+                              )
+                            : SizedBox(), // Espacio vacío si la partida no ha finalizado
+                        // Se muestra si es posible rendirse
+                        !finPartida && posibleRendicion
+                            ? Container(
+                                // Contenedor con pregunta y botones de sí y no
+                                child: Column(
+                                  children: [
+                                    Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Text(
+                                        '¿Estás seguro de que quieres rendirte?\nSi te rindes, perderás la partida.',
+                                        style: GoogleFonts.play(
+                                          fontSize: 15,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            socket
+                                                .emit("I_surrender", {roomIdP});
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChessPlaySessionScreen(),
+                                              ),
+                                            );
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(
+                                              Colors.red,
+                                            ),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'Sí',
+                                            style: GoogleFonts.play(
+                                              fontSize: 25,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 20),
+                                        ElevatedButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              posibleRendicion =
+                                                  false; // Cambia el estado de posibleRendicion
+                                            });
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all<
+                                                    Color>(
+                                              Colors.grey,
+                                            ),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(4),
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text(
+                                            'No',
+                                            style: GoogleFonts.play(
+                                              fontSize: 25,
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : ElevatedButton(
+                                // Botón de rendirse
+                                onPressed: () {
+                                  // Realiza la lógica para rendirse o continuar la partida
+                                  setState(() {
+                                    posibleRendicion =
+                                        true; // Cambia el estado de posibleRendicion
+                                  });
+                                },
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                    Color.fromRGBO(255, 136, 0, 1),
+                                  ),
+                                  shape: MaterialStateProperty.all<
+                                      RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                  ),
+                                ),
+                                child: Text(
+                                  'Rendirse',
+                                  style: GoogleFonts.play(
+                                    fontSize: 25,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                ElevatedButton(
-                                  onPressed: () {
-                                    socket.emit("I_surrender", {roomIdP}); 
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => ChessPlaySessionScreen(),
-                                      ),
-                                    );
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                      Colors.red,
-                                    ),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'Sí',
-                                    style: GoogleFonts.play(
-                                      fontSize: 25,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 20),
-                                ElevatedButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      posibleRendicion = false; // Cambia el estado de posibleRendicion
-                                    });
-                                  },
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all<Color>(
-                                      Colors.grey,
-                                    ),
-                                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text(
-                                    'No',
-                                    style: GoogleFonts.play(
-                                      fontSize: 25,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      )
-                    : ElevatedButton(
-                        // Botón de rendirse
-                        onPressed: () {
-                          // Realiza la lógica para rendirse o continuar la partida
-                          setState(() {
-                            posibleRendicion = true; // Cambia el estado de posibleRendicion
-                          });
-                        },
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all<Color>(
-                            Color.fromRGBO(255, 136, 0, 1),
-                          ),
-                          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Rendirse',
-                          style: GoogleFonts.play(
-                            fontSize: 25,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                  if (hayCoronacion)
-                        Column(
-                          children: [
-                            Row(
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.04),
+                        if (hayCoronacion)
+                          Column(
+                            children: [
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   GestureDetector(
@@ -1092,7 +1238,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.dama;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.dama, imagenPieza: value.imagen),
+                                    child: PiezaCoronar(
+                                        esBlanca: esTurnoBlancas,
+                                        tipoPieza: TipoPieza.dama,
+                                        imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1100,7 +1249,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.alfil;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.alfil, imagenPieza: value.imagen),
+                                    child: PiezaCoronar(
+                                        esBlanca: esTurnoBlancas,
+                                        tipoPieza: TipoPieza.alfil,
+                                        imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1108,7 +1260,10 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.caballo;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.caballo, imagenPieza: value.imagen),
+                                    child: PiezaCoronar(
+                                        esBlanca: esTurnoBlancas,
+                                        tipoPieza: TipoPieza.caballo,
+                                        imagenPieza: value.imagen),
                                   ),
                                   GestureDetector(
                                     onTap: () {
@@ -1116,19 +1271,23 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                       tipoPiezaCoronada = TipoPieza.torre;
                                       terminadaCoronacion = true;
                                     },
-                                    child: PiezaCoronar(esBlanca: esTurnoBlancas, tipoPieza: TipoPieza.torre, imagenPieza: value.imagen),
+                                    child: PiezaCoronar(
+                                        esBlanca: esTurnoBlancas,
+                                        tipoPieza: TipoPieza.torre,
+                                        imagenPieza: value.imagen),
                                   ),
                                 ],
                               ),
-                          ],
-                        ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.10),
-              ],
-            ),
-          ],
-        ),
+                            ],
+                          ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.10),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

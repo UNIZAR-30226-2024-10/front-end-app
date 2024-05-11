@@ -19,11 +19,11 @@ class Arena {
 }
 
 final List<Arena> tiers = [
-  Arena(level: 1, elo: 0, elo2: 1000),
-  Arena(level: 2, elo: 1000, elo2: 1200),
-  Arena(level: 3, elo: 1200, elo2: 1400),
-  Arena(level: 4, elo: 1400, elo2: 1600),
-  Arena(level: 5, elo: 1600, elo2: 1800),
+  Arena(level: 1, elo: 0, elo2: 1500),
+  Arena(level: 2, elo: 1500, elo2: 1800),
+  Arena(level: 3, elo: 1800, elo2: 2100),
+  Arena(level: 4, elo: 2100, elo2: 2400),
+  Arena(level: 5, elo: 2400, elo2: 9999),
 ];
 
 class _ArenasState extends State<Arenas> {
