@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
+import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
 
 class FinPartidaOnline extends StatelessWidget {
   final String razon;
@@ -65,7 +66,12 @@ class FinPartidaOnline extends StatelessWidget {
               ElevatedButton(
                 onPressed: () {
                   // Navegar a la ruta deseada al abandonar la partida
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => ChessPlaySessionScreen(),
+                    ),
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.grey,

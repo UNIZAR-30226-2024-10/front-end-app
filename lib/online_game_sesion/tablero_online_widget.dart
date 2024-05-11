@@ -5,6 +5,7 @@
 
 
 
+import 'package:ChessHub/local_game_sesion/chess_play_session_screen.dart';
 import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'package:flutter/material.dart';
@@ -970,7 +971,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                 ElevatedButton(
                                   onPressed: () {
                                     socket.emit("I_surrender", {roomIdP}); 
-                                    Navigator.pop(context);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => ChessPlaySessionScreen(),
+                                      ),
+                                    );
                                   },
                                   style: ButtonStyle(
                                     backgroundColor: MaterialStateProperty.all<Color>(
