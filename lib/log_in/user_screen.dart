@@ -41,6 +41,8 @@ class UserProfileScreen extends StatefulWidget {
 }
 
 class _UserProfileScreenState extends State<UserProfileScreen> {
+  bool mostrado = false;
+
   void _getInfo(int id) async {
       // Construye la URL y realiza la solicitud POST
       //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
@@ -102,7 +104,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     }
 
     int id = settingsController.session.value;
-    _getInfo(id);
+    if (mostrado == false) {
+      mostrado = true;
+      _getInfo(id);
+    }
 
     print(id);
 
