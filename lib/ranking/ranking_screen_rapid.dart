@@ -34,7 +34,8 @@ class _RankingScreenStateRapid extends State<RankingScreenRapid> {
   }
 
   Future<void> fetchLeaderBoard() async {
-    final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/ranking/rapid');
+    final url = Uri.parse(
+        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/ranking/rapid');
     final response = await http.get(url);
     if (response.statusCode == 200) {
       final userMap = jsonDecode(response.body) as List<dynamic>;
@@ -59,45 +60,55 @@ class _RankingScreenStateRapid extends State<RankingScreenRapid> {
     int id = settingsController.session.value;
 
     return Consumer<LoginState>(
-        builder: (context, value, child) => Scaffold(
-              appBar: AppBar(
-                title: Text(
-                  'Ranking RAPID',
-                  style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
+        builder: (context, value, child) => Stack(children: [
+              Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/images/board2.jpg"),
+                    fit: BoxFit.fill,
+                  ),
                 ),
-                backgroundColor: Color.fromRGBO(49, 45, 45, 1),
               ),
-              backgroundColor: Colors.black,
-              body: Container(
-                color: Color.fromRGBO(49, 45, 45, 1),
-                child: ListView.builder(
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    User user = users[index];
-                    // Define el color de fondo de la caja
-                    Color tileColor = Colors.transparent;
-                    if (user.id == id) {
-                      tileColor = Colors.orange[200]!;
-                    }
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
-                      child: Card(
-                        elevation: 3,
-                        child: ListTile(
-                          title: Text(
-                            '${index + 1}.\t ${user.nombre}.\t${user.elo} pts',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
+              Scaffold(
+                backgroundColor: Colors.transparent,
+                appBar: AppBar(
+                  title: Text(
+                    'Ranking RAPID',
+                    style: TextStyle(color: Colors.white, fontFamily: 'Oswald'),
+                  ),
+                  backgroundColor: Color.fromRGBO(49, 45, 45, 1),
+                ),
+                body: Container(
+                  color: Colors.transparent,
+                  child: ListView.builder(
+                    itemCount: users.length,
+                    itemBuilder: (context, index) {
+                      User user = users[index];
+                      // Define el color de fondo de la caja
+                      Color tileColor = Colors.transparent;
+                      if (user.id == id) {
+                        tileColor = Colors.orange[200]!;
+                      }
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Card(
+                          elevation: 3,
+                          child: ListTile(
+                            title: Text(
+                              '${index + 1}.\t ${user.nombre}.\t${user.elo} pts',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 16),
+                            ),
+                            // Establece el color de fondo de la caja
+                            tileColor: tileColor,
                           ),
-                          // Establece el color de fondo de la caja
-                          tileColor: tileColor,
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-            ));
+              )
+            ]));
   }
 }
