@@ -199,12 +199,13 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
                     socket.emit(
                         'cancel_search', {"mode": obtenerModo(modoJuego)});
                     socket.off('match_canceled');
-                    Navigator.push(
+                    /*Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => ChessPlaySessionScreen(),
                       ),
-                    );
+                    );*/
+                    Navigator.of(context).pop();
                   },
                   child: Text('Cancelar búsqueda',
                       style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
