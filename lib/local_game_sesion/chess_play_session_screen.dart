@@ -14,17 +14,18 @@ import 'package:ChessHub/game_internals/funciones.dart';
 import 'dart:async';
 import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 
-
 class ChessPlaySessionScreen extends StatelessWidget {
   const ChessPlaySessionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final login = context.read<LoginState>();
+    final login =
+        context.read<LoginState>(); //CAMBIAR ESTO PARA Q SOPORTE PERSISTENCIA
     bool cuentalog = false;
-    List<List<PiezaAjedrez?>> tablero = List.generate(8, (index) => List.generate(8, (index) => null));
+    List<List<PiezaAjedrez?>> tablero =
+        List.generate(8, (index) => List.generate(8, (index) => null));
     List<Color> coloresTablero = [];
-    
+
     if (login.logueado) {
       cuentalog = true;
       print("ARENA: ${login.arena}");
@@ -32,7 +33,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
       tablero = inicializarTablero(login.imagen);
       coloresTablero = getColorCasilla(login.arena);
     }
-    
+
     return Consumer<LoginState>(
       builder: (context, value, child) => Scaffold(
         appBar: Header(),
@@ -118,161 +119,184 @@ class ChessPlaySessionScreen extends StatelessWidget {
                       ),
                     ),
                     SizedBox(height: 20),
-                    cuentalog ?
-                    Column(
-                      children: [
-                        Container(
-                          width: 450,
-                          height: 400,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black, width: 1),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [Colors.orange[900]!, Colors.orange[300]!],
-                            ),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                    cuentalog
+                        ? Column(
                             children: [
-                              Text(
-                                'JUGAR EN MODO ONLINE',
+                              Container(
+                                width: 450,
+                                height: 400,
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.black, width: 1),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [
+                                      Colors.orange[900]!,
+                                      Colors.orange[300]!
+                                    ],
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      'JUGAR EN MODO ONLINE',
+                                      style: GoogleFonts.play(
+                                        fontSize: 25,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    SizedBox(height: 30),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EsperandoPartida(
+                                                      modoJuego: Modos.RAPID,
+                                                      userId: value.id,
+                                                      elo: value.eloRapid)),
+                                        );
+                                      },
+                                      child: Text(
+                                        'RAPID',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.white,
+                                          fontFamily: 'Cantarell',
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EsperandoPartida(
+                                                      modoJuego: Modos.BULLET,
+                                                      userId: value.id,
+                                                      elo: value.eloRapid)),
+                                        );
+                                      },
+                                      child: Text(
+                                        'BULLET',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.white,
+                                          fontFamily: 'Cantarell',
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  EsperandoPartida(
+                                                      modoJuego: Modos.BLITZ,
+                                                      userId: value.id,
+                                                      elo: value.eloRapid)),
+                                        );
+                                      },
+                                      child: Text(
+                                        'BLITZ',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          color: Colors.white,
+                                          fontFamily: 'Cantarell',
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              Container(
+                                width: 450,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  border:
+                                      Border.all(color: Colors.black, width: 1),
+                                  gradient: LinearGradient(
+                                    begin: Alignment.centerLeft,
+                                    end: Alignment.centerRight,
+                                    colors: [
+                                      Colors.orange[900]!,
+                                      Colors.orange[300]!
+                                    ],
+                                  ),
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // Text(
+                                    //   'JUGAR POR CORRESPONDENCIA',
+                                    //   style: GoogleFonts.play(
+                                    //     fontSize: 25,
+                                    //     color: Colors.white,
+                                    //     fontWeight: FontWeight.bold,
+                                    //   ),
+                                    // ),
+                                    SizedBox(height: 30),
+                                    GestureDetector(
+                                      onTap: () async {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PartidasAsincronas(
+                                                      id: value.id)),
+                                        );
+                                      },
+                                      child: Text(
+                                        'JUGAR POR CORRESPONDENCIA',
+                                        style: GoogleFonts.play(
+                                          fontSize: 25,
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : Container(
+                            width: 450,
+                            height:
+                                200, // Establecido un tamaño para el contenedor
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black, width: 1),
+                              gradient: LinearGradient(
+                                begin: Alignment.centerLeft,
+                                end: Alignment.centerRight,
+                                colors: [
+                                  Colors.orange[900]!,
+                                  Colors.orange[300]!
+                                ],
+                              ),
+                            ),
+                            child: Align(
+                              // Alineado el texto en el centro
+                              alignment: Alignment.center,
+                              child: Text(
+                                'CREA UNA CUENTA PARA JUGAR ONLINE',
                                 style: GoogleFonts.play(
-                                  fontSize: 25,
+                                  fontSize: 18,
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(height: 30),
-                              GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.RAPID, userId: value.id, elo: value.eloRapid)
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'RAPID',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BULLET, userId: value.id, elo: value.eloRapid)
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'BULLET',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 20),
-                              GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => EsperandoPartida(modoJuego: Modos.BLITZ, userId: value.id, elo: value.eloRapid)
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'BLITZ',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                    color: Colors.white,
-                                    fontFamily: 'Cantarell',
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: 20),
-                        Container(
-                          width: 450,
-                          height: 200,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black, width: 1),
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [Colors.orange[900]!, Colors.orange[300]!],
                             ),
                           ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              // Text(
-                              //   'JUGAR POR CORRESPONDENCIA',
-                              //   style: GoogleFonts.play(
-                              //     fontSize: 25,
-                              //     color: Colors.white,
-                              //     fontWeight: FontWeight.bold,
-                              //   ),
-                              // ),
-                              SizedBox(height: 30),
-                              GestureDetector(
-                                onTap: () async {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => PartidasAsincronas(id: value.id)
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'JUGAR POR CORRESPONDENCIA',
-                                  style: GoogleFonts.play(
-                                  fontSize: 25,
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
-                    : Container(
-                      width: 450,
-                      height: 200, // Establecido un tamaño para el contenedor
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black, width: 1),
-                        gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [Colors.orange[900]!, Colors.orange[300]!],
-                        ),
-                      ),
-                      child: Align( // Alineado el texto en el centro
-                        alignment: Alignment.center,
-                        child: Text(
-                          'CREATE UNA CUENTA PARA JUGAR ONLINE',
-                          style: GoogleFonts.play(
-                            fontSize: 18,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-                    ),
                   ],
                 ),
               ),

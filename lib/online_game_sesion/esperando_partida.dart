@@ -201,17 +201,25 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
                       if (partidaEncontrada)
                         if (partidaCancelada)
                           Text(
-                              'La partida ha sido cancelada, redirigiendo a la pantalla anterior...')
+                              'La partida ha sido cancelada, redirigiendo a la pantalla anterior...',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(255, 136, 0, 1)))
                         else if (countdown > 0)
                           Text(
-                              'Partida encontrada, comenzará en: $countdown segundos')
+                              'Partida encontrada, comenzará en: $countdown segundos',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(255, 136, 0, 1)))
                         else
-                          Text('Cargando la partida...')
+                          Text('Cargando la partida...',
+                              style: TextStyle(
+                                  color: Color.fromRGBO(255, 136, 0, 1)))
                       else
                         CircularProgressIndicator(),
                       if (partidaCancelada)
                         Text(
-                            'En unos instantes volverás a la pantalla anterior')
+                            'En unos instantes volverás a la pantalla anterior',
+                            style: TextStyle(
+                                color: Color.fromRGBO(255, 136, 0, 1)))
                       else
                         SizedBox(height: 10),
                       ElevatedButton(
