@@ -236,14 +236,6 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    // Text(
-                                    //   'JUGAR POR CORRESPONDENCIA',
-                                    //   style: GoogleFonts.play(
-                                    //     fontSize: 25,
-                                    //     color: Colors.white,
-                                    //     fontWeight: FontWeight.bold,
-                                    //   ),
-                                    // ),
                                     SizedBox(height: 30),
                                     GestureDetector(
                                       onTap: () async {
@@ -252,7 +244,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   PartidasAsincronas(
-                                                      id: value.id)),
+                                                      id: value.id, modoJuego: Modos.ASINCRONO)),
                                         );
                                       },
                                       child: Text(

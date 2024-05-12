@@ -7,4 +7,4 @@ const int TAMANYO_TABLERO = 8;
 
 const _gap = SizedBox(height: 60);
 
-enum Modos {BLITZ, RAPID, BULLET}
+enum Modos {BLITZ, RAPID, BULLET, ASINCRONO}

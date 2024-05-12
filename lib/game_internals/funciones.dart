@@ -119,6 +119,8 @@ String obtenerModo(Modos modo) {
       return 'Rapid';
     case Modos.BULLET:
       return 'Bullet';
+    case Modos.ASINCRONO:
+      return 'Asincrono';
   }
 }
 

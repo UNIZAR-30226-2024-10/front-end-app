@@ -104,8 +104,6 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
       Map<String, dynamic> requestData = {
         'usuarioBlancas': id,
         'usuarioNegras': idRival,
-
-        // Otras propiedades necesarias para la solicitud
       };
       String jsonData = jsonEncode(requestData);
       print(jsonData);
@@ -117,6 +115,7 @@ class _SeleccionarIdRivalState extends State<SeleccionarIdRival> {
           print('Solicitud exitosa');
           Uri url2 = Uri.parse(
               'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_partida_asincrona');
+          
           ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Partida creada correctamente')));
         } else if (response.statusCode == 500) {

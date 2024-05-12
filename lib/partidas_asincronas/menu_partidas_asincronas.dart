@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:ChessHub/battle_pass/battle_pass.dart';
+import 'package:ChessHub/online_game_sesion/esperando_partida.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -11,6 +12,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:ChessHub/partidas_asincronas/seleccionar_id_rival.dart';
 import 'package:ChessHub/partidas_asincronas/pantalla_partida_asincrona.dart';
+import 'package:ChessHub/constantes/constantes.dart';
+import 'package:ChessHub/partidas_asincronas/esperando_partida_asincrona.dart';
 
 class Partidas {
   int idPartida;
@@ -33,13 +36,16 @@ class Partidas {
 
 class PartidasAsincronas extends StatefulWidget {
   int id = 0;
-  PartidasAsincronas({Key? key, required this.id}) : super(key: key);
+  final Modos modoJuego;
+  PartidasAsincronas({Key? key, required this.id, required this.modoJuego}) : super(key: key);
   @override
   _PartidasAsincronas createState() => _PartidasAsincronas();
 }
 
 class _PartidasAsincronas extends State<PartidasAsincronas> {
   int id = 0;
+  Modos modoJuego = Modos.ASINCRONO;
+  int elo = 0;
   List<Partidas> partidas = [];
   @override
   void initState() {
@@ -111,8 +117,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                SeleccionarIdRival(
-                                                    id: value.id)));
+                                                EsperandoPartidaAsincrona(modoJuego: modoJuego, userId: id, elo: elo)));
                                   },
                                   child: Text(
                                     'Crear Partida Asíncrona',
@@ -127,6 +132,8 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                       itemCount: partidas.length,
                                       itemBuilder: (context, index) {
                                         final ind = partidas[index];
+                                        bool turnoValido = ind.tablero.contains('"turno":"blancas"') && widget.id == ind.usuarioblancasid || 
+                                        ind.tablero.contains('"turno":"negras"') && widget.id == ind.usuarionegrasid;
                                         return Card(
                                           elevation: 3,
                                           margin: EdgeInsets.symmetric(
@@ -147,6 +154,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
+                                                if(turnoValido)
                                                 ElevatedButton(
                                                     onPressed: () {
                                                       int idPartida =
@@ -158,6 +166,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                                           : ind.usuarioblancasid;
                                                       String tablero =
                                                           ind.tablero;
+                                                          
                                                       Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
@@ -178,6 +187,13 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                                           color: Colors.black,
                                                           fontFamily: 'Oswald'),
                                                     ))
+                                                  else
+                                                  Text(
+                                  'Esperando tu turno...',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontFamily: 'Oswald'),
+                                                  ) 
                                               ],
                                             ),
                                           ),
