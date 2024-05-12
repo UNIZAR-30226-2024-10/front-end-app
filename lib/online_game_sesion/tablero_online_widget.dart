@@ -949,11 +949,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
               return IconButton(
                 icon: const Icon(Icons.arrow_back),
                 onPressed: () {
-                  // Realiza la lógica para rendirse o continuar la partida
-                  setState(() {
-                    posibleRendicion =
-                        true; // Cambia el estado de posibleRendicion
-                  });
+                  if (_isVisible) {
+                    setState(() {
+                      _isVisible = !_isVisible;
+                    });
+                  } else {
+                    // Realiza la lógica para rendirse o continuar la partida
+                    setState(() {
+                      posibleRendicion =
+                          true; // Cambia el estado de posibleRendicion
+                    });
+                  }
                 },
               );
             },
