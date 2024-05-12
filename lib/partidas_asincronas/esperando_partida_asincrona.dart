@@ -142,8 +142,8 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
           print('Solicitud exitosa');
           Uri url2 = Uri.parse(
               'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$_roomId');
-          String jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline');
-          final response2 = http.post(url2, body : {'tablero_actual':jsonString}, headers:{'Content-Type': 'application/json'});
+          String jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
+          final response2 = http.post(url2, body : jsonString);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Partida creada correctamente')));
           
