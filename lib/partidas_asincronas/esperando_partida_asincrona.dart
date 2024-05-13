@@ -11,6 +11,7 @@ import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/online_game_sesion/tablero_online_widget.dart';
 import 'package:ChessHub/log_in/log_in_screen.dart';
 import 'dart:convert';
+import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/services.dart';
 
@@ -146,6 +147,7 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
           final response2 = http.post(url2, body : jsonEncode({"tablero_actual":jsonString}), headers: {"Content-Type": "application/json"});
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Partida creada correctamente')));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
           
         } else if (response.statusCode == 500) {
           // Lógica para manejar otros códigos de estado de respuesta

@@ -22,6 +22,7 @@ import 'package:ChessHub/local_game_sesion/stats_game.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
+import 'package:ChessHub/constantes/constantes.dart';
 
 
 
@@ -79,7 +80,7 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
   List<List<int>> movimientosValidos = [];
   List<PiezaAjedrez> piezasBlancasMuertas = [];
   List<PiezaAjedrez> piezasNegrasMuertas = [];
-  PlayerRow player1 = PlayerRow(idUsu: 0, esBlanca: true);
+  PlayerRow player1 = PlayerRow(idUsu: 0, esBlanca: false);
   PlayerRow player2 = PlayerRow(idUsu: 0, esBlanca: false);
   TipoPieza tipoPiezaCoronada = TipoPieza.peon;
   bool finPartida = false;
@@ -93,23 +94,14 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
     idRival = widget.idRival;
     tablero = widget.tablero;
     print(tablero);
-    if(tablero == "" || tablero == null){
-      cargarTab();
-    }
+    player1 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
+    player2 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
     enviarTab();
     iniTab();
     super.initState();
   }
 
   
-
-  void cargarTab() async {
-  String tablero = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
-  jsonMapTablero = jsonDecode(tablero) as Map<String, dynamic>;
-  print('TABLERO INICIAL: $jsonMapTablero');
-  print(jsonMapTablero);
-  postTab();
-  }
 
   Future<void> postTab() async {
     Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$id');
@@ -470,6 +462,7 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
           listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
         }
       });
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: idUsuario, modoJuego: Modos.ASINCRONO)));
     }
 
     //Coronación
