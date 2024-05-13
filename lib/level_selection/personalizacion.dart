@@ -94,7 +94,7 @@ class _PersonalizacionState extends State<Personalizacion> {
   late int id;
   late List<bool> pressedSets;
   late List<bool> pressedEmotes;
-
+  List<String> emojislist  = ['','','',''];
   @override
   void initState() {
     id = widget.id;
@@ -194,7 +194,10 @@ class _PersonalizacionState extends State<Personalizacion> {
           return _buildCard(
             name: emote.emoji,
             onPressed: () async {
-              _activateEmote(index, value, emote.emoji);
+              emojislist.removeAt(0);
+              emojislist.add(emote.emoji);
+              _activateEmote(index, value, emojislist);
+              
             },
             isActive: pressedEmotes[index],
             isEnabled: value.logueado == true && nivelPase.nivel >= emote.level,
@@ -273,28 +276,54 @@ class _PersonalizacionState extends State<Personalizacion> {
       }
 
       if (value.logueado == true && nivelPase.nivel >= sets[index].level) {
-        _activateItem(setName, id);
+        _activateFichas(setName, id);
       }
     });
   }
 
-  void _activateEmote(int index, LoginState value, String emoteName) {
+  void _activateEmote(int index, LoginState value, List<String> emoteName) {
     setState(() {
       for (int i = 0; i < pressedEmotes.length; i++) {
-        pressedEmotes[i] = i == index;
+        for(int j = 0; j < emoteName.length; j++){
+          if(emoteName[j] == emotes[i].emoji){
+            pressedEmotes[i] = true;
+          }
+        }
       }
-
+      String emotesString = emoteName.toString();
       if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
-        _activateItem(emoteName, id);
+        _activateEmojis(emotesString, id);
       }
     });
   }
 
-  void _activateItem(String itemName, int id) {
+  void _activateFichas(String itemName, int id) {
     Uri url = Uri.parse(
-        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_${itemName.length < 5 ? 'emoticonos' : 'set_piezas'}/$id');
+        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
     Map<String, dynamic> bodyData = {
-      itemName.length < 5 ? 'emoticonos' : 'setPiezas': itemName,
+      'setPiezas': itemName,
+    };
+    String jsonData = jsonEncode(bodyData);
+    http.post(url,
+        body: jsonData,
+        headers: {'Content-Type': 'application/json'}).then((response) {
+      if (response.statusCode == 200) {
+        print('$itemName activado');
+      } else if (response.statusCode == 400) {
+        print('Error al proporcionar $itemName');
+      } else if (response.statusCode == 500) {
+        print('Error al actualizar');
+      } else {
+        print('Error al activar $itemName');
+      }
+    });
+  }
+
+  void _activateEmojis(String itemName, int id) {
+    Uri url = Uri.parse(
+        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_emoticonos/$id');
+    Map<String, dynamic> bodyData = {
+      'emoticonos': itemName,
     };
     String jsonData = jsonEncode(bodyData);
     http.post(url,

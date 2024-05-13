@@ -462,6 +462,8 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
           listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
         }
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Movimiento realizado correctamente')));
       Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: idUsuario, modoJuego: Modos.ASINCRONO)));
     }
 
