@@ -28,7 +28,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   bool partidaCancelada = false;
   late Modos modoJuego;
   late int id;
-  late int eloRapid;
+  late int elo;
   int countdown = 5; // Inicializamos el contador en 10 segundos
   late int _roomId = 0;
   late String myColor = '';
@@ -46,7 +46,7 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     super.initState();
     modoJuego = widget.modoJuego;
     id = widget.userId;
-    eloRapid = widget.elo;
+    elo = widget.elo;
     enviarPeticiondeJuego(modoJuego);
     _esperarPartida();
     _partidaEncontrada();
@@ -55,8 +55,9 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
 
   void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
+
     socket.emit('join_room',
-        {"mode": obtenerModo(modo), "userId": id, "elo": eloRapid});
+        {"mode": obtenerModo(modo), "userId": id, "elo": elo});
   }
 
   void _startCountdown() {

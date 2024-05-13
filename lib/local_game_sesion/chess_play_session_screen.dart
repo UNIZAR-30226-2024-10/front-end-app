@@ -180,7 +180,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                                   EsperandoPartida(
                                                       modoJuego: Modos.BULLET,
                                                       userId: value.id,
-                                                      elo: value.eloRapid)),
+                                                      elo: value.eloBullet)),
                                         );
                                       },
                                       child: Text(
@@ -202,7 +202,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                                   EsperandoPartida(
                                                       modoJuego: Modos.BLITZ,
                                                       userId: value.id,
-                                                      elo: value.eloRapid)),
+                                                      elo: value.eloBlitz)),
                                         );
                                       },
                                       child: Text(
