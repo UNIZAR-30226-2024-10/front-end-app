@@ -16,7 +16,7 @@ class Set {
 }
 
 final List<Set> sets = [
-  Set(name: 'DEFECTO', level: 0),
+  Set(name: 'defecto', level: 0),
   Set(name: 'alpha', level: 2),
   Set(name: 'cardinal', level: 4),
   Set(name: 'celtic', level: 6),
