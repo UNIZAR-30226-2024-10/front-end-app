@@ -30,10 +30,10 @@ class SettingsController {
   ValueNotifier<String> playerName = ValueNotifier('Player');
 
   /// Whether or not the sound effects (sfx) are on.
-  ValueNotifier<bool> soundsOn = ValueNotifier(true);
+  ValueNotifier<bool> soundsOn = ValueNotifier(false);
 
   /// Whether or not the music is on.
-  ValueNotifier<bool> musicOn = ValueNotifier(true);
+  ValueNotifier<bool> musicOn = ValueNotifier(false);
 
   ValueNotifier<bool> loggedIn = ValueNotifier(false);
 
