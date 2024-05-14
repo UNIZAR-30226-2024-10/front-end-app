@@ -94,7 +94,9 @@ class _PersonalizacionState extends State<Personalizacion> {
   late int id;
   late List<bool> pressedSets;
   late List<bool> pressedEmotes;
-  List<String> emojislist  = ['','','',''];
+  List<String> emojislist  = ["😁️","😁️","😁️","😁️"];
+  List<int> emotesPulsados = [];
+
   @override
   void initState() {
     id = widget.id;
@@ -194,9 +196,9 @@ class _PersonalizacionState extends State<Personalizacion> {
           return _buildCard(
             name: emote.emoji,
             onPressed: () async {
-              emojislist.removeAt(0);
-              emojislist.add(emote.emoji);
-              _activateEmote(index, value, emojislist);
+              // emojislist.removeAt(0);
+              // emojislist.add(emote.emoji);
+              _activateEmote(index, value, emote.emoji);
               
             },
             isActive: pressedEmotes[index],
@@ -281,18 +283,37 @@ class _PersonalizacionState extends State<Personalizacion> {
     });
   }
 
-  void _activateEmote(int index, LoginState value, List<String> emoteName) {
+  void _activateEmote(int index, LoginState value, String emoteName) {
     setState(() {
-      for (int i = 0; i < pressedEmotes.length; i++) {
-        for(int j = 0; j < emoteName.length; j++){
-          if(emoteName[j] == emotes[i].emoji){
+      if(emotesPulsados.length < 4){
+        emotesPulsados.add(index);
+        emojislist.removeAt(0);
+        emojislist.add(emoteName);
+        for (int i = 0; i < pressedEmotes.length; i++) {
+          if(emotesPulsados.contains(i)){
             pressedEmotes[i] = true;
           }
+          else{
+            pressedEmotes[i] = false;
+          }
+        }
+        if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
+          String stringEmojis = jsonEncode(emojislist);
+          _activateEmojis(stringEmojis, value.id);
         }
       }
-      String emotesString = emoteName.toString();
-      if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
-        _activateEmojis(emotesString, id);
+      else{
+        emotesPulsados.removeAt(0);
+        emotesPulsados.add(index);
+        emojislist.removeAt(0);
+        emojislist.add(emoteName);
+        for (int i = 0; i < pressedEmotes.length; i++) {
+          pressedEmotes[i] = emotesPulsados.contains(i);
+        }
+        if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
+          String stringEmojis = jsonEncode(emojislist);
+          _activateEmojis(stringEmojis, value.id);
+        }
       }
     });
   }
@@ -323,7 +344,7 @@ class _PersonalizacionState extends State<Personalizacion> {
     Uri url = Uri.parse(
         'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_emoticonos/$id');
     Map<String, dynamic> bodyData = {
-      'emoticonos': itemName,
+      'emoticonos':itemName,
     };
     String jsonData = jsonEncode(bodyData);
     http.post(url,
