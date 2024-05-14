@@ -939,7 +939,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     });
   }
 
-  List<String> _emotes = [];
+  String _emotes = '';
+  List<String> _emotesFinal = [];
+  List<String> _emotesCleaned = [];
 
   void _getInfo(int id) async {
     // Construye la URL y realiza la solicitud POST
@@ -961,7 +963,12 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     if (response.statusCode == 200) {
       print(res);
       setState(() {
-        _emotes = res['emoticonos'] as List<String>;
+        _emotes = res['emoticonos'] as String;
+        _emotesFinal = _emotes.replaceAll(RegExp(r'[{}"]'), '').split(',');
+        _emotesCleaned = _emotesFinal
+            .map((emoji) => emoji.trim())
+            .where((emoji) => emoji != '')
+            .toList();
       });
     } else {
       throw Exception('Error en la solicitud GET: ${response.statusCode}');
@@ -1036,11 +1043,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            String msg = "yo: " + "😁️";
+                            String msg = "yo: " + _emotesCleaned[0];
                             _messages.add(msg);
                             messageController.clear();
                             Map<String, dynamic> mensaje = {
-                              'body': "😁️",
+                              'body': _emotesCleaned[0],
                               'roomId': roomIdP.toString(),
                               'from': value.getId()
                             };
@@ -1056,7 +1063,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
-                                  "😁️",
+                                  _emotesCleaned[0],
                                   style: TextStyle(
                                     fontSize: 21,
                                     color: Colors.white,
@@ -1066,11 +1073,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            String msg = "yo: " + "😁️";
+                            String msg = "yo: " + _emotesCleaned[1];
                             _messages.add(msg);
                             messageController.clear();
                             Map<String, dynamic> mensaje = {
-                              'body': "😁️",
+                              'body': _emotesCleaned[1],
                               'roomId': roomIdP.toString(),
                               'from': value.getId()
                             };
@@ -1086,7 +1093,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
-                                  "😁️",
+                                  _emotesCleaned[1],
                                   style: TextStyle(
                                     fontSize: 21,
                                     color: Colors.white,
@@ -1096,11 +1103,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            String msg = "yo: " + "😁️";
+                            String msg = "yo: " + _emotesCleaned[2];
                             _messages.add(msg);
                             messageController.clear();
                             Map<String, dynamic> mensaje = {
-                              'body': "😁️",
+                              'body': _emotesCleaned[2],
                               'roomId': roomIdP.toString(),
                               'from': value.getId()
                             };
@@ -1116,7 +1123,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
-                                  "😁️",
+                                  _emotesCleaned[2],
                                   style: TextStyle(
                                     fontSize: 21,
                                     color: Colors.white,
@@ -1126,11 +1133,11 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            String msg = "yo: " + "😁️";
+                            String msg = "yo: " + _emotesCleaned[3];
                             _messages.add(msg);
                             messageController.clear();
                             Map<String, dynamic> mensaje = {
-                              'body': "😁️",
+                              'body': _emotesCleaned[3],
                               'roomId': roomIdP.toString(),
                               'from': value.getId()
                             };
@@ -1146,7 +1153,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             child: Padding(
                                 padding: const EdgeInsets.all(16.0),
                                 child: Text(
-                                  "😁️",
+                                  _emotesCleaned[3],
                                   style: TextStyle(
                                     fontSize: 21,
                                     color: Colors.white,
