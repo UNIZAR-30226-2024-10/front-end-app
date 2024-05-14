@@ -186,6 +186,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     socket.off("oponent_surrendered");
     socket.off("has_perdido");
     socket.off("has_empatado");
+    socket.off("chat_message");
 
     super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
@@ -1008,7 +1009,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       ),
                       IconButton(
                         icon: Icon(Icons.send),
-                        color: Colors.white,
                         onPressed: () {
                           if (messageController.text.isNotEmpty) {
                             setState(() {
@@ -1016,8 +1016,9 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                               _messages.add(msg);
                               messageController.clear();
                               Map<String, dynamic> mensaje = {
-                                'message': messageController.text,
-                                'roomId': roomIdP.toString()
+                                'body': messageController.text,
+                                'roomId': roomIdP.toString(),
+                                'from': value.getId()
                               };
                               // Enviar el tablero al servidor
                               socket.emit("chat_message", mensaje);

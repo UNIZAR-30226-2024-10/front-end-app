@@ -13,12 +13,15 @@ import 'package:ChessHub/local_game_sesion/pieza_ajedrez.dart';
 import 'package:ChessHub/game_internals/funciones.dart';
 import 'dart:async';
 import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
+import '../settings/settings.dart';
 
 class ChessPlaySessionScreen extends StatelessWidget {
   const ChessPlaySessionScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final settingsController = context.watch<SettingsController>();
+
     final login =
         context.read<LoginState>(); //CAMBIAR ESTO PARA Q SOPORTE PERSISTENCIA
     bool cuentalog = false;
@@ -244,7 +247,9 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                           MaterialPageRoute(
                                               builder: (context) =>
                                                   PartidasAsincronas(
-                                                      id: value.id, modoJuego: Modos.ASINCRONO)),
+                                                      id: value.id,
+                                                      modoJuego:
+                                                          Modos.ASINCRONO)),
                                         );
                                       },
                                       child: Text(

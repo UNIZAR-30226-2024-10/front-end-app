@@ -28,8 +28,9 @@ class FinPartidaOnline extends StatelessWidget {
     print("idPerdedor: $idPerdedor");
     print("esEmpate: $esEmpate");
     print("modo: $modo");
+    String modoMin = modo.toLowerCase();
     Uri uri = Uri.parse(
-        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_puntos/rapid/$idGanador/$idPerdedor/$esEmpate');
+        'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_puntos/$modoMin/$idGanador/$idPerdedor/$esEmpate');
     http.Response response = await http.post(
       uri,
       headers: {
