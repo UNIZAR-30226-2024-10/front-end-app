@@ -956,7 +956,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
             'application/json', // Especifica el tipo de contenido como JSON
       },
     );
-    print('OBTENEIENDO DATOS DE USUARIO');
+    print('OBTENIENDO DATOS DE USUARIO');
     Map<String, dynamic> res =
         jsonDecode(response.body) as Map<String, dynamic>;
 
@@ -975,13 +975,18 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     }
   }
 
+  bool info = false;
+
   //CONSTRUIR WIDGET
   @override
   Widget build(BuildContext context) {
     final messageController = TextEditingController();
     final settingsController = context.watch<SettingsController>();
 
-    _getInfo(settingsController.session.value);
+    if (!info) {
+      _getInfo(settingsController.session.value);
+      info = true;
+    }
 
     return Consumer<LoginState>(
       builder: (context, value, child) => Scaffold(
