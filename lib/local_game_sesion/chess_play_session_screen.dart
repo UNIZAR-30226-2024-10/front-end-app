@@ -261,6 +261,7 @@ class ChessPlaySessionScreen extends StatelessWidget {
                                           fontSize: 25,
                                           color: Colors.white,
                                           fontWeight: FontWeight.bold,
+                                          mainAxisAlignment: MainAxisAlignment.center,
                                         ),
                                       ),
                                     ),
