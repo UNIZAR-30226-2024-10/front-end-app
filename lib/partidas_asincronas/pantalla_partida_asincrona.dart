@@ -94,15 +94,26 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
     idRival = widget.idRival;
     tablero = widget.tablero;
     print(tablero);
+    esTurnoBlancas = tablero.contains('"turno":"blancas"');
     player1 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
     player2 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
-    enviarTab();
+    if(tablero.contains('"has_perdido":true')){
+      finPartida = true;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Has perdido la partida!')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
+    }
+    if (tablero.contains('"hay_tablas":true')) {
+      finPartida = true;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tablas!')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
+    }
+    enviarTab(tablero);
     tabJuego = inicializarTableroDesdeJson(jsonDecode(tablero) as Map<String,dynamic>, "defecto");
     super.initState();
   }
 
   
-Future<void> postTab() async {
+Future<void> postTab(String jsonMapTablero) async {
     Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$id');
     String tableroJson = jsonEncode({"tablero_actual": jsonMapTablero});
     http.Response response = await http.post(uri,body: tableroJson, headers: {HttpHeaders.contentTypeHeader: 'application/json'},);
@@ -115,7 +126,7 @@ Future<void> postTab() async {
 }
   
 
-  Future<bool> enviarTab() async {
+  Future<bool> enviarTab(String tablero) async {
     Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/play/');
     http.Response response = await http.post(uri, body: tablero, headers: {HttpHeaders.contentTypeHeader: 'application/json'},);
     if(response.statusCode == 200){
@@ -352,13 +363,19 @@ Future<void> postTab() async {
       if(tabJuego[filaNueva][columnaNueva]!.esBlanca){
         piezasBlancasMuertas.add(tabJuego[filaNueva][columnaNueva]!);
         setState(() {
-          player1.incrementPiecesCaptured();
+          if(player1.esBlanca)
+            player2.incrementPiecesCaptured();
+          else  
+            player1.incrementPiecesCaptured();
         });
       }
       else{
         piezasNegrasMuertas.add(tabJuego[filaNueva][columnaNueva]!);
         setState(() {
-          player2.incrementPiecesCaptured();
+          if(player1.esBlanca)
+            player1.incrementPiecesCaptured();
+          else  
+            player2.incrementPiecesCaptured();
         });
       }
       //si se trata de una muerte, debemos eliminar la pieza del tablero
@@ -368,9 +385,6 @@ Future<void> postTab() async {
           listaPiezas.removeWhere((pieza) => pieza['x'] == coordenadasNuevasApi[0] && pieza['y'] == coordenadasNuevasApi[1]);
         }
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Movimiento realizado correctamente')));
-      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: idUsuario, modoJuego: Modos.ASINCRONO)));
     }
 
     //Coronación
@@ -546,7 +560,7 @@ Future<void> postTab() async {
     String jsonString = jsonEncode(jsonMapTablero);
 
     //Enviamos el tablero con la posible jugada
-    bool jugadaValida = await enviarTab();
+    bool jugadaValida = await enviarTab(jsonString);
 
     print('TABLERO DESPUÉS DE MOVER LA PIEZA\n');
     print(jsonString);
@@ -568,10 +582,20 @@ Future<void> postTab() async {
     tabJuego[filaNueva][columnaNueva] = piezaSeleccionada;
     tabJuego[filaSeleccionada][columnaSeleccionada] = null;
 
-    if(hayJaqueMate || hayTablas){
+    if(hayJaqueMate){
       finPartida = true;
+      jsonMapTablero['has_perdido'] = true;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Has ganado la partida!')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
+    }
+    else if(hayTablas){
+      finPartida = true;
+      jsonMapTablero['has_empatado'] = true;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Tablas!')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
     }
 
+  
 
     //limpiamos la selección
     setState(() {
@@ -580,6 +604,11 @@ Future<void> postTab() async {
       columnaSeleccionada = -1;
       movimientosValidos = [];
     });
+
+    postTab(jsonString);
+    ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Movimiento realizado correctamente')));
+      Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: idUsuario, modoJuego: Modos.ASINCRONO)));
   }
 
 
@@ -693,7 +722,7 @@ Future<void> postTab() async {
                           Align(
                             alignment: Alignment.bottomCenter,
                             child: Text(
-                              '¿Estás seguro de que quieres rendirte?',
+                              '¿Estás seguro de que quieres salir?',
                               style: GoogleFonts.play(
                                 fontSize: 15,
                                 color: Colors.white,
@@ -777,7 +806,7 @@ Future<void> postTab() async {
                         ),
                       ),
                       child: Text(
-                        'Rendirse',
+                        'SALIR',
                         style: GoogleFonts.play(
                           fontSize: 25,
                           color: Colors.white,
