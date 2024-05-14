@@ -79,7 +79,8 @@ class Personalizacion extends StatefulWidget {
 }
 
 Future<NivelPase> leerDatosUsuario(int id) async {
-  final url = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+  final url =
+      Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
   final response = await http.get(url);
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -95,7 +96,7 @@ class _PersonalizacionState extends State<Personalizacion> {
   late int id;
   late List<bool> pressedSets;
   late List<bool> pressedEmotes;
-  List<String> emojislist  = ["😁️","😁️","😁️","😁️"];
+  List<String> emojislist = ["😁️", "😁️", "😁️", "😁️"];
   List<int> emotesPulsados = [];
 
   @override
@@ -200,7 +201,6 @@ class _PersonalizacionState extends State<Personalizacion> {
               // emojislist.removeAt(0);
               // emojislist.add(emote.emoji);
               _activateEmote(index, value, emote.emoji);
-              
             },
             isActive: pressedEmotes[index],
             isEnabled: value.logueado == true && nivelPase.nivel >= emote.level,
@@ -248,7 +248,7 @@ class _PersonalizacionState extends State<Personalizacion> {
                   ),
                 ],
               ),
-              if (name == 'DEFECTO')
+            if (name == 'DEFECTO')
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -302,24 +302,21 @@ class _PersonalizacionState extends State<Personalizacion> {
 
   void _activateEmote(int index, LoginState value, String emoteName) {
     setState(() {
-      if(emotesPulsados.length < 4){
+      if (emotesPulsados.length < 4) {
         emotesPulsados.add(index);
         emojislist.removeAt(0);
         emojislist.add(emoteName);
         for (int i = 0; i < pressedEmotes.length; i++) {
-          if(emotesPulsados.contains(i)){
+          if (emotesPulsados.contains(i)) {
             pressedEmotes[i] = true;
-          }
-          else{
+          } else {
             pressedEmotes[i] = false;
           }
         }
         if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
-          String stringEmojis = jsonEncode(emojislist);
-          _activateEmojis(stringEmojis, value.id);
+          _activateEmojis(emojislist, value.id);
         }
-      }
-      else{
+      } else {
         emotesPulsados.removeAt(0);
         emotesPulsados.add(index);
         emojislist.removeAt(0);
@@ -328,8 +325,7 @@ class _PersonalizacionState extends State<Personalizacion> {
           pressedEmotes[i] = emotesPulsados.contains(i);
         }
         if (value.logueado == true && nivelPase.nivel >= emotes[index].level) {
-          String stringEmojis = jsonEncode(emojislist);
-          _activateEmojis(stringEmojis, value.id);
+          _activateEmojis(emojislist, value.id);
         }
       }
     });
@@ -357,24 +353,24 @@ class _PersonalizacionState extends State<Personalizacion> {
     });
   }
 
-  void _activateEmojis(String itemName, int id) {
+  void _activateEmojis(List<String> items, int id) {
     Uri url = Uri.parse(
         'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_emoticonos/$id');
     Map<String, dynamic> bodyData = {
-      'emoticonos':itemName,
+      'emoticonos': items,
     };
     String jsonData = jsonEncode(bodyData);
     http.post(url,
         body: jsonData,
         headers: {'Content-Type': 'application/json'}).then((response) {
       if (response.statusCode == 200) {
-        print('$itemName activado');
+        print('$items activado');
       } else if (response.statusCode == 400) {
-        print('Error al proporcionar $itemName');
+        print('Error al proporcionar $items');
       } else if (response.statusCode == 500) {
         print('Error al actualizar');
       } else {
-        print('Error al activar $itemName');
+        print('Error al activar $items');
       }
     });
   }

@@ -24,6 +24,7 @@ import 'package:ChessHub/win_game/fin_partida_online.dart';
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import '../settings/settings.dart';
 //import 'package:ChessHub/play_session/pieza_ajedrez_widget.dart';
 //import 'package:provider/provider.dart';
 
@@ -938,10 +939,43 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     });
   }
 
+  List<String> _emotes = [];
+
+  void _getInfo(int id) async {
+    // Construye la URL y realiza la solicitud POST
+    //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
+    print('OBTENIENDO INFORMACION DE USUARIO\n');
+    Uri uri =
+        Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+    http.Response response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader:
+            'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
+    print('OBTENEIENDO DATOS DE USUARIO');
+    Map<String, dynamic> res =
+        jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      print(res);
+      setState(() {
+        _emotes = res['emoticonos'] as List<String>;
+      });
+    } else {
+      throw Exception('Error en la solicitud GET: ${response.statusCode}');
+    }
+  }
+
   //CONSTRUIR WIDGET
   @override
   Widget build(BuildContext context) {
     final messageController = TextEditingController();
+    final settingsController = context.watch<SettingsController>();
+
+    _getInfo(settingsController.session.value);
+
     return Consumer<LoginState>(
       builder: (context, value, child) => Scaffold(
         appBar: AppBar(
@@ -993,6 +1027,133 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                         );
                       },
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: <Widget>[
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            String msg = "yo: " + "😁️";
+                            _messages.add(msg);
+                            messageController.clear();
+                            Map<String, dynamic> mensaje = {
+                              'body': "😁️",
+                              'roomId': roomIdP.toString(),
+                              'from': value.getId()
+                            };
+                            // Enviar el tablero al servidor
+                            socket.emit("chat_message", mensaje);
+                          });
+                        },
+                        child: Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            color: Color.fromRGBO(49, 45, 45, 1),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "😁️",
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                    color: Colors.white,
+                                  ),
+                                ))), //_emotes[i]
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            String msg = "yo: " + "😁️";
+                            _messages.add(msg);
+                            messageController.clear();
+                            Map<String, dynamic> mensaje = {
+                              'body': "😁️",
+                              'roomId': roomIdP.toString(),
+                              'from': value.getId()
+                            };
+                            // Enviar el tablero al servidor
+                            socket.emit("chat_message", mensaje);
+                          });
+                        },
+                        child: Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            color: Color.fromRGBO(49, 45, 45, 1),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "😁️",
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                    color: Colors.white,
+                                  ),
+                                ))),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            String msg = "yo: " + "😁️";
+                            _messages.add(msg);
+                            messageController.clear();
+                            Map<String, dynamic> mensaje = {
+                              'body': "😁️",
+                              'roomId': roomIdP.toString(),
+                              'from': value.getId()
+                            };
+                            // Enviar el tablero al servidor
+                            socket.emit("chat_message", mensaje);
+                          });
+                        },
+                        child: Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            color: Color.fromRGBO(49, 45, 45, 1),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "😁️",
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                    color: Colors.white,
+                                  ),
+                                ))),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            String msg = "yo: " + "😁️";
+                            _messages.add(msg);
+                            messageController.clear();
+                            Map<String, dynamic> mensaje = {
+                              'body': "😁️",
+                              'roomId': roomIdP.toString(),
+                              'from': value.getId()
+                            };
+                            // Enviar el tablero al servidor
+                            socket.emit("chat_message", mensaje);
+                          });
+                        },
+                        child: Card(
+                            elevation: 3,
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 8),
+                            color: Color.fromRGBO(49, 45, 45, 1),
+                            child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Text(
+                                  "😁️",
+                                  style: TextStyle(
+                                    fontSize: 21,
+                                    color: Colors.white,
+                                  ),
+                                ))),
+                      ),
+                    ],
                   ),
                 ),
                 Padding(
