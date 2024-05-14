@@ -23,7 +23,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:ChessHub/win_game/fin_partida.dart';
 import 'package:ChessHub/constantes/constantes.dart';
-
+import 'package:ChessHub/game_internals/funciones.dart';
 
 
 import 'package:flutter/material.dart';
@@ -97,13 +97,12 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
     player1 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
     player2 = PlayerRow(idUsu: 0, esBlanca: tablero.contains('"usuarioblancasid":"$idUsuario"'));
     enviarTab();
-    iniTab();
+    tabJuego = inicializarTableroDesdeJson(jsonDecode(tablero) as Map<String,dynamic>, "defecto");
     super.initState();
   }
 
   
-
-  Future<void> postTab() async {
+Future<void> postTab() async {
     Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$id');
     String tableroJson = jsonEncode({"tablero_actual": jsonMapTablero});
     http.Response response = await http.post(uri,body: tableroJson, headers: {HttpHeaders.contentTypeHeader: 'application/json'},);
@@ -113,7 +112,8 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
     else if( response.statusCode == 500){
       throw Exception('Error en la solicitud POST: ${response.statusCode}');
     }
-  }
+}
+  
 
   Future<bool> enviarTab() async {
     Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/play/');
@@ -278,102 +278,8 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
   }
 
 
-  void iniTab(){
-    List<List<PiezaAjedrez?>> nuevoTablero =
-        List.generate(8, (index) => List.generate(8, (index) => null));
-
-    //Place pawn
-    for (int i = 0; i < 8; i++) {
-      nuevoTablero[1][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peon,
-          esBlanca: false,
-          nombreImagen: 'assets/images/pawn-b.svg');
-
-      nuevoTablero[6][i] = PiezaAjedrez(
-          tipoPieza: TipoPieza.peon,
-          esBlanca: true,
-          nombreImagen: 'assets/images/pawn-w.svg');
-    }
-
-    //Place rooks
-    nuevoTablero[0][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg',
-        ladoIzquierdo: true);
-    nuevoTablero[0][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: false,
-        nombreImagen: 'assets/images/rook-b.svg',
-        ladoIzquierdo: false);
-    nuevoTablero[7][0] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg',
-        ladoIzquierdo: true);
-    nuevoTablero[7][7] = PiezaAjedrez(
-        tipoPieza: TipoPieza.torre,
-        esBlanca: true,
-        nombreImagen: 'assets/images/rook-w.svg',
-         ladoIzquierdo: false);
-
-    //Place knights
-    nuevoTablero[0][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: false,
-        nombreImagen: 'assets/images/knight-b.svg');
-    nuevoTablero[0][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: false,
-        nombreImagen: 'assets/images/knight-b.svg');
-    nuevoTablero[7][1] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: true,
-        nombreImagen: 'assets/images/knight-w.svg');
-    nuevoTablero[7][6] = PiezaAjedrez(
-        tipoPieza: TipoPieza.caballo,
-        esBlanca: true,
-        nombreImagen: 'assets/images/knight-w.svg');
-
-    //Place bishops
-    nuevoTablero[0][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: false,
-        nombreImagen: 'assets/images/bishop-b.svg');
-    nuevoTablero[0][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: false,
-        nombreImagen: 'assets/images/bishop-b.svg');
-    nuevoTablero[7][2] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: true,
-        nombreImagen: 'assets/images/bishop-w.svg');
-    nuevoTablero[7][5] = PiezaAjedrez(
-        tipoPieza: TipoPieza.alfil,
-        esBlanca: true,
-        nombreImagen: 'assets/images/bishop-w.svg');
-
-    //Place queens
-    nuevoTablero[0][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.dama,
-        esBlanca: false,
-        nombreImagen: 'assets/images/queen-b.svg');
-    nuevoTablero[7][3] = PiezaAjedrez(
-        tipoPieza: TipoPieza.dama,
-        esBlanca: true,
-        nombreImagen: 'assets/images/queen-w.svg');
-    //Place kings
-    nuevoTablero[0][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.rey,
-        esBlanca: false,
-        nombreImagen: 'assets/images/king-b.svg');
-    nuevoTablero[7][4] = PiezaAjedrez(
-        tipoPieza: TipoPieza.rey,
-        esBlanca: true,
-        nombreImagen: 'assets/images/king-w.svg');
-
-    tabJuego = nuevoTablero;
-  }
+  
+    
 
   Future<void> _realizarMovimiento(int fila, int columna) async {
     if (esTurnoBlancas && piezaSeleccionada?.tipoPieza == TipoPieza.peon && fila == 0) {

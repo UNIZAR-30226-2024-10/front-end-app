@@ -35,6 +35,7 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
   late int eloRapid;
   int countdown = 5; // Inicializamos el contador en 5 segundos
   late int _roomId = 0;
+  late int salaId = 0;
   late String myColor = '';
   late String idOponente = '';
   bool infoObtenida = false;
@@ -130,7 +131,6 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
       Map<String, dynamic> requestData = {
         'usuarioBlancas': id,
         'usuarioNegras': idRival,
-
         // Otras propiedades necesarias para la solicitud
       };
       String jsonData = jsonEncode(requestData);
@@ -140,9 +140,11 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
             body: jsonData, headers: {'Content-Type': 'application/json'});
         if (response.statusCode == 200) {
           // Lógica para manejar la respuesta exitosa
+          final data = json.decode(response.body);
+          salaId = data['id'] as int;
           print('Solicitud exitosa');
           Uri url2 = Uri.parse(
-              'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$_roomId');
+              'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$salaId');
           String jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
           final tableroCorrecto = jsonDecode(jsonString);
           final response2 = http.post(url2, body : jsonEncode({"tablero_actual":tableroCorrecto}), headers: {"Content-Type": "application/json"});

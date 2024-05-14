@@ -120,7 +120,7 @@ String obtenerModo(Modos modo) {
     case Modos.BULLET:
       return 'Bullet';
     case Modos.ASINCRONO:
-      return 'Asincrono';
+      return 'Correspondencia';
   }
 }
 

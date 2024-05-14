@@ -31,7 +31,7 @@ class Partidas {
       : idPartida = json['id'] as int,
         usuarioblancasid = json['usuarioblancasid'] as int,
         usuarionegrasid = json['usuarionegrasid'] as int,
-        tablero = json['tablero'] != null ? json['tablero'] as String : '';
+        tablero = json['tablero'] != null ? json['tablero'].toString() : '';
 }
 
 class PartidasAsincronas extends StatefulWidget {
