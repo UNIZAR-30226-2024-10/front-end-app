@@ -152,7 +152,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     idOponente = widget.idOponente;
     myColor = widget.myColor;
     socket = widget.socket;
-    tipoPiezaImagen = widget.nombrePieza;
+    tipoPiezaImagen = widget.nombrePieza.toLowerCase();
     print("ROOM ID QUE ME HAN ENVIADO");
     print(roomIdP);
 

@@ -339,7 +339,7 @@ class _PersonalizacionState extends State<Personalizacion> {
     Uri url = Uri.parse(
         'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_set_piezas/$id');
     Map<String, dynamic> bodyData = {
-      'setPiezas': itemName,
+      'setPiezas': itemName.toUpperCase(),
     };
     String jsonData = jsonEncode(bodyData);
     http.post(url,
