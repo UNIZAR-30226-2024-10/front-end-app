@@ -8,6 +8,7 @@ import '../log_in/log_in_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter/services.dart';
 
 class BattlePass extends StatefulWidget {
   int id = 0;

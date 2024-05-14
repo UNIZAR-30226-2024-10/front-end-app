@@ -45,7 +45,7 @@ class PartidasAsincronas extends StatefulWidget {
 class _PartidasAsincronas extends State<PartidasAsincronas> {
   int id = 0;
   Modos modoJuego = Modos.ASINCRONO;
-  int elo = 0;
+  int elo = 1200;
   List<Partidas> partidas = [];
   @override
   void initState() {
