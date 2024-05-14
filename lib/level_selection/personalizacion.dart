@@ -16,6 +16,7 @@ class Set {
 }
 
 final List<Set> sets = [
+  Set(name: 'DEFECTO', level: 0),
   Set(name: 'alpha', level: 2),
   Set(name: 'cardinal', level: 4),
   Set(name: 'celtic', level: 6),
@@ -242,6 +243,22 @@ class _PersonalizacionState extends State<Personalizacion> {
                   ),
                   SvgPicture.asset(
                     'assets/images/images_pase/pieces/$name/wQ.svg',
+                    width: 42,
+                    height: 42,
+                  ),
+                ],
+              ),
+              if (name == 'DEFECTO')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(
+                    'assets/images/bK.svg',
+                    width: 42,
+                    height: 42,
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/wQ.svg',
                     width: 42,
                     height: 42,
                   ),
