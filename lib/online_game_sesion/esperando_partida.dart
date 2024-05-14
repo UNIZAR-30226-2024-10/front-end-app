@@ -56,8 +56,8 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
   void enviarPeticiondeJuego(Modos modo) {
     //('join_room', { mode: 'Rapid' , userId: args.userInfo.userId , elo: args.userInfo.eloRapid})
 
-    socket.emit('join_room',
-        {"mode": obtenerModo(modo), "userId": id, "elo": elo});
+    socket.emit(
+        'join_room', {"mode": obtenerModo(modo), "userId": id, "elo": elo});
   }
 
   void _startCountdown() {
