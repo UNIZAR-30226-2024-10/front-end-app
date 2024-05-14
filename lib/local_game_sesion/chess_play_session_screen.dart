@@ -14,6 +14,10 @@ import 'package:ChessHub/game_internals/funciones.dart';
 import 'dart:async';
 import 'package:ChessHub/partidas_asincronas/menu_partidas_asincronas.dart';
 import '../settings/settings.dart';
+import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'dart:io';
 
 class ChessPlaySessionScreen extends StatelessWidget {
   const ChessPlaySessionScreen({Key? key}) : super(key: key);
@@ -22,19 +26,47 @@ class ChessPlaySessionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final settingsController = context.watch<SettingsController>();
 
-    final login =
-        context.read<LoginState>(); //CAMBIAR ESTO PARA Q SOPORTE PERSISTENCIA
+    //final login = context.read<LoginState>(); //CAMBIAR ESTO PARA Q SOPORTE PERSISTENCIA
     bool cuentalog = false;
     List<List<PiezaAjedrez?>> tablero =
         List.generate(8, (index) => List.generate(8, (index) => null));
     List<Color> coloresTablero = [];
+    String _arena = '';
+    String _imagen = '';
 
-    if (login.logueado) {
+    void _getInfo(int id) async {
+      // Construye la URL y realiza la solicitud POST
+      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
+      print('OBTENIENDO INFORMACION DE USUARIO\n');
+      Uri uri =
+          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+      http.Response response = await http.get(
+        uri,
+        headers: {
+          HttpHeaders.contentTypeHeader:
+              'application/json', // Especifica el tipo de contenido como JSON
+        },
+      );
+      print('OBTENEIENDO DATOS DE USUARIO');
+      Map<String, dynamic> res =
+          jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200) {
+        print(res);
+        _arena = res['arena'] as String;
+        _imagen = res['setpiezas'] as String;
+      } else {
+        throw Exception('Error en la solicitud GET: ${response.statusCode}');
+      }
+    }
+
+    if (settingsController.loggedIn.value) {
+      _getInfo(settingsController.session.value);
       cuentalog = true;
-      print("ARENA: ${login.arena}");
+      print("ARENA: ${_arena}");
       print("COLOR: ${coloresTablero}");
-      tablero = inicializarTablero(login.imagen);
-      coloresTablero = getColorCasilla(login.arena);
+      tablero = inicializarTablero(_imagen);
+      coloresTablero = getColorCasilla(_arena);
     }
 
     return Consumer<LoginState>(
