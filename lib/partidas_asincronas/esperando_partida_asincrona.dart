@@ -143,8 +143,8 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
           final data = json.decode(response.body);
           salaId = data['id'] as int;
           print('Solicitud exitosa');
-          Uri url2 = Uri.parse(
-              'https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$salaId');
+          print('SalaId: $salaId');
+          Uri url2 = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/update_cambio_partida_asincrona/$salaId');
           String jsonString = await rootBundle.loadString('assets/json/tableroInicialOnline.json');
           final tableroCorrecto = jsonDecode(jsonString);
           final response2 = http.post(url2, body : jsonEncode({"tablero_actual":tableroCorrecto}), headers: {"Content-Type": "application/json"});
@@ -163,7 +163,7 @@ class _EsperandoPartidaAsincronaState extends State<EsperandoPartidaAsincrona> {
             .showSnackBar(SnackBar(content: Text('Error de red: $e')));
         }
     }
-    
+    Navigator.push(context, MaterialPageRoute(builder: (context) => PartidasAsincronas(id: id, modoJuego: Modos.ASINCRONO)));
   }
 
   @override

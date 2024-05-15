@@ -14,6 +14,7 @@ import 'package:ChessHub/partidas_asincronas/seleccionar_id_rival.dart';
 import 'package:ChessHub/partidas_asincronas/pantalla_partida_asincrona.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 import 'package:ChessHub/partidas_asincronas/esperando_partida_asincrona.dart';
+import 'package:ChessHub/main_menu/main_menu_screen.dart';
 
 class Partidas {
   int idPartida;
@@ -25,7 +26,8 @@ class Partidas {
       {required this.idPartida,
       required this.usuarioblancasid,
       required this.usuarionegrasid,
-      required this.tablero});
+      required this.tablero
+    });
 
   Partidas.fromJson(Map<String, dynamic> json)
       : idPartida = json['id'] as int,
@@ -120,7 +122,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                                 EsperandoPartidaAsincrona(modoJuego: modoJuego, userId: id, elo: elo)));
                                   },
                                   child: Text(
-                                    'Crear Partida Asíncrona',
+                                    'Buscar Partida Asíncrona',
                                     style: TextStyle(
                                         color: Color.fromRGBO(49, 45, 45, 1),
                                         fontFamily: 'Oswald'),
@@ -179,7 +181,7 @@ class _PartidasAsincronas extends State<PartidasAsincronas> {
                                                                       idRival:
                                                                           idRival,
                                                                       tablero:
-                                                                          tablero)));
+                                                                          tablero, soyBlancas: ind.usuarioblancasid == idUsuario ? true : false)));
                                                     },
                                                     child: Text(
                                                       'Jugar Partida',
