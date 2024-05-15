@@ -177,18 +177,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     _escucharServidor();
     _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
 
-    socket.on("chat_message", (data) {
-      print("Mensaje recibido: " + data['body'].toString());
+    socket.on("chat message", (data) {
+      print(data);
+      dynamic lista = data[0];
+      String mensaje = lista['body'] as String;
+      print("Mensaje recibido: " + mensaje);
       setState(() {
-        String msg = "oponente: " + data['body'].toString();
-        _messages.add(msg);
-      });
-    });
-
-    socket.off("chat_message", (data) {
-      print("Mensaje recibido: " + data['body'].toString());
-      setState(() {
-        String msg = "oponente: " + data['body'].toString();
+        String msg = "oponente: " + mensaje;
         _messages.add(msg);
       });
     });
@@ -203,7 +198,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     socket.off("oponent_surrendered");
     socket.off("has_perdido");
     socket.off("has_empatado");
-    socket.off("chat_message");
+    socket.off("chat message", (data) {
+      print("Mensaje recibido: " + data['body'].toString());
+      setState(() {
+        String msg = "oponente: " + data['body'].toString();
+        _messages.add(msg);
+      });
+    });
 
     super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
@@ -1060,17 +1061,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                           setState(() {
                             String msg = "yo: " + _emotesCleaned[0];
                             _messages.add(msg);
-                            /*Map<String, dynamic> mensaje = {
+                            Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
                               'body': _emotesCleaned[0],
-                              'from': socket.id
-                            };*/
+                              'from': value.id
+                            };
                             // Enviar mensaje al servidor
-                            socket.emit("chat_message", {
-                              'roomId': roomIdP.toString(),
-                              'body': _emotesCleaned[0],
-                              'from': value.getId().toString()
-                            });
+                            socket.emit("chat message", mensaje);
                             print("Mensaje enviado al servidor\n");
                           });
                         },
@@ -1094,17 +1091,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                           setState(() {
                             String msg = "yo: " + _emotesCleaned[1];
                             _messages.add(msg);
-                            /*Map<String, dynamic> mensaje = {
+                            Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
                               'body': _emotesCleaned[1],
-                              'from': socket.id
-                            };*/
+                              'from': value.id
+                            };
                             // Enviar mensaje al servidor
-                            socket.emit("chat_message", {
-                              'roomId': roomIdP.toString(),
-                              'body': _emotesCleaned[1],
-                              'from': value.getId().toString()
-                            });
+                            socket.emit("chat message", mensaje);
                             print("Mensaje enviado al servidor\n");
                           });
                         },
@@ -1128,17 +1121,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                           setState(() {
                             String msg = "yo: " + _emotesCleaned[2];
                             _messages.add(msg);
-                            /*Map<String, dynamic> mensaje = {
+                            Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
                               'body': _emotesCleaned[2],
-                              'from': value.getId()
-                            };*/
+                              'from': value.id
+                            };
                             // Enviar mensaje al servidor
-                            socket.emit("chat_message", {
-                              'roomId': roomIdP.toString(),
-                              'body': _emotesCleaned[2],
-                              'from': value.getId().toString()
-                            });
+                            socket.emit("chat message", mensaje);
                             print("Mensaje enviado al servidor\n");
                           });
                         },
@@ -1162,17 +1151,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                           setState(() {
                             String msg = "yo: " + _emotesCleaned[3];
                             _messages.add(msg);
-                            /*Map<String, dynamic> mensaje = {
+                            Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
                               'body': _emotesCleaned[3],
-                              'from': value.getId()
-                            };*/
+                              'from': value.id
+                            };
                             // Enviar mensaje al servidor
-                            socket.emit("chat_message", {
-                              'roomId': roomIdP.toString(),
-                              'body': _emotesCleaned[3],
-                              'from': value.getId().toString()
-                            });
+                            socket.emit("chat message", mensaje);
                             print("Mensaje enviado al servidor\n");
                           });
                         },
@@ -1214,17 +1199,13 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             setState(() {
                               String msg = "yo: " + messageController.text;
                               _messages.add(msg);
-                              /*Map<String, dynamic> mensaje = {
-                                'body': messageController.text,
-                                'roomId': roomIdP.toString(),
-                                'from': value.getId()
-                              };*/
-                              // Enviar el tablero al servidor
-                              socket.emit("chat_message", {
+                              Map<String, dynamic> mensaje = {
                                 'roomId': roomIdP.toString(),
                                 'body': messageController.text,
-                                'from': value.getId().toString()
-                              });
+                                'from': value.id
+                              };
+                              // Enviar mensaje al servidor
+                              socket.emit("chat message", mensaje);
                               print("Mensaje enviado al servidor\n");
                               messageController.clear();
                             });
