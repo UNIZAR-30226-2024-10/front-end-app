@@ -34,14 +34,13 @@ import 'arenas/arenas_screen.dart';
 import 'register/register_screen.dart';
 import 'package:ChessHub/constantes/constantes.dart';
 
-
 /// The router describes the game's navigational hierarchy, from the main
 /// screen through settings screens all the way to each individual level.
 final router = GoRouter(
   routes: [
     GoRoute(
       path: '/',
-      builder: (context, state) => const MainMenuScreen(key: Key('main menu')),
+      builder: (context, state) => MainMenuScreen(),
       routes: <RouteBase>[
         GoRoute(
           path: 'chess',

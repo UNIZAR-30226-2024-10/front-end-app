@@ -138,7 +138,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
 
   String idPerdedor = '';
 
-  List<String> _messages = ["prueba", "test", "hola", "adios", "bye"];
+  List<String> _messages = [];
 
   bool _isVisible = false;
 
@@ -176,6 +176,14 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     _tratamientoMododeJuego();
     _escucharServidor();
     _timer = Timer.periodic(Duration(milliseconds: 50), _checkTimer);
+
+    socket.on("chat_message", (data) {
+      print("Mensaje recibido: " + data.toString());
+      setState(() {
+        String msg = "oponente: " + data.toString();
+        _messages.add(msg);
+      });
+    });
   }
 
   //ELIMINAR EL ESTADO
@@ -929,14 +937,6 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
         });
       }
     });
-
-    socket.on("chat_message", (data) {
-      print("Mensaje recibido: " + data.toString());
-      setState(() {
-        String msg = "oponente: " + data.toString();
-        _messages.add(msg);
-      });
-    });
   }
 
   String _emotes = '';
@@ -1016,6 +1016,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
           actions: <Widget>[
             IconButton(
               icon: Icon(_isVisible ? Icons.close : Icons.email_outlined),
+              color: Color.fromRGBO(255, 136, 0, 1),
               onPressed: () {
                 setState(() {
                   _isVisible = !_isVisible;
@@ -1035,7 +1036,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       itemCount: _messages.length,
                       itemBuilder: (BuildContext context, int index) {
                         return ListTile(
-                          title: Text(_messages[index]),
+                          title: Text(_messages[_messages.length - index - 1]),
                         );
                       },
                     ),
@@ -1051,13 +1052,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             String msg = "yo: " + _emotesCleaned[0];
                             _messages.add(msg);
                             messageController.clear();
-                            Map<String, dynamic> mensaje = {
-                              'body': _emotesCleaned[0],
+                            /*Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
-                              'from': value.getId()
-                            };
-                            // Enviar el tablero al servidor
-                            socket.emit("chat_message", mensaje);
+                              'body': _emotesCleaned[0],
+                              'from': socket.id
+                            };*/
+                            // Enviar mensaje al servidor
+                            socket.emit("chat_message", {
+                              'roomId': roomIdP,
+                              'body': _emotesCleaned[0],
+                              'from': socket.id
+                            });
                           });
                         },
                         child: Card(
@@ -1071,7 +1076,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                   _emotesCleaned[0],
                                   style: TextStyle(
                                     fontSize: 21,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(255, 136, 0, 1),
                                   ),
                                 ))), //_emotes[i]
                       ),
@@ -1081,13 +1086,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             String msg = "yo: " + _emotesCleaned[1];
                             _messages.add(msg);
                             messageController.clear();
-                            Map<String, dynamic> mensaje = {
-                              'body': _emotesCleaned[1],
+                            /*Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
-                              'from': value.getId()
-                            };
-                            // Enviar el tablero al servidor
-                            socket.emit("chat_message", mensaje);
+                              'body': _emotesCleaned[1],
+                              'from': socket.id
+                            };*/
+                            // Enviar mensaje al servidor
+                            socket.emit("chat_message", {
+                              'roomId': roomIdP.toString(),
+                              'body': _emotesCleaned[1],
+                              'from': socket.id
+                            });
                           });
                         },
                         child: Card(
@@ -1101,7 +1110,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                   _emotesCleaned[1],
                                   style: TextStyle(
                                     fontSize: 21,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(255, 136, 0, 1),
                                   ),
                                 ))),
                       ),
@@ -1111,13 +1120,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             String msg = "yo: " + _emotesCleaned[2];
                             _messages.add(msg);
                             messageController.clear();
-                            Map<String, dynamic> mensaje = {
-                              'body': _emotesCleaned[2],
+                            /*Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
+                              'body': _emotesCleaned[2],
                               'from': value.getId()
-                            };
-                            // Enviar el tablero al servidor
-                            socket.emit("chat_message", mensaje);
+                            };*/
+                            // Enviar mensaje al servidor
+                            socket.emit("chat_message", {
+                              'roomId': roomIdP.toString(),
+                              'body': _emotesCleaned[2],
+                              'from': socket.id
+                            });
                           });
                         },
                         child: Card(
@@ -1131,7 +1144,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                   _emotesCleaned[2],
                                   style: TextStyle(
                                     fontSize: 21,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(255, 136, 0, 1),
                                   ),
                                 ))),
                       ),
@@ -1141,13 +1154,17 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                             String msg = "yo: " + _emotesCleaned[3];
                             _messages.add(msg);
                             messageController.clear();
-                            Map<String, dynamic> mensaje = {
-                              'body': _emotesCleaned[3],
+                            /*Map<String, dynamic> mensaje = {
                               'roomId': roomIdP.toString(),
+                              'body': _emotesCleaned[3],
                               'from': value.getId()
-                            };
-                            // Enviar el tablero al servidor
-                            socket.emit("chat_message", mensaje);
+                            };*/
+                            // Enviar mensaje al servidor
+                            socket.emit("chat_message", {
+                              'roomId': roomIdP.toString(),
+                              'body': _emotesCleaned[3],
+                              'from': socket.id
+                            });
                           });
                         },
                         child: Card(
@@ -1161,7 +1178,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                                   _emotesCleaned[3],
                                   style: TextStyle(
                                     fontSize: 21,
-                                    color: Colors.white,
+                                    color: Color.fromRGBO(255, 136, 0, 1),
                                   ),
                                 ))),
                       ),
@@ -1182,19 +1199,24 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
                       ),
                       IconButton(
                         icon: Icon(Icons.send),
+                        color: Color.fromRGBO(255, 136, 0, 1),
                         onPressed: () {
                           if (messageController.text.isNotEmpty) {
                             setState(() {
                               String msg = "yo: " + messageController.text;
                               _messages.add(msg);
                               messageController.clear();
-                              Map<String, dynamic> mensaje = {
+                              /*Map<String, dynamic> mensaje = {
                                 'body': messageController.text,
                                 'roomId': roomIdP.toString(),
                                 'from': value.getId()
-                              };
+                              };*/
                               // Enviar el tablero al servidor
-                              socket.emit("chat_message", mensaje);
+                              socket.emit("chat_message", {
+                                'roomId': roomIdP.toString(),
+                                'body': messageController.text,
+                                'from': socket.id
+                              });
                             });
                           }
                         },
