@@ -76,7 +76,7 @@ class _MainMenuScreen extends State<MainMenuScreen> {
               ),
               actions: <Widget>[
                 IconButton(
-                  tooltip: 'Help',
+                  tooltip: 'Ayuda',
                   onPressed: () => setState(() {
                     _isVisible = !_isVisible;
                   }),
@@ -89,7 +89,7 @@ class _MainMenuScreen extends State<MainMenuScreen> {
                     if (!loggedIn) {
                       loggedIn = true;
                       return IconButton(
-                        tooltip: 'Log In',
+                        tooltip: 'Iniciar Sesión',
                         onPressed: () => GoRouter.of(context).push('/login'),
                         icon: Icon(Icons.login),
                         color: Color.fromRGBO(255, 255, 255, 1),
@@ -98,15 +98,15 @@ class _MainMenuScreen extends State<MainMenuScreen> {
                       return PopupMenuButton(
                         icon: Icon(Icons.account_circle_sharp),
                         iconColor: Color.fromRGBO(255, 255, 255, 1),
-                        tooltip: "User",
+                        tooltip: "Usuario",
                         itemBuilder: (context) => [
                           PopupMenuItem(
                             value: 'profile',
-                            child: Text('Profile'),
+                            child: Text('Perfil'),
                           ),
                           PopupMenuItem(
                             value: 'logout',
-                            child: Text('Log out'),
+                            child: Text('Cerrar Sesión'),
                           ),
                         ],
                         onSelected: (value) {

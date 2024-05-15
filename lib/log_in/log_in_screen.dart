@@ -40,7 +40,7 @@ class LoginScreen extends StatelessWidget {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(49, 45, 45, 1),
-            title: Text('Log In',
+            title: Text('Iniciar Sesión',
                 style: TextStyle(color: Colors.white, fontFamily: 'Oswald')),
           ),
           body: Center(
@@ -57,7 +57,6 @@ class LoginScreen extends StatelessWidget {
 
 class LoginState extends ChangeNotifier {
   // Dart client
-  
 
   int _id = 0;
   bool _logueado = false;
@@ -79,8 +78,7 @@ class LoginState extends ChangeNotifier {
   int get puntosPase => _puntosPase;
   String get nombre => _nombre;
 
-  
-  String getNombre(){
+  String getNombre() {
     return _nombre;
   }
 
@@ -130,7 +128,8 @@ class LoginState extends ChangeNotifier {
     // Construye la URL y realiza la solicitud POST
     //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
     print('OBTENIENDO INFORMACION DE USUARIO\n');
-    Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+    Uri uri =
+        Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
     http.Response response = await http.get(
       uri,
       headers: {
@@ -181,7 +180,8 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
     void _login(String jsonString) async {
       // Construye la URL y realiza la solicitud POST
       //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
-      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
+      Uri uri =
+          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/login');
       http.Response response = await http.post(
         uri,
         body:
@@ -227,7 +227,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
               children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Text('Log In',
+                    child: Text('Iniciar Sesión',
                         style:
                             TextStyle(color: Color.fromRGBO(255, 136, 0, 1)))),
                 Padding(
@@ -242,7 +242,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                       });
                     },
                     decoration: InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'Usuario',
                       floatingLabelStyle:
                           TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
                       focusedBorder: OutlineInputBorder(
@@ -265,7 +265,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'Contraseña',
                       floatingLabelStyle:
                           TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
                       focusedBorder: OutlineInputBorder(
@@ -298,7 +298,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                         ),
                       ),
                     ),
-                    child: Text('Login',
+                    child: Text('Acceder',
                         style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                   ),
                 ),

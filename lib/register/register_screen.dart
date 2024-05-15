@@ -110,7 +110,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
               children: [
                 Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                    child: Text('Register',
+                    child: Text('Registrar Cuenta',
                         style:
                             TextStyle(color: Color.fromRGBO(255, 136, 0, 1)))),
                 Padding(
@@ -125,7 +125,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                       });
                     },
                     decoration: InputDecoration(
-                      labelText: 'Username',
+                      labelText: 'Usuario',
                       floatingLabelStyle:
                           TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
                       focusedBorder: OutlineInputBorder(
@@ -148,7 +148,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                     },
                     obscureText: true,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'Contraseña',
                       floatingLabelStyle:
                           TextStyle(color: Color.fromRGBO(255, 136, 0, 1)),
                       focusedBorder: OutlineInputBorder(
@@ -210,7 +210,7 @@ class LoginFormWidgetState extends State<LoginFormWidget> {
                         ),
                       ),
                     ),
-                    child: Text('Register',
+                    child: Text('Registrarse',
                         style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
                   ),
                 ),

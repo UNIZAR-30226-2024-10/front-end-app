@@ -19,7 +19,7 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   int index_page = 0;
 
   //STRINGD NECESARIOS PARA LAS PANTALLAS DE INFORMACIÓN
-  String COMO_JUGAR = '\n\nCOMO JUGAR';
+  String COMO_JUGAR = '\n\nCÓMO JUGAR';
   String MODOS_DE_JUEGO = '\n\nMODOS DE JUEGO';
   String ELO = 'Puntos de Elo';
   String PARTIDA = 'Partidas';
@@ -33,15 +33,15 @@ class _IntroductionScreenState extends State<IntroductionScreen> {
   String BlitzText =
       'En el ajedrez Blitz, cada jugador tiene un tiempo máximo de 5 minutos. Esto hace que cada movimiento deba ser rápido y preciso, ya que no hay mucho margen para pensar demasiado.';
   String RapidText =
-      "En este modo de juego los jugadores cuentan con 10 minutos.A diferencia de las partidas clásicas, donde se cuenta con varias horas para pensar y planificar cada jugada, en el ajedrez rápido el reloj es un factor determinante.";
+      "En este modo de juego los jugadores cuentan con 10 minutos. A diferencia de las partidas clásicas, donde se cuenta con varias horas para pensar y planificar cada jugada, en el ajedrez rápido el reloj es un factor determinante.";
 
   /* Información acerca del juego */
   String Partidas =
-      " Juega partidas en modo local contra la máquina o en modo online contra otros usuarios.Existen tres modos de juego, Blitz, Bullet y Rapid. Estos se diferencian en el límite de tiempo para jugar. Al jugar partidas se te otrorgarán tanto puntos de recompensa como puntos de ELO.";
+      " Juega partidas en modo local contra la máquina o en modo online contra otros usuarios. Existen tres modos de juego, Blitz, Bullet y Rapid. Estos se diferencian en el límite de tiempo para jugar. Al jugar partidas se te otrorgarán tanto puntos de recompensa como puntos de ELO.";
   String ELO_text =
-      " Los puntos de ELO se utilizan para categorizar a los jugadores.¡Gana partidas para conseguir gran cantidad de puntos de ELO y jugar contra los mejores jugadores! Al incrementar tu puntuación de ELO, jugarás en distintos ambientes de tableros llamados Arenas. En el apartado de \"Ranking\" puedes consultar los mejores jugadores en cada modo de juego.";
+      " Los puntos de ELO se utilizan para categorizar a los jugadores. ¡Gana partidas para conseguir gran cantidad de puntos de ELO y jugar contra los mejores jugadores! Al incrementar tu puntuación de ELO, jugarás en distintos ambientes de tableros llamados Arenas. En el apartado de \"Ranking\" puedes consultar los mejores jugadores en cada modo de juego.";
   String Recompensas =
-      " Los puntos de recompensa se ganan independientemente de si ganas o pierdes partidas.Con estos puntos puedes acceder al apartado de \"Pase de batalla\" para reclamar recompensas asombrosas. Para poder utilizar las recompensas desbloqueadas en partida, accede al apartado de \"Personalizacion\".";
+      " Los puntos de recompensa se ganan independientemente de si ganas o pierdes partidas. Con estos puntos puedes acceder al apartado de \"Pase de batalla\" para reclamar recompensas asombrosas. Para poder utilizar las recompensas desbloqueadas en partida, accede al apartado de \"Personalización\".";
 
   @override
   Widget build(BuildContext context) {

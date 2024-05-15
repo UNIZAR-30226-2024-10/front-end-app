@@ -44,24 +44,25 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   bool mostrado = false;
 
   void _getInfo(int id) async {
-      // Construye la URL y realiza la solicitud POST
-      //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
-      print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
-      http.Response response = await http.get(
-        uri,
-        headers: {
-          HttpHeaders.contentTypeHeader:
-              'application/json', // Especifica el tipo de contenido como JSON
-        },
-      );
-      print('OBTENEIENDO DATOS DE USUARIO');
-      Map<String, dynamic> res =
-          jsonDecode(response.body) as Map<String, dynamic>;
+    // Construye la URL y realiza la solicitud POST
+    //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
+    print('OBTENIENDO INFORMACION DE USUARIO\n');
+    Uri uri =
+        Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+    http.Response response = await http.get(
+      uri,
+      headers: {
+        HttpHeaders.contentTypeHeader:
+            'application/json', // Especifica el tipo de contenido como JSON
+      },
+    );
+    print('OBTENEIENDO DATOS DE USUARIO');
+    Map<String, dynamic> res =
+        jsonDecode(response.body) as Map<String, dynamic>;
 
-      if (response.statusCode == 200) {
-        print(res);
-        setState(() {
+    if (response.statusCode == 200) {
+      print(res);
+      setState(() {
         _eloBlitz = res['eloblitz'] as int;
         _eloRapid = res['elorapid'] as int;
         _eloBullet = res['elobullet'] as int;
@@ -71,11 +72,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         _derrotas = res['derrotas'] as int;
         _empates = res['empates'] as int;
       });
-      } else {
-        throw Exception('Error en la solicitud GET: ${response.statusCode}');
-      }
+    } else {
+      throw Exception('Error en la solicitud GET: ${response.statusCode}');
     }
-    
+  }
+
   @override
   Widget build(BuildContext context) {
     final settingsController = context.watch<SettingsController>();
@@ -83,7 +84,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       // Construye la URL y realiza la solicitud POST
       //https://chesshub-api-ffvrx5sara-ew.a.run.app/play/
       print('OBTENIENDO INFORMACION DE USUARIO\n');
-      Uri uri = Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
+      Uri uri =
+          Uri.parse('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/$id');
       http.Response response = await http.delete(
         uri,
         headers: {
@@ -197,7 +199,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ),
                   ),
                 ),
-                child: Text('Delete Account',
+                child: Text('Borrar Cuenta',
                     style: TextStyle(color: Color.fromRGBO(49, 45, 45, 1))),
               )
             ],
