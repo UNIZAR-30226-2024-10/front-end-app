@@ -198,14 +198,7 @@ class _TableroAjedrezState extends State<TableroAjedrezOnline> {
     socket.off("oponent_surrendered");
     socket.off("has_perdido");
     socket.off("has_empatado");
-    socket.off("chat message", (data) {
-      print("Mensaje recibido: " + data['body'].toString());
-      setState(() {
-        String msg = "oponente: " + data['body'].toString();
-        _messages.add(msg);
-      });
-    });
-
+    socket.off("chat message");
     super.dispose(); // Llama al método padre para el manejo de la eliminación
   }
 
