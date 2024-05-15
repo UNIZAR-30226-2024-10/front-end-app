@@ -68,7 +68,7 @@ class _MainMenuScreen extends State<MainMenuScreen> {
               title: GestureDetector(
                 onTap: () {},
                 child: Text(
-                  'ChessHub',
+                  'ChessHub', //QUITAR ???
                   style: TextStyle(
                       fontFamily: 'Oswald',
                       color: Color.fromRGBO(255, 255, 255, 1)),

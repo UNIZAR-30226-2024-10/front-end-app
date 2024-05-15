@@ -127,7 +127,52 @@ class _EsperandoPartidaState extends State<EsperandoPartida> {
     print('Imagen de la pieza: ${login.getImagenPieza()}');
     print('Imagen del tablero: ${login.arena}');
     tablero = inicializarTablero(login.imagen);
-    coloresTablero = getColorCasilla(login.arena);
+    if (modoJuego == Modos.RAPID) {
+      if (login.getEloRapidUsuario() <= 1500) {
+        coloresTablero = getColorCasilla("Madera");
+      } else if (login.getEloRapidUsuario() > 1500 &&
+          login.getEloRapidUsuario() <= 1800) {
+        coloresTablero = getColorCasilla("Marmol");
+      } else if (login.getEloRapidUsuario() > 1800 &&
+          login.getEloRapidUsuario() <= 2100) {
+        coloresTablero = getColorCasilla("Oro");
+      } else if (login.getEloRapidUsuario() > 2100 &&
+          login.getEloRapidUsuario() <= 2400) {
+        coloresTablero = getColorCasilla("Esmeralda");
+      } else {
+        coloresTablero = getColorCasilla("Diamante");
+      }
+    } else if (modoJuego == Modos.BLITZ) {
+      if (login.getEloBlitzUsuario() <= 1500) {
+        coloresTablero = getColorCasilla("Madera");
+      } else if (login.getEloBlitzUsuario() > 1500 &&
+          login.getEloBlitzUsuario() <= 1800) {
+        coloresTablero = getColorCasilla("Marmol");
+      } else if (login.getEloBlitzUsuario() > 1800 &&
+          login.getEloBlitzUsuario() <= 2100) {
+        coloresTablero = getColorCasilla("Oro");
+      } else if (login.getEloBlitzUsuario() > 2100 &&
+          login.getEloBlitzUsuario() <= 2400) {
+        coloresTablero = getColorCasilla("Esmeralda");
+      } else {
+        coloresTablero = getColorCasilla("Diamante");
+      }
+    } else {
+      if (login.getEloBulletUsuario() <= 1500) {
+        coloresTablero = getColorCasilla("Madera");
+      } else if (login.getEloBulletUsuario() > 1500 &&
+          login.getEloBulletUsuario() <= 1800) {
+        coloresTablero = getColorCasilla("Marmol");
+      } else if (login.getEloBulletUsuario() > 1800 &&
+          login.getEloBulletUsuario() <= 2100) {
+        coloresTablero = getColorCasilla("Oro");
+      } else if (login.getEloBulletUsuario() > 2100 &&
+          login.getEloBulletUsuario() <= 2400) {
+        coloresTablero = getColorCasilla("Esmeralda");
+      } else {
+        coloresTablero = getColorCasilla("Diamante");
+      }
+    }
     String nombreUsuario = login.nombre;
     print('Nombre del usuario: $nombreUsuario');
     late String nombreOponente;
