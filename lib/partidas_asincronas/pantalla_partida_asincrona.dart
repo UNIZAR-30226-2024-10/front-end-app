@@ -106,6 +106,7 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
       finPartida = true;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Has perdido la partida!')));
+      eliminarPartidaAsincrona(roomIdP);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -116,6 +117,7 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
       finPartida = true;
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('Tablas!')));
+      eliminarPartidaAsincrona(roomIdP);
       Navigator.push(
           context,
           MaterialPageRoute(
@@ -127,6 +129,12 @@ class _PartidaAsincronaState extends State<PartidaAsincrona> {
         jsonDecode(tableroString) as Map<String, dynamic>, "defecto");
     jsonMapTablero = jsonDecode(tableroString) as Map<String, dynamic>;
     super.initState();
+  }
+
+  void eliminarPartidaAsincrona(int roomId) async {
+    Uri uriklk = Uri.parse(
+        ('https://chesshub-api-ffvrx5sara-ew.a.run.app/users/remove_partida_asincrona/$roomIdP'));
+    http.post(uriklk);
   }
 
   Future<void> postTab(String str) async {
