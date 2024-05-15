@@ -82,7 +82,7 @@ class SettingsController {
   /// Asynchronously loads values from the injected persistence store.
   Future<void> _loadStateFromPersistence() async {
     final loadedValues = await Future.wait([
-      _store.getAudioOn(defaultValue: true).then((value) {
+      _store.getAudioOn(defaultValue: false).then((value) {
         if (kIsWeb) {
           // On the web, sound can only start after user interaction, so
           // we start muted there on every game start.
@@ -99,7 +99,7 @@ class SettingsController {
           .getSoundsOn(defaultValue: true)
           .then((value) => soundsOn.value = value),
       _store
-          .getMusicOn(defaultValue: true)
+          .getMusicOn(defaultValue: false)
           .then((value) => musicOn.value = value),
       _store.getPlayerName().then((value) => playerName.value = value),
     ]);

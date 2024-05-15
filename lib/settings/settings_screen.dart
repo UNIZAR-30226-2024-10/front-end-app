@@ -42,17 +42,43 @@ class SettingsScreen extends StatelessWidget {
         body: Card(
           elevation: 3,
           margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-          color: Color(0xFF506C64), // Cambia el color de fondo de la tarjeta
-          child: ResponsiveScreen(
-            squarishMainArea: ListView(
-              children: [
-                _gap,
-                const _NameChangeLine(
-                  'Name',
-                ),
-              ],
+          color: Color.fromRGBO(
+              49, 45, 45, 1), // Cambia el color de fondo de la tarjeta
+          child: Padding(
+            padding: const EdgeInsets.all(15),
+            child: ResponsiveScreen(
+              squarishMainArea: ListView(
+                children: [
+                  _gap,
+                  const _NameChangeLine(
+                    'Setting',
+                  ),
+                  _gap,
+                  Text(settings.playerName.value,
+                      style:
+                          TextStyle(color: Colors.red, fontFamily: 'Oswald')),
+                  _gap,
+                  Text(settings.playerName.value,
+                      style:
+                          TextStyle(color: Colors.green, fontFamily: 'Oswald')),
+                  _gap,
+                  Text(settings.playerName.value,
+                      style:
+                          TextStyle(color: Colors.blue, fontFamily: 'Oswald')),
+                  _gap,
+                  IconButton(
+                    tooltip: 'Recargar',
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      GoRouter.of(context).push('/settings');
+                    },
+                    icon: Icon(Icons.replay),
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                  ),
+                ],
+              ),
+              rectangularMenuArea: Spacer(),
             ),
-            rectangularMenuArea: Spacer(),
           ),
         ),
       ),
@@ -80,6 +106,7 @@ class _NameChangeLine extends StatelessWidget {
             Text(title,
                 style: const TextStyle(
                   fontSize: 30,
+                  color: Colors.white,
                 )),
             const Spacer(),
             ValueListenableBuilder(
@@ -88,6 +115,7 @@ class _NameChangeLine extends StatelessWidget {
                 '‘$name’',
                 style: const TextStyle(
                   fontSize: 30,
+                  color: Colors.white,
                 ),
               ),
             ),
